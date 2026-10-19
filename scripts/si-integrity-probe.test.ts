@@ -1,0 +1,7 @@
+import {it,expect} from 'vitest'
+import {evaluateIntegrityVisits,type IntegrityVisit} from './lib/si-integrity-probe'
+function fixture(hxy=0,gx=0):IntegrityVisit[]{const xy=[[0,0],...Array.from({length:8},(_,i)=>[[Math.cos(i*Math.PI/4),Math.sin(i*Math.PI/4)],[0,0]]).flat()];return xy.map(([x,y],i)=>({target:{x:x!,y:y!},arrivedAt:i*15,closedAt:i*15+12,samples:[8,9].map(t=>({time:i*15+t,x:x!,y:y!,value:1+gx*x!-.05*(x!**2+y!**2)+hxy*x!*y!,hit:true,clipped:false,telemetryComplete:true}))}))}
+it('supports a negative-definite local peak and estimates offset',()=>{const r=evaluateIntegrityVisits(fixture(0,.02),.001);expect(r.status).toBe('supported');expect(r.peak!.x).toBeCloseTo(.2);expect(r.eigenMax).toBeCloseTo(-.1)})
+it('rejects a saddle hidden from cardinal-only samples',()=>{const r=evaluateIntegrityVisits(fixture(.2),.001);expect(r.reason).toBe('not-negative-definite');expect(r.eigenMax).toBeCloseTo(.1)})
+it('abstains on a single clipped inlet even when scalar concentration is low',()=>{const v=fixture();v[1]!.samples[0]!.clipped=true;expect(evaluateIntegrityVisits(v,.001).reason).toBe('clipped-required-measurement')})
+it('requires channel telemetry, samples and non-extrapolated peak',()=>{const v=fixture();v[0]!.samples[0]!.telemetryComplete=false;expect(evaluateIntegrityVisits(v,.001).reason).toBe('missing-channel-telemetry');expect(evaluateIntegrityVisits(fixture().slice(0,9),.001).reason).toBe('insufficient-samples');expect(evaluateIntegrityVisits(fixture(0,.2),.001).reason).toBe('maximum-outside-probed-region')})

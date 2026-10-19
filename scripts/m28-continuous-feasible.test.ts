@@ -1,0 +1,8 @@
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { expect, it } from 'vitest'
+import { executeM28Action, runM28 } from './lib/m28-continuous-feasible'
+import { m26Maps } from './lib/m26-action-horizon'
+import { M28_ROOT } from './m28-continuous-feasible'
+it('retains the exact forecast while considering feasible alternatives',()=>{ for(const map of m26Maps()) for(const d of [{x:1,y:0},{x:0,y:-1},{x:-1,y:1}]){const r=executeM28Action(map,d);expect(r.blockedEndpoint).toBe(false);expect(r.distance).toBeGreaterThan(0);expect(r.path.every((p)=>!map.environment.isBlocked(p))).toBe(true)}})
+it.skipIf(process.env.M28_VERIFY!=='1')('verifies exact frozen replay and gates',async()=>{const hash=(b:Uint8Array)=>createHash('sha256').update(b).digest('hex'),read=async(p:string)=>JSON.parse(await readFile(`${M28_ROOT}/${p}`,'utf8')),design=await read('design.json'),checks=await read('checksums.json');for(const e of checks.inventory)expect(hash(await readFile(`${M28_ROOT}/${e.path}`))).toBe(e.sha256);for(const e of design.sourceInventory){expect(hash(await readFile(`${M28_ROOT}/source-snapshot/${e.path}`))).toBe(e.sha256);expect(hash(await readFile(e.path))).toBe(e.sha256)}const result=runM28();expect(JSON.stringify(result)+'\n').toBe(await readFile(`${M28_ROOT}/results.json`,'utf8'));expect(result.episodes).toBe(49280);expect(result.actions).toBe(197120);expect(result.aggregates).toHaveLength(308);const f=result.failures;expect(result.advancesToReacquisitionTest).toBe(!f.safety.length&&!f.distance.length&&!f.acceptance.length&&!f.gainCells.length&&!f.slowFollow.length&&f.overallGain>=.95)})

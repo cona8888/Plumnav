@@ -1,0 +1,29 @@
+# Dependencies and generated outputs
+node_modules/
+.pnpm-store/
+dist/
+artifacts/
+benchmark-output/
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+.aws/
+.ssh/
+*.pem
+*.key
+pkcs11.txt
+
+# Local research evidence, data, cloud packages and working documents
+research/
+aws/
+outputs/
+release/
+presentation_work/
+presentation_complete_work/
+v6_collaborative_revision/

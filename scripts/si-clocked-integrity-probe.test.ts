@@ -1,0 +1,7 @@
+import {expect,it} from 'vitest'
+import {SIClockedIntegrityProbe} from './lib/si-clocked-integrity-probe'
+import type {AlgorithmEnvironment,AlgorithmStepInput} from '../src/sim/types'
+const environment={inspectionContract:{offsetNormalized:.01,arrivalRadiusNormalized:.001,settlingSeconds:0,dwellSeconds:1,sampleSpacingSeconds:1,minimumSamplesPerWaypoint:2},sensorNoise:.001,maxSpeed:.1,isBlocked:()=>false} as unknown as AlgorithmEnvironment
+const input=(time:number,x=.5):AlgorithmStepInput=>({time,dt:.25,position:{x,y:.5},heading:0,distance:0,observations:[],measurement:{time,concentration:1,valid:true,hit:true,sampleMode:'passive',wind:{x:0,y:0},localInletReadings:[]}})
+it('starts dwell at the next physical readout boundary after arrival',()=>{const p=new SIClockedIntegrityProbe(environment,{x:.5,y:.5});expect(p.step(input(.25)).phase).toBe('SI CLOCK ALIGNMENT HOLD');expect(p.visits[0]!.arrivedAt).toBeNull();p.step(input(.5));expect(p.visits[0]!.arrivedAt).toBeNull();p.step(input(1));expect(p.visits[0]!.arrivedAt).toBe(1);p.step(input(2));expect(p.visits[0]!.closedAt).toBe(2)})
+it('cancels a pending arrival if the robot leaves its radius',()=>{const p=new SIClockedIntegrityProbe(environment,{x:.5,y:.5});p.step(input(.25));expect(p.step(input(.5,.51)).phase).toBe('SI INTEGRITY MOVE');p.step(input(.75));expect(p.visits[0]!.arrivedAt).toBeNull();p.step(input(1));expect(p.visits[0]!.arrivedAt).toBe(1)})
