@@ -1,0 +1,13 @@
+case,method,emitting_fitting,flagged_fitting,flag_to_source_m,strict_source_outcome,declared_error_m,decision_s,elapsed_s,path_m,passive_hits,valid_samples,max_excess_ppm,blocked_motion_ticks
+mapped-60,asset-inspection,D,D,0.056568542494924025,unresolved-abstention,,378.5,378.75,17.57989898732207,78,379,0.7118230758925258,0
+upwind-diagonal-60,asset-inspection,,,,unresolved-abstention,,307.25,307.5,15.81421356237286,66,308,0.7135287338671681,0
+left-60,asset-inspection,,,,unresolved-abstention,,356,356.25,17.17989898732209,63,357,0.6003302564165968,0
+right-60,asset-inspection,,,,unresolved-abstention,,330.5,330.75,16.379898987322115,53,331,0.5958090185885727,0
+neighbour-60,asset-inspection,,D,0.15000000000000005,unresolved-abstention,,378.5,378.75,17.57989898732207,87,379,0.5223911616973355,0
+blank-60,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,0,287,0.0019989286653928646,0
+mapped-225,asset-inspection,A,A,0.0565685424949236,unresolved-abstention,,390.5,390.75,18.920194694982506,87,391,0.6066641919600865,0
+upwind-diagonal-225,asset-inspection,,,,unresolved-abstention,,320,320.25,17.154509270033362,86,321,0.5375975691012577,0
+left-225,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,18,287,0.2394777705884263,0
+right-225,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,45,287,0.5427941928036548,0
+neighbour-225,asset-inspection,,A,0.15000000000000002,unresolved-abstention,,390.5,390.75,18.920194694982506,102,391,0.5707689515205703,0
+blank-225,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,0,287,0.002073953994159572,0

@@ -2,22 +2,32 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { gunzipSync } from 'node:zlib'
 import { replayCurtain, scoreCurtain } from './lib/curtain-replay'
 import { horizontalDistanceMetres, replayMeasuredPeak } from './lib/measured-peak'
 
-const directory = process.argv[2]
-if (!directory || process.argv.length !== 3) throw new Error('Usage: vite-node scripts/methane-field-matrix.ts path/to/MATRIX_Dataset')
+if (process.argv.length > 3) throw new Error('Usage: vite-node scripts/methane-field-matrix.ts [path/to/MATRIX_Dataset]')
+const bundled = process.argv[2] === undefined
+const directory = process.argv[2] ?? fileURLToPath(new URL('../validation/data/matrix/', import.meta.url))
+function readSource(relativePath: string) {
+  const file = join(directory, relativePath)
+  return bundled ? gunzipSync(readFileSync(file + '.gz')) : readFileSync(file)
+}
 const flightIds = readdirSync(directory).filter(s => /^\d{3}_\d{2}$/.test(s)).sort()
 if (flightIds.length !== 18) throw new Error('Expected all 18 flight directories in MATRIX_Dataset.zip')
 
 const datasetHash = createHash('sha256')
 // The archive contains one-second horizontal ground-station wind components in the UTC flight frame.
-const meteoFiles: Record<string, string> = {
+const meteoFiles: Record<string, string> = bundled ? {
+  '20200313': '0f91633533129401f8d8210d937eb41ffb1ecc9cf65af3d5f603811ce20317f0',
+  '20200314': 'e46f5f5042733dc174b0a09773131d50918a934b2edbc5ae63a87b96225d7e7e',
+} : {
   '20200313': 'd89485f5e753e3635687f2f2779198abba62a2d03b1a2d6042b380e9180b67f9',
   '20200314': 'b49a4dd7ecdc6aab25121e8a7b159cb7ac941303cef7999c45f9da84ceb87fe4',
 }
 function readWindowWind(date: string, start: number, end: number) {
-  const bytes = readFileSync(join(directory!, 'MATRIX_Meteo', `agg_${date}.csv`))
+  const bytes = readSource(join('MATRIX_Meteo', `agg_${date}.csv`))
   if (createHash('sha256').update(bytes).digest('hex') !== meteoFiles[date]) throw new Error('MATRIX wind file checksum mismatch')
   const [head, ...records] = bytes.toString('utf8').trim().split(/\r?\n/)
   const fields = head!.split(',')
@@ -40,9 +50,11 @@ function readWindowWind(date: string, start: number, end: number) {
 const results = []
 const excluded = []
 for (const flight of flightIds) {
-  const files = readdirSync(join(directory, flight)).filter(s => /^EMP_.*_CH4_v2\.csv$/.test(s))
+  const files = readdirSync(join(directory, flight))
+    .map(s => bundled ? s.replace(/\.gz$/, '') : s)
+    .filter(s => /^EMP_.*_CH4_v2\.csv$/.test(s))
   if (files.length !== 1) throw new Error(`${flight}: expected one Empa methane file`)
-  const bytes = readFileSync(join(directory, flight, files[0]!))
+  const bytes = readSource(join(flight, files[0]!))
   datasetHash.update(`${flight}/${files[0]}\0`).update(bytes).update('\0')
   const lines = bytes.toString('utf8').trim().split(/\r?\n/)
   // The source wraps comments at a fixed width, sometimes in the middle of a coordinate.

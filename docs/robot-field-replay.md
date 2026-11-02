@@ -42,12 +42,12 @@ The optional protocol `upstream-retrospective-v1` computes a separate 99th-perce
 
 ## Reproduce
 
-From the repository root, install the locked dependencies and run the following commands. The archive is about 13.6 MB. Only the physical source-localisation flights are used. The script verifies the ten flight files and the experimenters' reference coordinates against their published bytes.
+From the repository root, install the locked Node dependencies. The ten measured flight records and their separate reference-coordinate file are included in the checkout. The replay decompresses them with Node and verifies their original SHA-256 digests. It runs offline after dependency installation.
 
 ```sh
-curl -fL 'https://zenodo.org/records/17189796/files/adapprox_dataset.zip?download=1' -o /tmp/adapprox_dataset.zip
-unzip -qo /tmp/adapprox_dataset.zip 'data/realworld/2025_02_12/*' -d /tmp/adapprox
-pnpm exec vite-node scripts/robot-field-replay.ts /tmp/adapprox/data/realworld/2025_02_12
+pnpm exec vite-node scripts/robot-field-replay.ts
 ```
 
-The default output includes the protocol, frozen calibration record, skipped flight and reasons, predictions, hit counts, native declaration flags, and horizontal errors including the all-miss control. Add `--legacy-retrospective` after the directory argument to reproduce the historical protocol. The archive SHA-256 is `22afaff97556bcc7fa9cb54ccca7a423bfd7a33a12ed84b3911f2a68dbd34f40`.
+To compare with a separately downloaded copy, pass the uncompressed dataset's `data/realworld/2025_02_12` directory as the first argument. Nicolaj Bösel-Schmid published the **ADApprox Dataset**, v1.0, at EPFL on 24 September 2025 under CC BY 4.0. We selected ten flight CSVs and the coordinates file and compressed the CSVs individually. The original file contents are preserved. [Source dataset](https://doi.org/10.5281/zenodo.17189796) · [Licence](https://creativecommons.org/licenses/by/4.0/) · [File manifest with checksums](../validation/data/epfl/SOURCE.json)
+
+The default output includes the protocol, frozen calibration record, skipped flight and reasons, predictions, hit counts, native declaration flags, and horizontal errors including the all-miss control. Add `--legacy-retrospective` as the last argument to reproduce the historical protocol. The archive SHA-256 is `22afaff97556bcc7fa9cb54ccca7a423bfd7a33a12ed84b3911f2a68dbd34f40`.

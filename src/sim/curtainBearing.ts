@@ -1,7 +1,7 @@
 import { percentile } from './math'
 
 export type CurtainPosition = { eastMetres: number; northMetres: number }
-export type CurtainSample = CurtainPosition & { methanePpm: number }
+export type CurtainSample = CurtainPosition & { methanePpm: number; time?: number; valid?: boolean; clipped?: boolean }
 /** Components point towards the direction of transport in a local geographic east/north frame. */
 export type CurtainWind = { eastMetresPerSecond: number; northMetresPerSecond: number; angularSpreadDegrees: number }
 export type CurtainBearing =
@@ -9,18 +9,50 @@ export type CurtainBearing =
   | { status: 'bearing'; sourcePoint: null; crossing: CurtainPosition; upwindBearingDegrees: number;
       windSpreadDegrees: number; crosswindWidthMetres: number; contrastThresholdPpm: number }
 
+// Clocked retransmissions are idempotent. Without a clock an exact position/signal
+// copy cannot demonstrate a second independent acquisition.
+function usableSamples(samples: readonly CurtainSample[]) {
+  const clocked = samples.some(s => s?.time !== undefined)
+  const seen = new Set<string>()
+  const usable: CurtainSample[] = []
+  let previous: CurtainSample | undefined
+  for (const s of samples) {
+    if (!s || (s.valid !== undefined && typeof s.valid !== 'boolean') ||
+        (s.clipped !== undefined && typeof s.clipped !== 'boolean')) throw new RangeError('Invalid curtain quality flags')
+    if (clocked) {
+      if (!Number.isFinite(s.time) || (previous && s.time! < previous.time!)) throw new RangeError('Invalid curtain clock')
+      if (previous && s.time === previous.time) {
+        if (s.eastMetres !== previous.eastMetres || s.northMetres !== previous.northMetres ||
+            !Object.is(s.methanePpm, previous.methanePpm) || (s.valid !== false) !== (previous.valid !== false) ||
+            Boolean(s.clipped) !== Boolean(previous.clipped)) throw new RangeError('Conflicting curtain readings at the same time')
+        continue
+      }
+      previous = s
+    }
+    if (s.valid === false || s.clipped) continue
+    if (![s.eastMetres, s.northMetres, s.methanePpm].every(Number.isFinite)) throw new RangeError('Invalid curtain reading')
+    if (!clocked) {
+      const key = [s.eastMetres, s.northMetres, s.methanePpm].join(',')
+      if (seen.has(key)) continue
+      seen.add(key)
+    }
+    usable.push(s)
+  }
+  return usable
+}
+
 /** One survey plane can constrain the transverse location of a plume, but not source range. */
 export function estimateCurtainBearing(samples: readonly CurtainSample[], wind: CurtainWind,
   minimumEnhancementPpm = 0.05): CurtainBearing {
   const abstain = (reason: string): CurtainBearing => ({ status: 'abstain', sourcePoint: null, reason })
   if (!Number.isFinite(minimumEnhancementPpm) || minimumEnhancementPpm <= 0) throw new RangeError('Positive methane contrast floor required')
-  if (![wind.eastMetresPerSecond, wind.northMetresPerSecond, wind.angularSpreadDegrees].every(Number.isFinite) ||
+  if (!wind || ![wind.eastMetresPerSecond, wind.northMetresPerSecond, wind.angularSpreadDegrees].every(Number.isFinite) ||
       wind.angularSpreadDegrees < 0 || wind.angularSpreadDegrees > 180) throw new RangeError('Invalid horizontal wind or angular spread')
+  const usable = usableSamples(samples)
   const speed = Math.hypot(wind.eastMetresPerSecond, wind.northMetresPerSecond)
   if (speed < 0.3 || wind.angularSpreadDegrees >= 45) return abstain('weak or variable wind')
   const east = wind.eastMetresPerSecond / speed, north = wind.northMetresPerSecond / speed
-  const points = samples.map(s => {
-    if (![s.eastMetres, s.northMetres, s.methanePpm].every(Number.isFinite)) throw new RangeError('Invalid curtain reading')
+  const points = usable.map(s => {
     return { along: s.eastMetres * east + s.northMetres * north,
       across: s.eastMetres * north - s.northMetres * east, signal: s.methanePpm }
   })

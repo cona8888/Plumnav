@@ -1,0 +1,818 @@
+{
+  "study": "10.5281/zenodo.3708518",
+  "results": [
+    {
+      "survey": "T1.1",
+      "samples": 4861,
+      "curtain": {
+        "origin": {
+          "latitude": 53.788121517,
+          "longitude": -2.94622750289
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.431051971207,
+          "northMetresPerSecond": 0.359706898258,
+          "angularSpreadDegrees": 39.24000561153022
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -1.1350407270973055,
+            "northMetres": -6.157851120367902
+          },
+          "upwindBearingDegrees": 264.01505038121593,
+          "windSpreadDegrees": 39.24000561153022,
+          "crosswindWidthMetres": 26.204333220670538,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 50.086339234181004,
+        "crosswindOffsetMetres": 1.2105727579936447,
+        "trackMidpointLineErrorMetres": 2.3565458864316016,
+        "peakLineErrorMetres": 4.960536291389268,
+        "distanceToRayMetres": 1.2105727579936447
+      },
+      "peakPpm": 12.49131536,
+      "peakLatitude": 53.788124065560005,
+      "peakLongitude": -2.9462104689400004,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 48.04917518704839,
+      "typicalSampleM": 52.9179111424567,
+      "peakErrorM": 53.231372272825375
+    },
+    {
+      "survey": "T1.2",
+      "samples": 6613,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7878885,
+          "longitude": -2.94619183
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.781013041434,
+          "northMetresPerSecond": 1.824729629479,
+          "angularSpreadDegrees": 30.628331628248834
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": 2.918857704540071,
+            "northMetres": -0.3385524082716042
+          },
+          "upwindBearingDegrees": 249.11005921772235,
+          "windSpreadDegrees": 30.628331628248834,
+          "crosswindWidthMetres": 13.150342628883948,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 49.59163013807698,
+        "crosswindOffsetMetres": 0.4251643569874557,
+        "trackMidpointLineErrorMetres": 0.20953684489102464,
+        "peakLineErrorMetres": 0.29703965687808975,
+        "distanceToRayMetres": 0.4251643569874557
+      },
+      "peakPpm": 25.319252769,
+      "peakLatitude": 53.78788546022,
+      "peakLongitude": -2.94617820744,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 46.994673827436024,
+      "typicalSampleM": 53.69995837292982,
+      "peakErrorM": 47.70189774789218
+    },
+    {
+      "survey": "T1.3",
+      "samples": 3284,
+      "curtain": {
+        "origin": {
+          "latitude": 53.78789833,
+          "longitude": -2.94612167
+        },
+        "wind": {
+          "eastMetresPerSecond": 5.939716169599,
+          "northMetresPerSecond": 3.721556481793,
+          "angularSpreadDegrees": 24.498718391370023
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 3.607607664,
+      "peakLatitude": 53.787893928790005,
+      "peakLongitude": -2.9461283087099996,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 47.5454203801138,
+      "typicalSampleM": 52.92014803499774,
+      "peakErrorM": 51.099198634329596
+    },
+    {
+      "survey": "T1.4",
+      "samples": 4629,
+      "curtain": {
+        "origin": {
+          "latitude": 53.78772837519,
+          "longitude": -2.944345458
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.712549496549,
+          "northMetresPerSecond": -2.534721478233,
+          "angularSpreadDegrees": 27.762685212651274
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 6.564820115,
+      "peakLatitude": 53.78777439668001,
+      "peakLongitude": -2.94424293034,
+      "sourceLatitude": 53.787993,
+      "sourceLongitude": -2.94492,
+      "closestSampleM": 44.43311408981928,
+      "typicalSampleM": 51.796111395069644,
+      "peakErrorM": 50.68651574266826
+    },
+    {
+      "survey": "T1.5",
+      "samples": 6156,
+      "curtain": {
+        "origin": {
+          "latitude": 53.78769080107,
+          "longitude": -2.944333605
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.676101586581,
+          "northMetresPerSecond": -3.470622178369,
+          "angularSpreadDegrees": 22.266421705182122
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient sustained methane contrast"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 9.653525639,
+      "peakLatitude": 53.787678658039994,
+      "peakLongitude": -2.94438358598,
+      "sourceLatitude": 53.787993,
+      "sourceLongitude": -2.94492,
+      "closestSampleM": 47.184438923544526,
+      "typicalSampleM": 53.285719897544205,
+      "peakErrorM": 49.633022973864676
+    },
+    {
+      "survey": "T1.6",
+      "samples": 5778,
+      "curtain": {
+        "origin": {
+          "latitude": 53.78770132152,
+          "longitude": -2.944342947
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.559431745285,
+          "northMetresPerSecond": -1.926287316148,
+          "angularSpreadDegrees": 33.81266735553969
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": 2.1342620157403402,
+            "northMetres": 0.34259071787128414
+          },
+          "upwindBearingDegrees": 298.42129148404007,
+          "windSpreadDegrees": 33.81266735553969,
+          "crosswindWidthMetres": 13.111378894098111,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 50.48924774511848,
+        "crosswindOffsetMetres": 9.16483123177324,
+        "trackMidpointLineErrorMetres": 7.518315134269095,
+        "peakLineErrorMetres": 10.2674277050979,
+        "distanceToRayMetres": 9.16483123177324
+      },
+      "peakPpm": 12.399016005,
+      "peakLatitude": 53.787703071340005,
+      "peakLongitude": -2.9443415593399997,
+      "sourceLatitude": 53.787993,
+      "sourceLongitude": -2.94492,
+      "closestSampleM": 49.204830868749816,
+      "typicalSampleM": 54.530645222105214,
+      "peakErrorM": 49.831968085560355
+    },
+    {
+      "survey": "T1.7",
+      "samples": 5571,
+      "curtain": {
+        "origin": {
+          "latitude": 53.787866357540004,
+          "longitude": -2.9445046214999997
+        },
+        "wind": {
+          "eastMetresPerSecond": -0.263671574493,
+          "northMetresPerSecond": -2.61808735198,
+          "angularSpreadDegrees": 54.29839318758003
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "weak or variable wind"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 13.907465183,
+      "peakLatitude": 53.78785108862,
+      "peakLongitude": -2.94454934824,
+      "sourceLatitude": 53.788288,
+      "sourceLongitude": -2.944524,
+      "closestSampleM": 46.36530605960847,
+      "typicalSampleM": 53.36133318650194,
+      "peakErrorM": 48.610924039834416
+    },
+    {
+      "survey": "T2.1",
+      "samples": 2562,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877388,
+          "longitude": -2.945293658333333
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.440080898995,
+          "northMetresPerSecond": 0.625278262835,
+          "angularSpreadDegrees": 44.40545537902627
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 2.603065227,
+      "peakLatitude": 53.788066804705885,
+      "peakLongitude": -2.945442938823529,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 95.42087382900142,
+      "typicalSampleM": 110.48697586141019,
+      "peakErrorM": 102.6951887427449
+    },
+    {
+      "survey": "T2.2",
+      "samples": 2700,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877388,
+          "longitude": -2.94530285
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.24958900755,
+          "northMetresPerSecond": 1.016299941764,
+          "angularSpreadDegrees": 38.68189655404991
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient sustained methane contrast"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 2.862455363,
+      "peakLatitude": 53.7877388,
+      "peakLongitude": -2.9452899,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 96.2176030688862,
+      "typicalSampleM": 111.60717533599609,
+      "peakErrorM": 117.22796825923514
+    },
+    {
+      "survey": "T2.3",
+      "samples": 2634,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877312,
+          "longitude": -2.945289756666667
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.343825378038,
+          "northMetresPerSecond": -0.120928878364,
+          "angularSpreadDegrees": 43.698879649245335
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 4.320600727,
+      "peakLatitude": 53.787735,
+      "peakLongitude": -2.9452985870588235,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 96.17897530957141,
+      "typicalSampleM": 107.30271221049796,
+      "peakErrorM": 116.7975812673998
+    },
+    {
+      "survey": "T2.4",
+      "samples": 2938,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877388,
+          "longitude": -2.9453090394117645
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.727524239347,
+          "northMetresPerSecond": 0.605986376755,
+          "angularSpreadDegrees": 35.70780172237586
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -17.490078277478485,
+            "northMetres": 47.35870734300735
+          },
+          "upwindBearingDegrees": 260.7661649289664,
+          "windSpreadDegrees": 35.70780172237586,
+          "crosswindWidthMetres": 56.604097992681474,
+          "contrastThresholdPpm": 0.09591417390240065
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 95.10685613476278,
+        "crosswindOffsetMetres": 0.2862450367122378,
+        "trackMidpointLineErrorMetres": 16.76684172859106,
+        "peakLineErrorMetres": 0.7851374242912854,
+        "distanceToRayMetres": 0.2862450367122378
+      },
+      "peakPpm": 3.163230292,
+      "peakLatitude": 53.78817758444445,
+      "peakLongitude": -2.945542837777778,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 93.27252573080324,
+      "typicalSampleM": 106.74566612136022,
+      "peakErrorM": 97.44283294816199
+    },
+    {
+      "survey": "T2.5",
+      "samples": 3125,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877312,
+          "longitude": -2.9453120352941173
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.37535275518,
+          "northMetresPerSecond": 0.337441292558,
+          "angularSpreadDegrees": 39.37688231553
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -21.926518515976753,
+            "northMetres": 68.80209100644345
+          },
+          "upwindBearingDegrees": 264.29098640897126,
+          "windSpreadDegrees": 39.37688231553,
+          "crosswindWidthMetres": 20.72090547760353,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 92.38333615864092,
+        "crosswindOffsetMetres": 26.518583676350957,
+        "trackMidpointLineErrorMetres": 5.652360393850415,
+        "peakLineErrorMetres": 24.61880742804341,
+        "distanceToRayMetres": 26.518583676350957
+      },
+      "peakPpm": 3.403699368,
+      "peakLatitude": 53.788337615555555,
+      "peakLongitude": -2.945563957777778,
+      "sourceLatitude": 53.78803,
+      "sourceLongitude": -2.947005,
+      "closestSampleM": 90.79292662716583,
+      "typicalSampleM": 104.34040041132337,
+      "peakErrorM": 100.65371355913484
+    },
+    {
+      "survey": "T2.6",
+      "samples": 2754,
+      "curtain": {
+        "origin": {
+          "latitude": 53.787729523529414,
+          "longitude": -2.9453292882352944
+        },
+        "wind": {
+          "eastMetresPerSecond": 2.4488448939,
+          "northMetresPerSecond": 3.943416263755,
+          "angularSpreadDegrees": 36.17757191059376
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient sustained methane contrast"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 4.313156529,
+      "peakLatitude": 53.78789180000001,
+      "peakLongitude": -2.9458155526315792,
+      "sourceLatitude": 53.78761,
+      "sourceLongitude": -2.94654,
+      "closestSampleM": 36.7939421423413,
+      "typicalSampleM": 65.8845621228578,
+      "peakErrorM": 56.979716610919695
+    },
+    {
+      "survey": "T2.7",
+      "samples": 2463,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7878952,
+          "longitude": -2.9455505464705887
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.670502182215,
+          "northMetresPerSecond": 3.715322938575,
+          "angularSpreadDegrees": 31.814736158947742
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -23.173869043600146,
+            "northMetres": 15.035602755581166
+          },
+          "upwindBearingDegrees": 224.6523057872692,
+          "windSpreadDegrees": 31.814736158947742,
+          "crosswindWidthMetres": 53.23309510623681,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 62.65065538434739,
+        "crosswindOffsetMetres": 3.1014660414419097,
+        "trackMidpointLineErrorMetres": 11.904694701293995,
+        "peakLineErrorMetres": 6.323627860884095,
+        "distanceToRayMetres": 3.1014660414419097
+      },
+      "peakPpm": 4.603748938,
+      "peakLatitude": 53.788053567058824,
+      "peakLongitude": -2.945933554117647,
+      "sourceLatitude": 53.78761,
+      "sourceLongitude": -2.94654,
+      "closestSampleM": 59.10176241627837,
+      "typicalSampleM": 72.9308055057211,
+      "peakErrorM": 63.40189111953202
+    },
+    {
+      "survey": "T2.8",
+      "samples": 2629,
+      "curtain": {
+        "origin": {
+          "latitude": 53.787845600000004,
+          "longitude": -2.9453919047058825
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.291101913825,
+          "northMetresPerSecond": 4.185578057787,
+          "angularSpreadDegrees": 30.072323070631978
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": 7.175275901087578,
+            "northMetres": 55.645382852500944
+          },
+          "upwindBearingDegrees": 225.71322254901614,
+          "windSpreadDegrees": 30.072323070631978,
+          "crosswindWidthMetres": 59.32519546484482,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 116.27304844943043,
+        "crosswindOffsetMetres": 0.9153765767545252,
+        "trackMidpointLineErrorMetres": 6.703835457122935,
+        "peakLineErrorMetres": 19.867461172165946,
+        "distanceToRayMetres": 0.9153765767545252
+      },
+      "peakPpm": 2.376336346,
+      "peakLatitude": 53.78818535333333,
+      "peakLongitude": -2.94510842,
+      "sourceLatitude": 53.78761,
+      "sourceLongitude": -2.94654,
+      "closestSampleM": 79.84066699916939,
+      "typicalSampleM": 120.20062033772687,
+      "peakErrorM": 113.74083358624623
+    },
+    {
+      "survey": "T2.9",
+      "samples": 3634,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7879601,
+          "longitude": -2.9454280664705883
+        },
+        "wind": {
+          "eastMetresPerSecond": 5.232936651282,
+          "northMetresPerSecond": 4.558505593188,
+          "angularSpreadDegrees": 25.454443252075453
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -2.3893133729455114,
+            "northMetres": 16.403187335077472
+          },
+          "upwindBearingDegrees": 228.94028932857717,
+          "windSpreadDegrees": 25.454443252075453,
+          "crosswindWidthMetres": 54.32216121243351,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 89.62064453292662,
+        "crosswindOffsetMetres": 4.687248223630132,
+        "trackMidpointLineErrorMetres": 13.995570312634548,
+        "peakLineErrorMetres": 18.401270707425088,
+        "distanceToRayMetres": 4.687248223630132
+      },
+      "peakPpm": 4.713370902,
+      "peakLatitude": 53.7879639,
+      "peakLongitude": -2.9454258694444446,
+      "sourceLatitude": 53.78761,
+      "sourceLongitude": -2.94654,
+      "closestSampleM": 65.05255317990027,
+      "typicalSampleM": 92.07391914796557,
+      "peakErrorM": 83.0975489316122
+    },
+    {
+      "survey": "T2.10",
+      "samples": 2420,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877312,
+          "longitude": -2.9452930552941172
+        },
+        "wind": {
+          "eastMetresPerSecond": 5.246383304839,
+          "northMetresPerSecond": 1.948732034722,
+          "angularSpreadDegrees": 30.565436287392618
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -9.382970216689701,
+            "northMetres": 29.266951457391034
+          },
+          "upwindBearingDegrees": 249.6228413800332,
+          "windSpreadDegrees": 30.565436287392618,
+          "crosswindWidthMetres": 47.838539408583074,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 97.62707032833018,
+        "crosswindOffsetMetres": 4.899827671821441,
+        "trackMidpointLineErrorMetres": 2.868076867125147,
+        "peakLineErrorMetres": 6.189526861728453,
+        "distanceToRayMetres": 4.899827671821441
+      },
+      "peakPpm": 5.664238424,
+      "peakLatitude": 53.788087936666656,
+      "peakLongitude": -2.945494462222222,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 95.84771798888956,
+      "typicalSampleM": 102.45979349963454,
+      "peakErrorM": 97.83711819844824
+    },
+    {
+      "survey": "T2.11",
+      "samples": 2270,
+      "curtain": {
+        "origin": {
+          "latitude": 53.787735,
+          "longitude": -2.9452977000000002
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.431075558422,
+          "northMetresPerSecond": 1.560678936214,
+          "angularSpreadDegrees": 35.91782366945059
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -15.323317000851528,
+            "northMetres": 42.15567758978654
+          },
+          "upwindBearingDegrees": 250.5971136595477,
+          "windSpreadDegrees": 35.91782366945059,
+          "crosswindWidthMetres": 52.83175574585109,
+          "contrastThresholdPpm": 0.1042228878043503
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 96.22762003867692,
+        "crosswindOffsetMetres": 11.390943616703865,
+        "trackMidpointLineErrorMetres": 2.826562518137454,
+        "peakLineErrorMetres": 8.98136383982181,
+        "distanceToRayMetres": 11.390943616703865
+      },
+      "peakPpm": 4.683071912,
+      "peakLatitude": 53.787925923529414,
+      "peakLongitude": -2.9455018705882354,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 91.51989790097282,
+      "typicalSampleM": 101.9152148446486,
+      "peakErrorM": 91.51989790097282
+    },
+    {
+      "survey": "T2.12",
+      "samples": 2829,
+      "curtain": {
+        "origin": {
+          "latitude": 53.787750200000005,
+          "longitude": -2.9453091588235294
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.804002759751,
+          "northMetresPerSecond": 1.705658752553,
+          "angularSpreadDegrees": 30.83563635575083
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -15.281097094825638,
+            "northMetres": 39.21571475545246
+          },
+          "upwindBearingDegrees": 250.45261926112795,
+          "windSpreadDegrees": 30.83563635575083,
+          "crosswindWidthMetres": 51.173056915642505,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 95.16826320522395,
+        "crosswindOffsetMetres": 10.208210834043673,
+        "trackMidpointLineErrorMetres": 7.2713386179477375,
+        "peakLineErrorMetres": 18.895398895726604,
+        "distanceToRayMetres": 10.208210834043673
+      },
+      "peakPpm": 4.09512885,
+      "peakLatitude": 53.78817420666667,
+      "peakLongitude": -2.945596946666667,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 89.65871530516682,
+      "typicalSampleM": 99.84473172806965,
+      "peakErrorM": 96.27887286646435
+    },
+    {
+      "survey": "T2.13",
+      "samples": 2370,
+      "curtain": {
+        "origin": {
+          "latitude": 53.78824050555556,
+          "longitude": -2.9460056944444446
+        },
+        "wind": {
+          "eastMetresPerSecond": 4.913744657121,
+          "northMetresPerSecond": 0.872320677453,
+          "angularSpreadDegrees": 30.25574106193235
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": 13.985222749719735,
+            "northMetres": -33.664012770321854
+          },
+          "upwindBearingDegrees": 259.93334980025367,
+          "windSpreadDegrees": 30.25574106193235,
+          "crosswindWidthMetres": 86.61289686126385,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 72.74065587230598,
+        "crosswindOffsetMetres": 10.549497077770262,
+        "trackMidpointLineErrorMetres": 8.414356289197102,
+        "peakLineErrorMetres": 20.88271805977673,
+        "distanceToRayMetres": 10.549497077770262
+      },
+      "peakPpm": 5.166397954,
+      "peakLatitude": 53.788028700000005,
+      "peakLongitude": -2.9458256,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 69.19969607677727,
+      "typicalSampleM": 84.29788787618953,
+      "peakErrorM": 75.33926303764235
+    },
+    {
+      "survey": "T2.14",
+      "samples": 2480,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7876663,
+          "longitude": -2.9455533
+        },
+        "wind": {
+          "eastMetresPerSecond": 5.332424958089,
+          "northMetresPerSecond": 2.419461903237,
+          "angularSpreadDegrees": 30.01915470795589
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": -20.544255443352046,
+            "northMetres": 33.54531101956122
+          },
+          "upwindBearingDegrees": 245.59495058622034,
+          "windSpreadDegrees": 30.01915470795589,
+          "crosswindWidthMetres": 58.32591334787908,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 70.09552233032585,
+        "crosswindOffsetMetres": 2.745532869358968,
+        "trackMidpointLineErrorMetres": 8.454174750039073,
+        "peakLineErrorMetres": 11.763634263174708,
+        "distanceToRayMetres": 2.745532869358968
+      },
+      "peakPpm": 8.69028727,
+      "peakLatitude": 53.7880745,
+      "peakLongitude": -2.9460032000000003,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 65.4542694135555,
+      "typicalSampleM": 81.24154328590487,
+      "peakErrorM": 67.81201397652853
+    },
+    {
+      "survey": "T2.15",
+      "samples": 2435,
+      "curtain": {
+        "origin": {
+          "latitude": 53.7877274,
+          "longitude": -2.9452718888235294
+        },
+        "wind": {
+          "eastMetresPerSecond": 5.640427458995,
+          "northMetresPerSecond": 4.236007210892,
+          "angularSpreadDegrees": 23.878686391221034
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "peakPpm": 3.147962021,
+      "peakLatitude": 53.788399021764704,
+      "peakLongitude": -2.945683918823529,
+      "sourceLatitude": 53.78773,
+      "sourceLongitude": -2.946855,
+      "closestSampleM": 93.48726773069187,
+      "typicalSampleM": 101.0155942658001,
+      "peakErrorM": 107.01556149899017
+    }
+  ],
+  "surveys": 22,
+  "samples": 77135,
+  "medianPeakErrorM": 79.21840598462728,
+  "minimumPeakErrorM": 47.70189774789218,
+  "maximumPeakErrorM": 117.22796825923514,
+  "medianClosestSampleM": 67.32698274516639
+}

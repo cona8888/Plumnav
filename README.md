@@ -2,6 +2,10 @@
 
 PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator and seeded research workbench. It presents one algorithm at a time in the live simulator, then compares selected algorithms at fixed checkpoints on paired plume realizations.
 
+## Reproduce the validation dataset
+
+The [`validation/` directory](validation/README.md) includes the measured flight and transect inputs, source references, dataset licences, expected outputs and a separate simulated holdout. Install the locked dependencies and run `pnpm validate:data` from the repository root. The replay needs no API keys, external data downloads, Python or robot. The ten commissioning choices are included so another group can see where transfer failed.
+
 ## Validation with recorded flights
 
 PlumeNav 0.21 separates a measured peak, a model prediction and a source declaration. A coverage sweep can finish with an unresolved source. Infotaxis labels predictions made before the first gas hit. The tunnel replay now commissions a fixed background on a separate record before processing the search flights. For outdoor transects, the wind estimator returns a bearing from a supported plume crossing or a reason for withholding it. A single traverse supplies no source range. [Field validation on 40 recorded flights](docs/real-flight-validation.md) · [Outdoor wind bearings](docs/outdoor-wind-bearings.md) · [Using your own sensor data](docs/field-records.md)

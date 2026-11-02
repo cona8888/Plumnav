@@ -1,8 +1,10 @@
 /** Untuned peak-estimator validation on physical EPFL Crazyflie ethanol flights.
- * Usage: vite-node scripts/robot-field-replay.ts /path/to/data/realworld/2025_02_12 */
+ * Usage: vite-node scripts/robot-field-replay.ts [raw-flight-folder] [--commissioning-flight=N | --legacy-retrospective] */
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { gunzipSync } from 'node:zlib'
 import { BlankBaseline, baselineHit } from '../src/sim/baseline'
 import { createDefaultConfig } from '../src/sim/config'
 import { percentile } from '../src/sim/math'
@@ -11,10 +13,16 @@ import { SimulationEngine } from '../src/sim/engine'
 import type { AlgorithmDecision, Observation, Vec2 } from '../src/sim/types'
 
 type Scan = { time: number; position: Vec2; voltage: number }
-const folder = process.argv[2]
-if (!folder) throw new Error('Supply the extracted ADApprox data/realworld/2025_02_12 directory')
-const legacy = process.argv[3] === '--legacy-retrospective'
-if (process.argv.length > (legacy ? 4 : 3)) throw new Error('Optional flag: --legacy-retrospective')
+const args = process.argv.slice(2)
+const legacy = args.at(-1) === '--legacy-retrospective'
+const commissioningFlag = /^--commissioning-flight=([1-9]|10)$/.exec(args.at(-1) ?? '')
+const commissioningFlight = commissioningFlag ? Number(commissioningFlag[1]) : 1
+if (legacy || commissioningFlag) args.pop()
+if (args.length > 1 || args[0]?.startsWith('--')) {
+  throw new Error('Usage: robot-field-replay.ts [raw-flight-folder] [--commissioning-flight=1..10 | --legacy-retrospective]')
+}
+const useBundledData = args.length === 0
+const folder = args[0] ?? fileURLToPath(new URL('../validation/data/epfl/', import.meta.url))
 const flightCount = 10
 const publishedDelay = 2 // seconds, fixed by the authors before this replay
 const side = 6 // isotropic map scale in metres; embed the 6 x 2 m flight area in a square.
@@ -98,10 +106,13 @@ function replay(samples: Scan[], algorithmId: 'infotaxis' | 'coverage', classify
 const blankPolicy = { flushSeconds: 4, spacingSeconds: 2, maximumGapSeconds: 0.5, minimumSamples: 8,
   minimumSpan: 1, maximumSpan: 20, maximumDrift: 8, margin: 1 }
 const hash = createHash('sha256')
-const flightFile = (i: number) => readFileSync(join(folder, 'ex' + i, 'scan_1.csv'))
+const flightFile = (i: number) => {
+  const csv = join(folder, 'ex' + i, 'scan_1.csv')
+  return useBundledData ? gunzipSync(readFileSync(csv + '.gz')) : readFileSync(csv)
+}
 const frozen = legacy ? null : (() => {
   const blank = new BlankBaseline(blankPolicy)
-  parseScan(flightFile(1).toString('utf8'), blank)
+  parseScan(flightFile(commissioningFlight).toString('utf8'), blank)
   return blank.finish()
 })()
 const skipped: { flight: number; reason: string }[] = []
@@ -112,8 +123,8 @@ const predictions: Prediction[] = []
 for (let flight = 1; flight <= flightCount; flight++) {
   const data = flightFile(flight)
   hash.update(data)
-  if (!legacy && (flight === 1 || frozen?.threshold === null)) {
-    skipped.push({ flight, reason: flight === 1 ? 'reserved-commissioning-flight' : frozen?.reason ?? 'uncalibrated' })
+  if (!legacy && (flight === commissioningFlight || frozen?.threshold === null)) {
+    skipped.push({ flight, reason: flight === commissioningFlight ? 'reserved-commissioning-flight' : frozen?.reason ?? 'uncalibrated' })
     continue
   }
   const scans = parseScan(data.toString('utf8'))
@@ -161,4 +172,4 @@ const results = predictions.map(p => {
 })
 console.log(JSON.stringify({ doi: '10.5281/zenodo.17189796', publishedDelaySeconds: publishedDelay,
   protocol: legacy ? 'upstream-retrospective-v1' : 'separate-flight-frozen-blank-v1',
-  commissioning: legacy ? null : { flight: 1, policy: blankPolicy, result: frozen }, skipped, results }, null, 2))
+  commissioning: legacy ? null : { flight: commissioningFlight, policy: blankPolicy, result: frozen }, skipped, results }, null, 2))

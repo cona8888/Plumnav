@@ -67,20 +67,10 @@ if (challenge) {
   arms.push({ name: 'weak-wind', wind: 35, replicate: 40, fitting: 1, source: fittings[1]!, speed: 0.003 },
     { name: 'short-budget', wind: 35, replicate: 41, fitting: 1, source: fittings[1]!, duration: 295 })
 }
-// Independent diagonal/reversed-side challenges. The 0.15 m neighbour deliberately probes spatial resolution.
+// Keep the previously scored holdout geometry fixed and available to other users in ordinary Git.
 if (holdout) {
-  for (const [k, wind] of [60, 225].entries()) {
-    const fitting = [3, 0][k]!, p = fittings[fitting]!, a = wind * Math.PI / 180
-    const point = (along: number, across: number) => ({ x: p.x + along * Math.sin(a) + across * Math.cos(a),
-      y: p.y - along * Math.cos(a) + across * Math.sin(a) })
-    const common = { wind, replicate: 71 + k, speed: [0.025, 0.035][k]! }
-    arms.push({ ...common, name: `mapped-${wind}`, fitting, source: point(-0.04, 0.04) },
-      { ...common, name: `upwind-diagonal-${wind}`, fitting: null, source: point(-0.55, -0.12) },
-      { ...common, name: `left-${wind}`, fitting: null, source: point(-0.05, 0.28) },
-      { ...common, name: `right-${wind}`, fitting: null, source: point(-0.05, -0.28) },
-      { ...common, name: `neighbour-${wind}`, fitting: null, source: point(0, -0.15) },
-      { ...common, name: `blank-${wind}`, fitting: null, source: null })
-  }
+  const source = new URL('../validation/synthetic/fitting-holdout/cases.json', import.meta.url)
+  arms.push(...JSON.parse(await readFile(source, 'utf8')))
 }
 const configs: SimulationConfig[] = []
 const rows: (string | number | null)[][] = []

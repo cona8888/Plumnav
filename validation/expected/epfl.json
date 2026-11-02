@@ -1,0 +1,473 @@
+{
+  "doi": "10.5281/zenodo.17189796",
+  "publishedDelaySeconds": 2,
+  "protocol": "separate-flight-frozen-blank-v1",
+  "commissioning": {
+    "flight": 1,
+    "policy": {
+      "flushSeconds": 4,
+      "spacingSeconds": 2,
+      "maximumGapSeconds": 0.5,
+      "minimumSamples": 8,
+      "minimumSpan": 1,
+      "maximumSpan": 20,
+      "maximumDrift": 8,
+      "margin": 1
+    },
+    "result": {
+      "status": "ready",
+      "reason": null,
+      "threshold": 212.39999389648438,
+      "count": 8,
+      "drift": 3.3000030517578125,
+      "minimum": 194.39999389648438,
+      "maximum": 211.39999389648438
+    }
+  },
+  "skipped": [
+    {
+      "flight": 1,
+      "reason": "reserved-commissioning-flight"
+    }
+  ],
+  "results": [
+    {
+      "flight": 2,
+      "readings": 12460,
+      "raw": {
+        "x": 4.99080753326416,
+        "y": 2.1908934116363525
+      },
+      "aligned": {
+        "x": 4.9907004833221436,
+        "y": 2.0001174807548514
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 17,
+      "alignedCoverage1Hz": {
+        "x": 4.996346712112427,
+        "y": 2.095134198665619
+      },
+      "infotaxisEstimate": {
+        "x": 5.913043478260869,
+        "y": 2
+      },
+      "infotaxisMap": {
+        "x": 6,
+        "y": 2
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 6.45,
+        "y": 2.07
+      },
+      "rawErrorM": 1.4641918835848333,
+      "alignedErrorM": 1.460971815563967,
+      "alignedCoverage1HzErrorM": 1.4538705614080352,
+      "infotaxisEstimateErrorM": 0.5415000519281469,
+      "infotaxisMapErrorM": 0.45541190146942817,
+      "allMissErrorM": 2.837028518160232,
+      "encounterSupportedEstimate": {
+        "x": 5.913043478260869,
+        "y": 2
+      },
+      "centreErrorM": 0.45541190146942817
+    },
+    {
+      "flight": 3,
+      "readings": 12588,
+      "raw": {
+        "x": 5.986292362213135,
+        "y": 2.0424461364746094
+      },
+      "aligned": {
+        "x": 6.025083541870117,
+        "y": 2.260965347290039
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 12,
+      "alignedCoverage1Hz": {
+        "x": 6.025083541870117,
+        "y": 2.260965347290039
+      },
+      "infotaxisEstimate": {
+        "x": 6.869565217391305,
+        "y": 2.3
+      },
+      "infotaxisMap": {
+        "x": 7.043478260869565,
+        "y": 2.4
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 7.26,
+        "y": 2.38
+      },
+      "rawErrorM": 1.3176774101947386,
+      "alignedErrorM": 1.2406401199001407,
+      "alignedCoverage1HzErrorM": 1.2406401199001407,
+      "infotaxisEstimateErrorM": 0.3985465085415993,
+      "infotaxisMapErrorM": 0.21744347200150177,
+      "allMissErrorM": 3.691179902649559,
+      "encounterSupportedEstimate": {
+        "x": 6.869565217391305,
+        "y": 2.3
+      },
+      "centreErrorM": 1.316054710108968
+    },
+    {
+      "flight": 4,
+      "readings": 12343,
+      "raw": {
+        "x": 7.954638481140137,
+        "y": 1.6059490442276
+      },
+      "aligned": {
+        "x": 7.992049217224121,
+        "y": 1.8458133935928345
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 15,
+      "alignedCoverage1Hz": {
+        "x": 7.985654592514038,
+        "y": 1.808512032032013
+      },
+      "infotaxisEstimate": {
+        "x": 7.913043478260869,
+        "y": 1.7999999999999998
+      },
+      "infotaxisMap": {
+        "x": 8.08695652173913,
+        "y": 1.6
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 8.52,
+        "y": 1.74
+      },
+      "rawErrorM": 0.5810364065624675,
+      "alignedErrorM": 0.5384500935994858,
+      "alignedCoverage1HzErrorM": 0.538719698019753,
+      "infotaxisEstimateErrorM": 0.6099149279052476,
+      "infotaxisMapErrorM": 0.45511169405352736,
+      "allMissErrorM": 4.869838889825251,
+      "encounterSupportedEstimate": {
+        "x": 7.913043478260869,
+        "y": 1.7999999999999998
+      },
+      "centreErrorM": 2.5333771926027913
+    },
+    {
+      "flight": 5,
+      "readings": 12524,
+      "raw": {
+        "x": 3.096559762954712,
+        "y": 1.998815894126892
+      },
+      "aligned": {
+        "x": 3.1044907569885254,
+        "y": 1.7625685930252075
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 2,
+      "alignedCoverage1Hz": {
+        "x": 3.1035207509994507,
+        "y": 1.8266019225120544
+      },
+      "infotaxisEstimate": {
+        "x": 3.391304347826087,
+        "y": 2
+      },
+      "infotaxisMap": {
+        "x": 3.391304347826087,
+        "y": 2
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 3.64,
+        "y": 1.7
+      },
+      "rawErrorM": 0.6201759668212669,
+      "alignedErrorM": 0.5391520918849122,
+      "alignedCoverage1HzErrorM": 0.5512150500412174,
+      "infotaxisEstimateErrorM": 0.38967874898460664,
+      "infotaxisMapErrorM": 0.38967874898460664,
+      "allMissErrorM": 0.10073829539351034,
+      "encounterSupportedEstimate": {
+        "x": 3.391304347826087,
+        "y": 2
+      },
+      "centreErrorM": 2.3789913829183993
+    },
+    {
+      "flight": 6,
+      "readings": 12523,
+      "raw": {
+        "x": 3.099592685699463,
+        "y": 1.762654423713684
+      },
+      "aligned": {
+        "x": 3.09954833984375,
+        "y": 1.4870799779891968
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 0,
+      "alignedCoverage1Hz": {
+        "x": 3.10715913772583,
+        "y": 1.5489249229431152
+      },
+      "infotaxisEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "infotaxisMap": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 3.48,
+        "y": 1.45
+      },
+      "rawErrorM": 0.49240482678491637,
+      "alignedErrorM": 0.3822543531254105,
+      "alignedCoverage1HzErrorM": 0.385741427591914,
+      "infotaxisEstimateErrorM": 0.22835029304273588,
+      "infotaxisMapErrorM": 0.22835029304273588,
+      "allMissErrorM": 0.22835029304273588,
+      "encounterSupportedEstimate": null,
+      "centreErrorM": 2.579321616239433
+    },
+    {
+      "flight": 7,
+      "readings": 12450,
+      "raw": {
+        "x": 6.994207382202148,
+        "y": 1.8601349592208862
+      },
+      "aligned": {
+        "x": 7.052770614624023,
+        "y": 1.6066603660583496
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 3,
+      "alignedCoverage1Hz": {
+        "x": 7.029513359069823,
+        "y": 1.6905185381571473
+      },
+      "infotaxisEstimate": {
+        "x": 7.565217391304348,
+        "y": 1.6
+      },
+      "infotaxisMap": {
+        "x": 7.565217391304348,
+        "y": 1.6
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 7.45,
+        "y": 1.56
+      },
+      "rawErrorM": 0.5457361122241606,
+      "alignedErrorM": 0.3999604660049233,
+      "alignedCoverage1HzErrorM": 0.44027730352974387,
+      "infotaxisEstimateErrorM": 0.12196330291927622,
+      "infotaxisMapErrorM": 0.12196330291927622,
+      "allMissErrorM": 3.7980367279381975,
+      "encounterSupportedEstimate": {
+        "x": 7.565217391304348,
+        "y": 1.6
+      },
+      "centreErrorM": 1.5152887513606113
+    },
+    {
+      "flight": 8,
+      "readings": 12427,
+      "raw": {
+        "x": 7.991759777069092,
+        "y": 2.100097894668579
+      },
+      "aligned": {
+        "x": 8.047000885009766,
+        "y": 2.345020055770874
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 16,
+      "alignedCoverage1Hz": {
+        "x": 4.012510776519775,
+        "y": 2.1972501277923584
+      },
+      "infotaxisEstimate": {
+        "x": 7.956521739130435,
+        "y": 2.25
+      },
+      "infotaxisMap": {
+        "x": 8.08695652173913,
+        "y": 2.4
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 8.38,
+        "y": 2.38
+      },
+      "rawErrorM": 0.478618490313949,
+      "alignedErrorM": 0.33483131138313904,
+      "alignedCoverage1HzErrorM": 4.371310974182438,
+      "infotaxisEstimateErrorM": 0.4429828861582718,
+      "infotaxisMapErrorM": 0.29372517793207475,
+      "allMissErrorM": 4.791736585884769,
+      "encounterSupportedEstimate": {
+        "x": 7.956521739130435,
+        "y": 2.25
+      },
+      "centreErrorM": 2.410145223840257
+    },
+    {
+      "flight": 9,
+      "readings": 12467,
+      "raw": {
+        "x": 3.984833002090454,
+        "y": 1.809249758720398
+      },
+      "aligned": {
+        "x": 3.9895195960998535,
+        "y": 2.0093588829040527
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 6,
+      "alignedCoverage1Hz": {
+        "x": 3.9918904304504395,
+        "y": 1.9813905954360962
+      },
+      "infotaxisEstimate": {
+        "x": 3.9130434782608696,
+        "y": 2
+      },
+      "infotaxisMap": {
+        "x": 3.9130434782608696,
+        "y": 2
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 4.39,
+        "y": 1.98
+      },
+      "rawErrorM": 0.4396770872948419,
+      "alignedErrorM": 0.40155509947378093,
+      "alignedCoverage1HzErrorM": 0.3981119982148278,
+      "infotaxisEstimateErrorM": 0.47737566300502715,
+      "infotaxisMapErrorM": 0.47737566300502715,
+      "allMissErrorM": 0.8299321264980479,
+      "encounterSupportedEstimate": {
+        "x": 3.9130434782608696,
+        "y": 2
+      },
+      "centreErrorM": 1.610124218810462
+    },
+    {
+      "flight": 10,
+      "readings": 12454,
+      "raw": {
+        "x": 4.060703754425049,
+        "y": 2.4613077640533447
+      },
+      "aligned": {
+        "x": 4.0704498291015625,
+        "y": 2.673025131225586
+      },
+      "binnedReadings": 173,
+      "thresholdMv": 212.39999389648438,
+      "hits": 4,
+      "alignedCoverage1Hz": {
+        "x": 4.074126720428467,
+        "y": 2.6523311138153076
+      },
+      "infotaxisEstimate": {
+        "x": 4.695652173913043,
+        "y": 2.8
+      },
+      "infotaxisMap": {
+        "x": 4.695652173913043,
+        "y": 2.8
+      },
+      "infotaxisDeclared": false,
+      "coverageDeclared": false,
+      "infotaxisUsedSamples": 173,
+      "allMissEstimate": {
+        "x": 3.6521739130434785,
+        "y": 1.6
+      },
+      "source": {
+        "x": 4.74,
+        "y": 2.69
+      },
+      "rawErrorM": 0.7167590446129755,
+      "alignedErrorM": 0.6697653152560498,
+      "alignedCoverage1HzErrorM": 0.6669379052308728,
+      "infotaxisEstimateErrorM": 0.11860324480653545,
+      "infotaxisMapErrorM": 0.11860324480653545,
+      "allMissErrorM": 1.5399563615450724,
+      "encounterSupportedEstimate": {
+        "x": 4.695652173913043,
+        "y": 2.8
+      },
+      "centreErrorM": 1.4365583872575451
+    }
+  ]
+}

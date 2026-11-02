@@ -12,35 +12,55 @@ type Sheet = { name: string; rows: Row[] }
 type Sample = { row: number; lat: number; lon: number; ppm: number; position: Vec2 }
 
 const file = process.argv[2]
-if (!file) throw new Error('Usage: vite-node scripts/empirical-epa-replay.ts workbook-structure.json')
-const input = JSON.parse(readFileSync(file, 'utf8'))
 const sha256 = 'd408f8d7b9b0630132720ad069095230f442a6d24a8be159a8558bdb4b9e1b4d'
-if (input.sha256 !== sha256 || input.schemaVersion !== 'public-methane-workbook-structure-v1') {
-  throw new Error('Expected the cell-addressed extraction from the EPA methane transect workbook')
-}
-const sheet: Sheet | undefined = input.sheets.find((s: Sheet) => s.name === 'Methane Transects Data Set')
-if (!sheet) throw new Error('Missing controlled-release worksheet')
+type Unprojected = Omit<Sample, 'position'>
 const domainMetres = 500
 const metresPerDegree = 6371008.8 * Math.PI / 180
 const config = { ...createDefaultConfig('coverage', 'open'), domainMeters: domainMetres,
   targetStatus: 'absent' as const, sensorPpmPerNormalizedUnit: 100 }
 
-function extract(rows: Row[], columns: string[]): Sample[] {
-  const samples: Sample[] = []
-  for (const row of rows.filter(r => r.row >= 3)) {
-    const values = columns.map(column => row.cells.find(c => c.cell === column + row.row)?.value)
-    if (values.every(v => v === undefined)) continue
-    if (row.row !== 3 + samples.length || values.some(v => typeof v !== 'number' || !Number.isFinite(v))) {
-      throw new Error('Incomplete or discontinuous controlled-release record')
-    }
-    const [lat, lon, ppm] = values as number[]
-    const origin = samples[0] ?? { lat, lon }
-    const x = 0.5 + (lon - origin.lon) * metresPerDegree * Math.cos(origin.lat * Math.PI / 180) / domainMetres
-    const y = 0.5 - (lat - origin.lat) * metresPerDegree / domainMetres
-    if (Math.min(x, y) < 0 || Math.max(x, y) > 1) throw new Error('GPS exceeds local map')
-    samples.push({ row: row.row, lat, lon, ppm, position: { x, y } })
+function extractWorkbook(file: string): Unprojected[][] {
+  const input = JSON.parse(readFileSync(file, 'utf8'))
+  if (input.sha256 !== sha256 || input.schemaVersion !== 'public-methane-workbook-structure-v1') {
+    throw new Error('Expected the cell-addressed extraction from the EPA methane transect workbook')
   }
-  return samples
+  const sheet: Sheet | undefined = input.sheets.find((s: Sheet) => s.name === 'Methane Transects Data Set')
+  if (!sheet) throw new Error('Missing controlled-release worksheet')
+  return [['A', 'B', 'C'], ['E', 'F', 'G'], ['I', 'J', 'K']].map(columns => {
+    const pass: Unprojected[] = []
+    for (const row of sheet.rows.filter(r => r.row >= 3)) {
+      const cells = columns.map(column => row.cells.find(c => c.cell === column + row.row)?.value)
+      if (cells.every(v => v === undefined)) continue
+      if (cells.some(v => typeof v !== 'number')) throw new Error('Invalid EPA cell')
+      const [lat, lon, ppm] = cells as number[]
+      pass.push({ row: row.row, lat: lat!, lon: lon!, ppm: ppm! })
+    }
+    return pass
+  })
+}
+
+function bundledRecords(): Unprojected[][] {
+  const [header, ...lines] = readFileSync(new URL('../validation/data/epa/controlled-release.csv', import.meta.url), 'utf8').trimEnd().split(/\r?\n/)
+  if (header !== 'pass,worksheet_row,latitude_deg,longitude_deg,methane_ppm') throw new Error('Unexpected EPA CSV columns')
+  const passes: Unprojected[][] = [[], [], []]
+  for (const line of lines) {
+    const cells = line.split(',')
+    const [pass, row, lat, lon, ppm] = cells.map(Number)
+    if (cells.length !== 5 || cells.some(c => !c.trim()) || !Number.isInteger(pass) || !passes[pass! - 1]) throw new Error('Invalid EPA CSV record')
+    passes[pass! - 1]!.push({ row: row!, lat: lat!, lon: lon!, ppm: ppm! })
+  }
+  return passes
+}
+
+function project(pass: Unprojected[]): Sample[] {
+  return pass.map((s, index) => {
+    if (s.row !== index + 3 || ![s.lat, s.lon, s.ppm].every(Number.isFinite)) throw new Error('Incomplete or discontinuous controlled-release record')
+    const origin = pass[0]!
+    const x = 0.5 + (s.lon - origin.lon) * metresPerDegree * Math.cos(origin.lat * Math.PI / 180) / domainMetres
+    const y = 0.5 - (s.lat - origin.lat) * metresPerDegree / domainMetres
+    if (Math.min(x, y) < 0 || Math.max(x, y) > 1) throw new Error('GPS exceeds local map')
+    return { ...s, position: { x, y } }
+  })
 }
 
 function replay(samples: Sample[], stride: number, phase: number): Sample {
@@ -67,7 +87,7 @@ function replay(samples: Sample[], stride: number, phase: number): Sample {
   return peak
 }
 
-const passes = [['A', 'B', 'C'], ['E', 'F', 'G'], ['I', 'J', 'K']].map(cols => extract(sheet.rows, cols))
+const passes = (file ? extractWorkbook(file) : bundledRecords()).map(project)
 // The workbook digest in an extraction is only a label. Pin the actual values that enter the replay,
 // preserving pass order and worksheet row identities while ignoring export paths and timestamps.
 const records = passes.map(pass => pass.map(s => [s.row, s.lat, s.lon, s.ppm]))

@@ -48,3 +48,23 @@ describe('wind-aware curtain crossing', () => {
     expect(() => estimateCurtainBearing(rows, wind, 0)).toThrow()
   })
 })
+
+describe('field operator data quality', () => {
+  const track = sample(plume(3)).map((p,i) => ({ ...p, time: i * 0.1 }))
+  it('removes invalid and clipped readings before assessing traverse support', () => {
+    const r = estimateCurtainBearing(track.map(p => ({ ...p, clipped: Math.abs(p.northMetres) < 10 })), wind)
+    expect(r).toMatchObject({ status: 'abstain', sourcePoint: null })
+    expect(estimateCurtainBearing(track.map(p => ({ ...p, valid: false })), wind).status).toBe('abstain')
+    expect(() => estimateCurtainBearing([{ ...track[0]!, clipped: 'false' as unknown as boolean }], wind)).toThrow(/quality/)
+  })
+  it('does not count repeated packets as independent acquisitions', () => {
+    const coarse = track.filter((_,i) => i % 8 === 0)
+    expect(estimateCurtainBearing(coarse.flatMap(p => [p,p]), wind)).toMatchObject({ status: 'abstain' })
+    const unclocked = coarse.map(({time: _time, ...p}) => p)
+    expect(estimateCurtainBearing(unclocked.flatMap(p => [p,p]), wind)).toMatchObject({ status: 'abstain' })
+    expect(estimateCurtainBearing(track.flatMap(p => [p,p]), wind)).toEqual(estimateCurtainBearing(track, wind))
+    expect(() => estimateCurtainBearing([{ ...track[0]! }, { ...track[0]!, methanePpm: 99 }], wind)).toThrow(/Conflicting/)
+    expect(() => estimateCurtainBearing([track[1]!, track[0]!], wind)).toThrow(/clock/)
+    expect(() => estimateCurtainBearing([track[0]!, { ...track[1]!, time: undefined }], wind)).toThrow(/clock/)
+  })
+})

@@ -60,3 +60,16 @@ describe('frozen pre-search baseline', () => {
     }
   })
 })
+
+it('rejects contradictory packets at one timestamp in either arrival order and rejects backwards clocks', () => {
+  for (const pair of [[1.2, 50], [50, 1.2]]) {
+    const baseline = new BlankBaseline(policy)
+    baseline.observe(reading(1, pair[0]!))
+    baseline.observe(reading(1, pair[1]!))
+    expect(baseline.finish()).toMatchObject({ status: 'rejected', reason: 'conflicting-time', threshold: null })
+  }
+  const baseline = new BlankBaseline(policy)
+  baseline.observe(reading(1, 1.2))
+  expect(() => baseline.observe(reading(0.9, 1.2))).toThrow(/clock/)
+  expect(() => baseline.observe(reading(0, NaN))).toThrow(/reading/)
+})

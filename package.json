@@ -64,6 +64,7 @@
     "preview": "vite preview",
     "sensor:calibrate": "vite-node scripts/field-sensor-calibration.cli.ts",
     "field:analyze": "vite-node scripts/analyze-field-record.ts",
+    "validate:data": "node validation/verify.mjs",
     "survey:validate": "vite-node scripts/validate-fitting-survey.ts",
     "test:commissioning": "vitest --config scripts/vitest.headless.config.ts run --testTimeout=30000 --maxWorkers=2 scripts/field-sensor-calibration.test.ts scripts/si-research-config.test.ts scripts/baseline-replay-reactive.test.ts scripts/baseline-replay-bayesian.test.ts scripts/measured-peak.test.ts scripts/curtain-replay.test.ts scripts/empirical-epa-replay.test.ts"
   },

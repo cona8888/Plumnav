@@ -1,0 +1,7 @@
+# Durham controlled methane release
+
+The US EPA Office of Research and Development publishes the *Methane Transect Dataset* (DOI `10.23719/1390071`). The experiment took place in Durham, North Carolina on 15 May 2010. All three downwind passes sampled the same 0.6 g/s release. The release coordinates and row timestamps are unavailable. Use these observations to test peak selection and thinning sensitivity. [Catalogue record and associated publication](https://catalog.data.gov/dataset/methane-transect-dataset)
+
+`controlled-release.csv` contains the numeric cells from worksheet `Methane Transects Data Set`, starting at row 3. Passes 1, 2 and 3 use columns A–C, E–G and I–K respectively. `worksheet_row` is the original Excel row. Latitude and longitude are decimal degrees and concentration is methane in ppm by volume. The tidy CSV retains all 182, 214 and 201 measured triples from the controlled release. The unrelated Colorado surveys are outside this replay. The source workbook SHA-256 is `d408f8d7b9b0630132720ad069095230f442a6d24a8be159a8558bdb4b9e1b4d`. [Original workbook](https://pasteur.epa.gov/uploads/10.23719/1390071/Methane%20Transect%20Data%20Set.xlsx)
+
+The catalogue links the EPA Data License and Disclaimer. It identifies US EPA-produced data as public domain in the United States by default unless otherwise specified. EPA's disclaimer applies. PlumeNav selected and reshaped the worksheet columns and computed the replay results. [EPA terms](https://pasteur.epa.gov/license/sciencehub-license.html)

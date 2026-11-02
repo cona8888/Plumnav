@@ -14,7 +14,7 @@ These shifts quantify how sensitive peak logging was to which rows the instrumen
 
 ## Reproduce
 
-Run from the repository root after installing the locked Node dependencies. The existing workbook extractor requires Python and `openpyxl`. Use a fresh output path for the extracted JSON.
+Run `pnpm exec vite-node scripts/empirical-epa-replay.ts` to use the [bundled measurement CSV](../validation/data/epa/controlled-release.csv). To rebuild independently from the original workbook, the following path uses Python and `openpyxl` as well as the locked Node dependencies. Use a fresh output path for the extracted JSON.
 
 ```sh
 curl -fL 'https://pasteur.epa.gov/uploads/10.23719/1390071/Methane%20Transect%20Data%20Set.xlsx' -o /tmp/plumnav-epa.xlsx

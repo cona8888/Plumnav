@@ -1,0 +1,125 @@
+{
+  "title": "ADApprox Dataset",
+  "version": "1.0",
+  "creator": "Nicolaj Bösel-Schmid (École Polytechnique Fédérale de Lausanne)",
+  "contributors": [
+    "Wanting Jin (researcher)",
+    "Alcherio Martinoli (supervisor)"
+  ],
+  "published": "2025-09-24",
+  "doi": "10.5281/zenodo.17189796",
+  "sourceUrl": "https://zenodo.org/records/17189796",
+  "sourceMetadataUrl": "https://zenodo.org/api/records/17189796",
+  "licenseId": "cc-by-4.0",
+  "license": "Creative Commons Attribution 4.0 International",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "paperDoi": "10.1109/IROS60139.2025.11246155",
+  "packaging": "Selected the ten physical 12 February 2025 GSL flight CSVs and their published source-coordinate file. Gzipped each CSV independently. Decompressed bytes are identical to their ZIP members.",
+  "sourceArchiveUrl": "https://zenodo.org/api/records/17189796/files/adapprox_dataset.zip/content",
+  "sourceArchiveBytes": 13568465,
+  "sourceArchiveMd5": "3a2480c66f179952aac35436fbc974d6",
+  "sourceArchiveSha256": "22afaff97556bcc7fa9cb54ccca7a423bfd7a33a12ed84b3911f2a68dbd34f40",
+  "sourceFolder": "data/realworld/2025_02_12/",
+  "files": [
+    {
+      "path": "ex1/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex1/scan_1.csv",
+      "bytes": 300345,
+      "sha256": "0ff2ea14133982d22f27a5dbc05fec5390ebe0f47b5302de46c37038b2fe88a9",
+      "sourceBytes": 1105181,
+      "sourceSha256": "f17fb8aa8a0437fa4948fa6995c82050630cc3abb00c40fd84755c5c546e4d60",
+      "rows": 13102
+    },
+    {
+      "path": "ex2/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex2/scan_1.csv",
+      "bytes": 299390,
+      "sha256": "afdeee4ed4e8abc67be04e7f31eb43bbdfd40e995825abe109287a050a493b49",
+      "sourceBytes": 1074364,
+      "sourceSha256": "cfce19111f3480b900670cc719d270852394154b02188a9381ddd97be57abe60",
+      "rows": 13146
+    },
+    {
+      "path": "ex3/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex3/scan_1.csv",
+      "bytes": 304113,
+      "sha256": "f551a53e37a73bbd3a2a1ab880404d25d7ab219a014270f7680ff0eee77d7c4c",
+      "sourceBytes": 1094034,
+      "sourceSha256": "718474fe331a15b7d7d19d54a98779e3cf289350246955d845b0ab9f4178c13c",
+      "rows": 13262
+    },
+    {
+      "path": "ex4/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex4/scan_1.csv",
+      "bytes": 301428,
+      "sha256": "6048909f549cb184a825d0eac7d28d0b5170314f2189ea8f1761bbf73a2f421e",
+      "sourceBytes": 1084006,
+      "sourceSha256": "166886dccd463e85902c6c88e6d633abb446d4e268a80d8e46403f6e8e1a7eab",
+      "rows": 12989
+    },
+    {
+      "path": "ex5/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex5/scan_1.csv",
+      "bytes": 301719,
+      "sha256": "bbb8bbf7e437ba7d90be0f03ae176da7e1240670d22bfcf4cb83d1a736ac004c",
+      "sourceBytes": 1086042,
+      "sourceSha256": "3f3d296aff0f18c07b13acea7693b7a7148c611b8ee1c027c212759791d7ea57",
+      "rows": 13182
+    },
+    {
+      "path": "ex6/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex6/scan_1.csv",
+      "bytes": 300581,
+      "sha256": "c36bf48770963683ed0e50543b2ed88dcc3523f261f664bc313f5a8f1b14eee7",
+      "sourceBytes": 1088026,
+      "sourceSha256": "8b53c2c7993e464f6b10bd11232d36a834cd55c6bccec3cb74a490e54f5c1cca",
+      "rows": 13141
+    },
+    {
+      "path": "ex7/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex7/scan_1.csv",
+      "bytes": 302766,
+      "sha256": "1ac16c3b6a309c32a5ee14fea1f038354c236b2e7728378d34133fce22e67eaf",
+      "sourceBytes": 1088555,
+      "sourceSha256": "54ffa0c4d5099b62b42098644e2d58b3518a5f93d1903e07539866abfc818b07",
+      "rows": 13106
+    },
+    {
+      "path": "ex8/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex8/scan_1.csv",
+      "bytes": 301159,
+      "sha256": "8a6e457d9c676b1f3c54efdf8df67e5099bbd259065a4607c1a6b969e3e435bb",
+      "sourceBytes": 1083164,
+      "sourceSha256": "202532a67f2b036ccca8bba367f074d1109e31ccd7e84993298db742d3798ace",
+      "rows": 13113
+    },
+    {
+      "path": "ex9/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex9/scan_1.csv",
+      "bytes": 301303,
+      "sha256": "1eba7dc9e196cb6349b10162784385e75211d0a3675ec7d6f78830d426668141",
+      "sourceBytes": 1079725,
+      "sourceSha256": "9d3510ef05c666d0709c1659848dc87e16893dc35492649874c945dc548fd461",
+      "rows": 13083
+    },
+    {
+      "path": "ex10/scan_1.csv.gz",
+      "zipMember": "data/realworld/2025_02_12/ex10/scan_1.csv",
+      "bytes": 300564,
+      "sha256": "5072124fa614e475e0f987dcca85b4f80da3037be105782a745f669b6af8995b",
+      "sourceBytes": 1084593,
+      "sourceSha256": "6ebec688e3e34eb06c34708e8d11ea36bd37d40c6add4859ac456dda98661482",
+      "rows": 13107
+    },
+    {
+      "path": "readme.txt",
+      "zipMember": "data/realworld/2025_02_12/readme.txt",
+      "bytes": 344,
+      "sha256": "f82badd6d82c860be76f04cd31b0bdd617d077d9c5ddf4ceda9b49ea5c1cd00b",
+      "sourceBytes": 344,
+      "sourceSha256": "f82badd6d82c860be76f04cd31b0bdd617d077d9c5ddf4ceda9b49ea5c1cd00b"
+    }
+  ],
+  "flightCsvConcatenationOrder": "ex1 through ex10, numeric order",
+  "flightCsvConcatenationSha256": "cb75f804c7f3ebf76b8315c3f12dcb3cefc1abcadb57056eb235aa45b1afb84d"
+}

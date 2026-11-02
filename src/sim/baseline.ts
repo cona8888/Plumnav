@@ -21,7 +21,7 @@ type BlankReading = {
   contaminated?: boolean
 }
 
-type Rejection = 'insufficient-blank' | 'contamination-flag' | 'clipping' | 'flat-signal' | 'excessive-range' | 'drifting-blank'
+type Rejection = 'conflicting-time' | 'insufficient-blank' | 'contamination-flag' | 'clipping' | 'flat-signal' | 'excessive-range' | 'drifting-blank'
 export type FrozenBaseline = Readonly<{
   status: 'ready' | 'rejected'
   reason: Rejection | null
@@ -36,7 +36,7 @@ export type FrozenBaseline = Readonly<{
  * reference restarts the flush and sampling clock. Rejection never means clean air. */
 export class BlankBaseline {
   private readonly policy: BaselinePolicy
-  private lastTime = -Infinity
+  private lastReading: BlankReading | null = null
   private since: number | null = null
   private lastSampleTime = -Infinity
   private samples: number[] = []
@@ -63,11 +63,21 @@ export class BlankBaseline {
 
   observe(r: BlankReading) {
     if (this.frozen) throw new Error('Baseline has been frozen')
-    if (!Number.isFinite(r.time) || r.time < this.lastTime) throw new Error('Invalid baseline clock')
+    if (!r || typeof r.inReference !== 'boolean' || typeof r.valid !== 'boolean' ||
+        (r.clipped !== undefined && typeof r.clipped !== 'boolean') ||
+        (r.contaminated !== undefined && typeof r.contaminated !== 'boolean') ||
+        (r.valid && !Number.isFinite(r.value))) throw new Error('Invalid baseline reading')
+    const previous = this.lastReading
+    if (!Number.isFinite(r.time) || (previous && r.time < previous.time)) throw new Error('Invalid baseline clock')
+    if (previous && r.time === previous.time) {
+      if ((previous.inReference || r.inReference) && (!Object.is(r.value, previous.value) || r.valid !== previous.valid ||
+          r.inReference !== previous.inReference || Boolean(r.clipped) !== Boolean(previous.clipped) ||
+          Boolean(r.contaminated) !== Boolean(previous.contaminated))) this.veto = 'conflicting-time'
+      return
+    }
     if (r.inReference && (r.clipped || r.contaminated)) this.veto = r.clipped ? 'clipping' : 'contamination-flag'
-    if (r.time === this.lastTime) return
-    const gap = r.time - this.lastTime
-    this.lastTime = r.time
+    const gap = previous ? r.time - previous.time : Infinity
+    this.lastReading = { ...r }
     if (!r.inReference || !r.valid || !Number.isFinite(r.value)) {
       this.restart()
       return
