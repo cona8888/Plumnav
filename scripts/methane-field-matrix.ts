@@ -2,6 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
+import { replayCurtain, scoreCurtain } from './lib/curtain-replay'
 import { horizontalDistanceMetres, replayMeasuredPeak } from './lib/measured-peak'
 
 const directory = process.argv[2]
@@ -10,6 +11,32 @@ const flightIds = readdirSync(directory).filter(s => /^\d{3}_\d{2}$/.test(s)).so
 if (flightIds.length !== 18) throw new Error('Expected all 18 flight directories in MATRIX_Dataset.zip')
 
 const datasetHash = createHash('sha256')
+// The archive contains one-second horizontal ground-station wind components in the UTC flight frame.
+const meteoFiles: Record<string, string> = {
+  '20200313': 'd89485f5e753e3635687f2f2779198abba62a2d03b1a2d6042b380e9180b67f9',
+  '20200314': 'b49a4dd7ecdc6aab25121e8a7b159cb7ac941303cef7999c45f9da84ceb87fe4',
+}
+function readWindowWind(date: string, start: number, end: number) {
+  const bytes = readFileSync(join(directory!, 'MATRIX_Meteo', `agg_${date}.csv`))
+  if (createHash('sha256').update(bytes).digest('hex') !== meteoFiles[date]) throw new Error('MATRIX wind file checksum mismatch')
+  const [head, ...records] = bytes.toString('utf8').trim().split(/\r?\n/)
+  const fields = head!.split(',')
+  const ix = fields.indexOf('uu'), iy = fields.indexOf('vv'), it = fields.indexOf('year_month_day_hour_minute_second')
+  if ([ix, iy, it].includes(-1)) throw new Error('Missing MATRIX wind components')
+  let east = 0, north = 0, magnitude = 0, count = 0
+  for (const row of records) {
+    const c = row.split(',')
+    const time = Date.parse(c[it]!.replace(' ', 'T') + 'Z') / 1000
+    if (!Number.isFinite(time) || time < start || time > end) continue
+    const u = Number(c[ix]), v = Number(c[iy])
+    if (!c[ix] || !c[iy] || ![u, v].every(x => Number.isFinite(x) && x !== -999.99)) continue
+    east += u; north += v; magnitude += Math.hypot(u, v); count++
+  }
+  if (count < 0.8 * (end - start + 1)) throw new Error('Too few time-matched MATRIX wind rows')
+  const resultant = magnitude ? Math.min(1, Math.hypot(east, north) / magnitude) : 0
+  const spread = resultant > 0 ? Math.min(180, Math.sqrt(-2 * Math.log(resultant)) * 180 / Math.PI) : 180
+  return { count, wind: { eastMetresPerSecond: east / count, northMetresPerSecond: north / count, angularSpreadDegrees: spread } }
+}
 const results = []
 const excluded = []
 for (const flight of flightIds) {
@@ -56,10 +83,13 @@ for (const flight of flightIds) {
     samples.push({ timeSeconds, latitude, longitude, methanePpm: signal / 1000, utc })
   }
   const peak = replayMeasuredPeak(samples)
+  const date = new Date(samples[0]!.timeSeconds * 1000).toISOString().slice(0, 10).replaceAll('-', '')
+  const {count: windReadings, wind} = readWindowWind(date, samples[0]!.timeSeconds, samples[samples.length - 1]!.timeSeconds)
+  const curtain = replayCurtain(samples, wind)
   const independent = samples.reduce((best, sample, i) => sample.methanePpm > samples[best]!.methanePpm ? i : best, 0)
   if (peak.index !== independent) throw new Error(`${flight}: estimator failed to reproduce measured peak`)
   const closestTrackMetres = Math.min(...samples.map(sample => horizontalDistanceMetres(source, sample)))
-  results.push({ flight, file: files[0], source, windowUtc: window.slice(1), totalRows: records.length,
+  results.push({ flight, windReadings, curtain, curtainScore: scoreCurtain(curtain, source, samples, peak), file: files[0], source, windowUtc: window.slice(1), totalRows: records.length,
     outsideWindow, invalid, validReadings: samples.length, peakUtc: samples[peak.index]!.utc,
     peakLatitude: peak.latitude, peakLongitude: peak.longitude, peakSignalPpm: peak.methanePpm,
     sourceErrorMetres: horizontalDistanceMetres(source, peak), closestTrackMetres })

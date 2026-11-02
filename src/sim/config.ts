@@ -2,7 +2,7 @@ import type { AlgorithmId, ScenarioKind, SimulationConfig } from './types'
 import { validateLocalInletConfig } from './localInletSampling'
 import { validatePhysicalAtmosphere } from './physicalAtmosphere'
 
-export const SIMULATOR_VERSION = '0.20.1' as const
+export const SIMULATOR_VERSION = '0.21.0' as const
 
 export const SENSOR_THRESHOLD_BY_SCENARIO: Record<ScenarioKind, number> = {
   open: 0.115,
@@ -126,11 +126,22 @@ const validateOptionalUnitPoint = (
 export const validateSimulationConfig = (config: SimulationConfig) => {
   validatePhysicalAtmosphere(config, effectiveSensorThreshold(config))
   validateLocalInletConfig(config)
+  if (config.assetVerification && config.algorithmId !== 'asset-inspection') {
+    throw new Error('Wind-bracket verification requires the asset-inspection controller')
+  }
   if (config.algorithmId === 'asset-inspection') {
     const local = config.localInletSampling
     const stations = config.inspectionStations
     if (!config.physicalAtmosphere || !local || config.robotSpeed <= 0) {
       throw new Error('Asset inspection requires the mobile, flat open SI local-inlet model')
+    }
+    const verification = config.assetVerification
+    if (verification && (verification.version !== 'wind-bracket-v1' ||
+        !Number.isFinite(verification.minimumWindMetresPerSecond) || verification.minimumWindMetresPerSecond <= 0 ||
+        !Number.isFinite(verification.offsetMetres) || verification.offsetMetres >= config.domainMeters ||
+        verification.offsetMetres <= Math.max(local.opposingInletSpacingMetres,
+          2 * local.inspection.arrivalRadiusNormalized * config.domainMeters))) {
+      throw new RangeError('Invalid wind-bracket control offset or minimum wind speed')
     }
     if (!Array.isArray(stations) || stations.length < 2) throw new Error('Supply at least two inspection stations')
     const clearance = Math.hypot(local.robotLengthMetres, local.robotWidthMetres) / (2 * config.domainMeters)
@@ -349,6 +360,8 @@ export const createDefaultConfig = (
 ): SimulationConfig => ({
   algorithmId,
   scenarioKind,
+  ...(algorithmId === 'asset-inspection' ? { assetVerification: { version: 'wind-bracket-v1' as const,
+    offsetMetres: 0.4, minimumWindMetresPerSecond: 0.005 } } : {}),
   seed: 42,
   sourceSeed: 2_097_169,
   controllerSeed: 1_048_573,

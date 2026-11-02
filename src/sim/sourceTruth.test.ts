@@ -55,7 +55,8 @@ describe('source truth contract', () => {
     expect(frame.metrics.normalizedError).toBeNull()
     expect(frame.metrics.errorMeters).toBeNull()
     expect(frame.metrics.success).toBeNull()
-    expect(frame.metrics.correctRejection).toBe(true)
+    expect(frame.metrics.correctRejection).toBeNull()
+    expect(frame.metrics.terminalOutcome).toBe('unresolved-survey')
     expect(frame.checkpoints[2]?.normalizedError).toBeNull()
   })
 

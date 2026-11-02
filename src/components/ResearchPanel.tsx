@@ -256,7 +256,7 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
                           : '—'}
                         <small>{summary.targetStatus === 'absent'
                           ? summary.correctRejectionRate === null
-                            ? 'rejection pending'
+                            ? (summary.algorithmId === 'coverage' || summary.algorithmId === 'asset-inspection' ? 'absence unverified' : 'rejection pending')
                             : `${(summary.correctRejectionRate * 100).toFixed(0)}% correct rejection`
                           : `${(summary.declarationRate * 100).toFixed(0)}% declared`}</small>
                       </td>

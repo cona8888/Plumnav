@@ -285,6 +285,9 @@ const buildPlumeAcquisitionWaypoints = (startAtTop: boolean): Vec2[] => {
 export class CoverageController implements AlgorithmController {
   readonly metadata = ALGORITHM_METADATA.coverage
 
+  // Only the archived C1 reference fixture requests the original end-of-sweep declaration.
+  constructor(private readonly completion: 'screening' | 'archived-peak' = 'screening') {}
+
   private environment!: AlgorithmEnvironment
   private readonly tracker = new ObservationTracker()
   private waypoints: Vec2[] = []
@@ -317,6 +320,11 @@ export class CoverageController implements AlgorithmController {
       ? clamp(progress * 0.8 + Math.min(0.15, this.tracker.hitCount() * 0.004))
       : 0
 
+    if (this.terminated && this.completion === 'screening') {
+      return { direction: ZERO, estimate, estimateRole: 'sampled-peak', confidence: 0, phase: 'COVERAGE COMPLETE', nativeAbstained: true,
+        terminationReason: 'Survey complete. The highest sampled reading is available for reinspection. Source location is unresolved.',
+        debug: { target: estimate ?? undefined, note: 'The peak is a measured location on the route.' } }
+    }
     if (this.terminated) {
       return {
         direction: ZERO,
@@ -339,7 +347,8 @@ export class CoverageController implements AlgorithmController {
     return {
       direction,
       estimate,
-      confidence,
+      ...(this.completion === 'screening' ? { estimateRole: 'sampled-peak' as const } : {}),
+      confidence: this.completion === 'screening' ? 0 : confidence,
       phase: 'BOUSTROPHEDON SWEEP',
       debug: {
         target: copyPoint(target),

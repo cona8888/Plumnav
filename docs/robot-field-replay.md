@@ -1,49 +1,44 @@
 # Localising a known ethanol release from measured drone flights
 
-Plumnav's production `coverage` estimator placed the source within 1 m on eight of ten recorded Crazyflie flights in a 6 m × 2 m wind-tunnel survey area. The estimator returns the position of the highest admissible sensor reading. We tested all ten physical source-localisation flights in the EPFL ADApprox dataset. Each flight visited a different source configuration. Source coordinates were withheld from the estimator and used only for scoring. The drone flew the experimenters' lawnmower trajectory. [Dataset](https://doi.org/10.5281/zenodo.17189796) · [Experiment and instrument](https://doi.org/10.1109/IROS60139.2025.11246155)
+We tested Plumnav's unchanged Infotaxis source estimator on nine physical Crazyflie ethanol flights. We reserved a tenth flight for pre-search sensor commissioning. The median final horizontal error was **0.399 m** for Infotaxis and **0.551 m** for the peak-reading estimator on the same 1 Hz observations. None of the flights triggered a native source declaration. The drone followed the experimenters' recorded paths in a 6 m × 2 m wind-tunnel survey area. [Dataset](https://doi.org/10.5281/zenodo.17189796) · [Experiment and instrument](https://doi.org/10.1109/IROS60139.2025.11246155)
 
-| Estimator or reference | Median horizontal error (m) | Mean error (m) | Worst error (m) | Within 1 m |
+## Pre-search calibration
+
+The onboard MiCS-5524 logs a voltage in mV. The authors use x > 8.75 m as their upwind reference strip. The drone reaches it about 155 s into a 174 s scan, too late to set the initial detection threshold from that same flight. We designated ex1 as a commissioning record and froze the threshold before reading any search flights. This tests transfer from a separate reference flight. It makes no assumption about the original flight order. [Authors' reference region](https://github.com/disal-epfl/ADApprox/blob/4f7b6c964163a8fcb9aeed5ef3993d49ff520aba/data_preparation/data_pipline.py)
+
+The streaming blank-calibration component first requires an operator-designated reference region. It discards the first 4 s there for purge and settling. It then requires at least eight valid readings spaced by 2 s. A gap longer than 0.5 s, leaving the region, or invalid input restarts the collection. Explicit clipping or contamination flags veto that session. The acceptance checks require at least 1 mV of variation among the spaced readings, at most 20 mV total span across settled readings and at most 8 mV difference between the early and late median. On acceptance, the frozen hit threshold is the largest settled reading plus 1 mV. These are engineering choices for this instrument replay. Time separation reduces repeat counting, but cannot demonstrate statistical independence. The archive supplies no independent clean-air certificate or clipping flag. A stable contaminated reference can pass the numerical checks.
+
+The ex1 blank passed with eight spaced readings, a settled range of 194.4–211.4 mV and a 3.3 mV median shift. All nine search flights used **212.4 mV**. A failed commissioning record produces skipped searches with a reason and no fitted threshold. The ordinary production component is in `src/sim/baseline.ts`. It exposes the accepted or rejected state to callers and returns no hit classification for a missing observation or rejected baseline.
+
+## Held-out source estimates
+
+Each estimator received the first recorded reading in every occupied one-second interval, yielding 173 per flight. We attributed readings to the interpolated position 2 s earlier using the experimenters' published sensor delay. We used the reported −x tunnel wind (0.7 m/s, equivalent to 0.1167 domain lengths/s), no synthetic gusts or meander, and Plumnav's reference diffusion prior. Possible source cells were restricted to the surveyed rectangle. The Infotaxis posterior uses a binary hit when voltage strictly exceeds the frozen threshold. Voltage divided by 1,000 preserves the rank used by the peak estimator. No conversion to ppm or tuning against the source coordinates entered either estimator. The experimenters' reference coordinates were loaded only after predictions were frozen. [Flight list, admissible ranges and source coordinates](https://github.com/disal-epfl/ADApprox/blob/4f7b6c964163a8fcb9aeed5ef3993d49ff520aba/args/realworld_gsl.json)
+
+| Source estimate or control | Median error (m) | Mean error (m) | Worst error (m) | Within 1 m |
 | --- | ---: | ---: | ---: | ---: |
-| Fixed arena centre | 1.563 | 1.696 | 2.579 | 2/10 |
-| Plumnav peak at the recorded pose | 0.579 | 0.723 | 1.464 | 8/10 |
-| Plumnav peak at the pose 2 s earlier | 0.539 | 0.651 | 1.461 | 8/10 |
+| Fixed arena centre | 1.610 | 1.804 | 2.579 | 1/9 |
+| Infotaxis with every gas input forced to a miss | 2.837 | 2.521 | 4.870 | 3/9 |
+| Peak voltage at matched 1 Hz poses | 0.551 | 1.116 | 4.371 | 6/9 |
+| Infotaxis native final point estimate | 0.399 | 0.370 | 0.610 | 9/9 |
+| Centre of highest-weight Infotaxis grid cell | 0.294 | 0.306 | 0.477 | 9/9 |
 
-The 2 s alignment uses the sensor delay reported by the experimenters. Flight 2 illustrates its limit. The aligned peak was still 1.46 m from the source. Aligning a reading to an earlier pose can reduce error from sensor delay, but the strongest reading can occur downwind of the release.
-
-| Flight | Source x (m) | Source y (m) | Recorded-pose error (m) | Delay-aligned error (m) |
+| Flight | Threshold exceedances | Peak error (m) | Native Infotaxis error (m) | All-miss error (m) |
 | ---: | ---: | ---: | ---: | ---: |
-| 1 | 5.46 | 2.49 | 0.577 | 0.545 |
-| 2 | 6.45 | 2.07 | 1.464 | 1.461 |
-| 3 | 7.26 | 2.38 | 1.318 | 1.241 |
-| 4 | 8.52 | 1.74 | 0.581 | 0.538 |
-| 5 | 3.64 | 1.70 | 0.620 | 0.539 |
-| 6 | 3.48 | 1.45 | 0.492 | 0.382 |
-| 7 | 7.45 | 1.56 | 0.546 | 0.400 |
-| 8 | 8.38 | 2.38 | 0.479 | 0.335 |
-| 9 | 4.39 | 1.98 | 0.440 | 0.402 |
-| 10 | 4.74 | 2.69 | 0.717 | 0.670 |
+| 2 | 17 | 1.454 | 0.542 | 2.837 |
+| 3 | 12 | 1.241 | 0.399 | 3.691 |
+| 4 | 15 | 0.539 | 0.610 | 4.870 |
+| 5 | 2 | 0.551 | 0.390 | 0.101 |
+| 6 | 0 | 0.386 | 0.228 | 0.228 |
+| 7 | 3 | 0.440 | 0.122 | 3.798 |
+| 8 | 16 | 4.371 | 0.443 | 4.792 |
+| 9 | 6 | 0.398 | 0.477 | 0.830 |
+| 10 | 4 | 0.667 | 0.119 | 1.540 |
 
-## Infotaxis on the same recorded paths
+Flight 6 illustrates a limitation of endpoint error. All of its gas readings fell below threshold. Its 0.228 m error was reproduced with the gas signal removed, and the output withholds an encounter-supported estimate. Eight flights supplied at least one hit. For those eight, native Infotaxis had a median error of 0.421 m (8/8 within 1 m), compared with 0.609 m for the matched peak (5/8). The recorded paths contain no target-absent sorties. They provide a single MOX trace without the four-inlet channel and repeat-dwell observations required by the mapped-fitting policy.
 
-We compared the production Infotaxis controller with the production coverage peak estimator using identical delay-aligned poses and voltages. We selected the first accepted record in each occupied one-second interval. Each flight provided 173 observations. The Infotaxis posterior consumes binary encounters. Before running the comparison, we defined a hit as a reading strictly above that flight's 99th percentile voltage in the authors' upstream reference strip (x > 8.75 m). This is a retrospective, flight-wide reference. A live mission would need a prior upwind baseline. [Authors' reference-strip selection](https://github.com/disal-epfl/ADApprox/blob/4f7b6c964163a8fcb9aeed5ef3993d49ff520aba/data_preparation/data_pipline.py)
+## Historical comparison
 
-| Source estimate at the end of the recorded flight | Median horizontal error (m) | Mean error (m) | Worst error (m) | Within 1 m |
-| --- | ---: | ---: | ---: | ---: |
-| Coverage peak using the same 173 observations | 0.609 | 1.143 | 4.371 | 6/10 |
-| Infotaxis reported point estimate | 0.475 | 0.876 | 4.223 | 9/10 |
-| Centre of highest-weight Infotaxis posterior cell | 0.436 | 0.838 | 4.381 | 9/10 |
-
-The two Infotaxis estimates are summaries of the same posterior. Its native output refines the highest-weight grid location using recent encounters. Nine of ten native endpoint estimates were within 1 m. On flight 6 it received eight above-threshold observations and missed the source by 4.223 m. No flight met the controller's separate declaration rule. The replay does not calibrate the amplitude gates in that rule.
-
-The controller used the reported wind-tunnel setting (−0.7 m/s along x, equivalent to −0.1167 domain lengths/s). We disabled synthetic gusts and meander, restricted admissible source cells to the published 6 × 2 m search area, and left the built-in open-domain diffusion and hit-likelihood parameters at their reference values. The test uses the prevailing tunnel setting in place of local anemometer observations. No parameters were selected against source coordinates. The dataset has a single MOX trace and continuous sweeps, so it provides no four-inlet clipping evidence or repeated settled dwell readings to evaluate the mapped-fitting controller.
-
-## Measurement and scoring
-
-The source is ethanol. The onboard MiCS-5524 metal-oxide sensor records a voltage in mV. An external motion-capture system records the drone position in metres. The experimenters report 0.7 m/s wind and a 1 m flight-lane spacing for these trials. We compare horizontal estimates against the independently listed release coordinates. The arena centre is fixed at (6, 2) m. [Source coordinates, flight list and admissible measurement ranges](https://github.com/disal-epfl/ADApprox/blob/4f7b6c964163a8fcb9aeed5ef3993d49ff520aba/args/realworld_gsl.json)
-
-We applied the authors' published voltage and pose bounds, then retained the first accepted row per timestamp. Both estimators use identical readings starting 2 s after the first accepted row so that position history exists for either delay. For the delayed arm, we linearly interpolate the recorded position at the earlier time. A total of 124,723 pose-synchronised log rows remain. The paper reports a 10 Hz physical gas sensor, so adjacent log rows can repeat an instrument reading. The sample size for performance is ten flights.
-
-The input scalar is raw mV divided by 1,000, which preserves its ordering. The peak estimator needs neither a voltage-to-ppm conversion nor a detection threshold. We used no additional smoothing, deconvolution or parameter fitting. The two arms isolate the change in pose assignment. Every flight contained one source. This replay measures horizontal position error on recorded paths. Testing Plumnav's flight commands, blank rejection, methane response and the Birmingham backpack requires separate experiments.
+The optional protocol `upstream-retrospective-v1` computes a separate 99th-percentile upstream threshold from each full search record. It reproduces the previous ten-flight result of 0.475 m median native error, 9/10 within 1 m, and a 4.223 m worst error. The causal protocol reserves one flight, uses an independent fixed threshold, and scores a different cohort. Read the paired results within each protocol when comparing methods.
 
 ## Reproduce
 
@@ -55,4 +50,4 @@ unzip -qo /tmp/adapprox_dataset.zip 'data/realworld/2025_02_12/*' -d /tmp/adappr
 pnpm exec vite-node scripts/robot-field-replay.ts /tmp/adapprox/data/realworld/2025_02_12
 ```
 
-The JSON output includes the predictions, reference coordinates, horizontal errors, threshold, reference-strip row count and binary hit count for each flight. The archive SHA-256 is `22afaff97556bcc7fa9cb54ccca7a423bfd7a33a12ed84b3911f2a68dbd34f40`.
+The default output includes the protocol, frozen calibration record, skipped flight and reasons, predictions, hit counts, native declaration flags, and horizontal errors including the all-miss control. Add `--legacy-retrospective` after the directory argument to reproduce the historical protocol. The archive SHA-256 is `22afaff97556bcc7fa9cb54ccca7a423bfd7a33a12ed84b3911f2a68dbd34f40`.

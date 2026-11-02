@@ -235,6 +235,9 @@ export default function App() {
     }
     patchConfig({ sourceSeed: Math.max(1, Math.min(9_999_999, Math.round(candidate))) })
   }
+  const isCoverage = frame.config.algorithmId === 'coverage'
+  const modelOnly = frame.decision.estimateRole === 'model-only'
+  const pointLabel = isCoverage ? 'Peak reading' : modelOnly ? 'Model only · no gas hit' : 'Estimate'
   const hasEstimate = frame.decision.estimate !== null
   const normalizedError = frame.metrics.normalizedError
   const localizationEvaluable = normalizedError !== null
@@ -306,14 +309,14 @@ export default function App() {
           <>
             <section className="metric-strip" aria-label="Live run metrics">
               <MetricCard
-                label="Normalized error"
-                value={!localizationEvaluable ? 'N/A' : hasEstimate ? `${errorPercent!.toFixed(2)}%` : '—'}
+                label={isCoverage ? 'Peak-to-release distance' : 'Normalized error'}
+                value={!localizationEvaluable ? 'N/A' : hasEstimate ? isCoverage ? `${frame.metrics.errorMeters!.toFixed(2)} m` : `${errorPercent!.toFixed(2)}%` : '—'}
                 detail={!localizationEvaluable
                   ? 'No target coordinate by design'
                   : hasEstimate
-                    ? `${frame.metrics.errorMeters!.toFixed(2)} m · target ≤ 1.00%`
+                    ? modelOnly ? 'Model prediction before the first gas hit' : isCoverage ? 'Diagnostic offset of the strongest reading' : `${frame.metrics.errorMeters!.toFixed(2)} m · target ≤ 1.00%`
                     : 'Waiting for an estimate'}
-                tone={errorTone}
+                tone={isCoverage || modelOnly ? 'neutral' : errorTone}
               />
               <MetricCard label="Mission clock" value={formatTime(frame.time)} detail={`${frame.config.durationSeconds}s research budget`} />
               <MetricCard
@@ -406,7 +409,7 @@ export default function App() {
                       <i /> {label}
                     </button>
                   ))}
-                  <span className="layer-legend"><i className="legend-robot" /> Robot <i className="legend-estimate" /> Estimate</span>
+                  <span className="layer-legend"><i className="legend-robot" /> Robot <i className="legend-estimate" /> {pointLabel}</span>
                 </div>
               </div>
 

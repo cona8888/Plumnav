@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  CoverageController,
   createCoverageController,
   createSurgeCastController,
   createZigzagSpiralController,
@@ -527,7 +528,7 @@ describe('reactive baseline black-box replay fixtures (development behaviour onl
     // every call to step necessarily supplies a measurement. This fixture starts
     // with the protocol's first finite zero-concentration sample.
     const run = (heldOutSource?: Vec2) => {
-      const harness = new SourceBlindReplayHarness(createCoverageController, {
+      const harness = new SourceBlindReplayHarness(() => new CoverageController('archived-peak'), {
         controllerSeed: 1,
         observationModelSeed: OBSERVATION_MODEL_SEED,
         robotStart: { x: 0.05, y: 0.05 },

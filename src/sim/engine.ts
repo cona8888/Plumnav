@@ -164,6 +164,7 @@ export class SimulationEngine {
     validateSimulationConfig(config)
     this.config = {
       ...config,
+      ...(config.assetVerification ? { assetVerification: { ...config.assetVerification } } : {}),
       ...(config.inspectionStations ? { inspectionStations: config.inspectionStations.map(p => ({ ...p })) } : {}),
       ...(config.physicalAtmosphere ? { physicalAtmosphere: structuredClone(config.physicalAtmosphere) } : {}),
       ...(config.localInletSampling ? { localInletSampling: structuredClone(config.localInletSampling) } : {}),
@@ -221,7 +222,10 @@ export class SimulationEngine {
         candidateLifecycle: local.candidateLifecycle ? { version: local.candidateLifecycle,
           maximumTurnRateRadiansPerSecond: local.maximumTurnRateRadiansPerSecond } : undefined } : undefined,
     )
-    this.controller = createController(config.algorithmId, config.inspectionStations, effectiveSensorThreshold(config))
+    const verification = config.assetVerification
+    this.controller = createController(config.algorithmId, config.inspectionStations, effectiveSensorThreshold(config),
+      verification && { offsetNormalized: verification.offsetMetres / config.domainMeters,
+        minimumWindNormalizedPerSecond: verification.minimumWindMetresPerSecond / config.domainMeters })
     this.controller.reset(this.environment)
     this.rng = new SeededRandom(hashNumbers(config.seed, 9_173))
     this.position = { ...this.scenario.robotStart }
@@ -1014,6 +1018,7 @@ export class SimulationEngine {
       ? null
       : this.surfaceDistanceTravelled / Math.max(1e-6, this.initialSurfaceSourceDistance)
     const atDeadline = elapsedSeconds >= this.config.durationSeconds - 1e-9
+    const screeningOnly = this.config.algorithmId === 'coverage' || this.config.algorithmId === 'asset-inspection'
     const terminalOutcome: MetricSnapshot['terminalOutcome'] = this.firstDeclarationRecorded
       ? source === null
         ? 'spurious-declaration'
@@ -1021,6 +1026,7 @@ export class SimulationEngine {
             this.declarationErrorNormalized <= this.config.successThreshold
           ? 'correct-declaration'
           : 'wrong-declaration'
+      : screeningOnly && (this.firstAbstentionRecorded || atDeadline) ? 'unresolved-survey'
       : this.firstAbstentionRecorded
         ? source === null
           ? 'correct-abstention'
@@ -1030,7 +1036,7 @@ export class SimulationEngine {
             ? 'correct-rejection-at-deadline'
             : 'deadline-nondeclaration-present'
           : 'pending'
-    const absentTrialResolved = source === null && (
+    const absentTrialResolved = terminalOutcome !== 'unresolved-survey' && source === null && (
       this.firstDeclarationRecorded || this.firstAbstentionRecorded || atDeadline
     )
     return {
@@ -1082,7 +1088,7 @@ export class SimulationEngine {
       correctRejection: absentTrialResolved
         ? !this.firstDeclarationRecorded
         : null,
-      correctAbstention: source === null && this.firstAbstentionRecorded,
+      correctAbstention: terminalOutcome === 'correct-abstention',
       collisionAttempts: this.collisionAttempts,
       activeProbeCount: this.activeProbeCount,
       quadSniffCycles: this.quadSniffCycles,

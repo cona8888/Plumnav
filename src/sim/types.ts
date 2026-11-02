@@ -123,6 +123,7 @@ export type TerminalOutcome =
   | 'missed-source-abstention'
   | 'correct-rejection-at-deadline'
   | 'deadline-nondeclaration-present'
+  | 'unresolved-survey'
 
 export type Obstacle = {
   id: string
@@ -174,6 +175,12 @@ export type SimulationConfig = {
   algorithmId: AlgorithmId
   /** Public mapped fitting centres, in ordered survey sequence and normalized coordinates. */
   inspectionStations?: Vec2[]
+  /** Optional wind-directed comparison after two agreed mapped-fitting visits. */
+  assetVerification?: {
+    version: 'wind-bracket-v1'
+    offsetMetres: number
+    minimumWindMetresPerSecond: number
+  }
   scenarioKind: ScenarioKind
   /** Private world/layout seed; never exposed to an algorithm controller. */
   seed: number
@@ -455,11 +462,13 @@ export type AlgorithmDebug = {
 export type AlgorithmDecision = {
   direction: Vec2
   speedScale?: number
+  /** Provenance of a displayed location. Source declarations use a separate terminal flag. */
+  estimateRole?: 'sampled-peak' | 'model-only' | 'encounter-supported'
   estimate: Vec2 | null
   confidence: number
   phase: string
   nativeTerminated?: boolean
-  /** Explicit no-source decision; distinct from merely reaching the deadline. */
+  /** Controller stopped without declaring a source. Rejection of a leak requires separate evidence. */
   nativeAbstained?: boolean
   terminationReason?: string
   activeSniff?: ActiveSniffCommand

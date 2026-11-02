@@ -1,5 +1,5 @@
 import type { AlgorithmController, AlgorithmId, Vec2 } from '../types'
-import { AssetInspectionController } from './assetInspection'
+import { AssetInspectionController, type WindBracket } from './assetInspection'
 import { createInfotaxisController } from './infotaxis'
 import { createPmfsController } from './pmfs'
 import { createPulseSniffController } from './pulseSniff'
@@ -44,10 +44,11 @@ const FACTORIES: Record<Exclude<AlgorithmId, 'asset-inspection'>, () => Algorith
   'quad-passive': createQuadPassiveController,
 }
 
-export const createController = (algorithmId: AlgorithmId, stations?: readonly Vec2[], sensorThreshold?: number): AlgorithmController => {
+export const createController = (algorithmId: AlgorithmId, stations?: readonly Vec2[], sensorThreshold?: number,
+  verification?: WindBracket): AlgorithmController => {
   if (algorithmId !== 'asset-inspection') return FACTORIES[algorithmId]()
   if (!stations || sensorThreshold === undefined) throw new Error('Asset inspection requires public stations and sensor threshold')
-  return new AssetInspectionController(stations, sensorThreshold)
+  return new AssetInspectionController(stations, sensorThreshold, verification)
 }
 
 export { ALGORITHM_METADATA, ALGORITHM_ORDER } from './metadata'

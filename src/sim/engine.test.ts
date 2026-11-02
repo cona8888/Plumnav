@@ -426,6 +426,9 @@ describe('SimulationEngine', () => {
       checkpointSeconds: [360],
       stopOnNativeDeclaration: false,
     })
+    // Inject a known terminal event to exercise engine latching independently of estimator performance.
+    const step = engine.controller.step.bind(engine.controller)
+    engine.controller.step = input => ({ ...step(input), nativeTerminated: input.time >= 5 })
     while (!engine.getMetrics().nativeDeclaration && !engine.isCompleted()) engine.step()
     expect(engine.getMetrics().nativeDeclaration).toBe(true)
     const declared = engine.getFrame()

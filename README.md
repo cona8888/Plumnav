@@ -4,19 +4,20 @@ PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator
 
 ## Validation with recorded flights
 
-We replayed ten physical ethanol flights and thirty outdoor methane surveys against published release positions. The [field validation report](docs/real-flight-validation.md) gives controller errors, failure cases, the limits imposed by the recorded routes and commands to reproduce the measurements.
+PlumeNav 0.21 separates a measured peak, a model prediction and a source declaration. A coverage sweep can finish with an unresolved source. Infotaxis labels predictions made before the first gas hit. The tunnel replay now commissions a fixed background on a separate record before processing the search flights. For outdoor transects, the wind estimator returns a bearing from a supported plume crossing or a reason for withholding it. A single traverse supplies no source range. [Field validation on 40 recorded flights](docs/real-flight-validation.md) · [Outdoor wind bearings](docs/outdoor-wind-bearings.md) · [Using your own sensor data](docs/field-records.md)
 
 ## Run the calibrated fitting survey
 
-A quadruped with four pumped methane inlets surveys four mapped fittings twice. It stops for the fitted sensor settling time and flags a fitting for a repeat inspection when both passes agree. The headless example also runs Surge–Cast and Quad-Sniff-Refine on the same releases and blanks without fitting coordinates. See the [mission protocol and results](docs/fitting-survey.md), [inlet calibration and bench CSV format](docs/inlet-calibration.md) and [replay of measured EPA methane transects](docs/empirical-epa.md).
+A quadruped surveys four mapped fittings twice. When the two passes agree, it samples upwind and on both sides across the wind, then returns to the candidate. Each stop allows time for the inlet to settle. A surviving flag requests reinspection. [Mission results and limits](docs/fitting-survey.md) · [Inlet calibration](docs/inlet-calibration.md)
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm sensor:calibrate
 pnpm survey:validate
+pnpm survey:validate --holdout
 ```
 
-The survey writes per-mission outcomes, timestamped readings and stationary visits under `benchmark-output/fitting-survey/`. Supply a fresh output directory on subsequent runs. The browser remains available with `pnpm dev`.
+`benchmark-output/fitting-survey-bracket/` holds the default mission outputs, including the recorded wind-check visits. Supply a fresh output directory for repeat runs. Use `--legacy` to replay the original two-pass standard mission, or `pnpm dev` to open the browser simulator.
 
 Current research status (13 September 2026): M71 v7 completed and passed the
 independent archive audit (280 cells, 67,200 runs). Quad-Sniff-Refine produced

@@ -27,6 +27,27 @@ with zipfile.ZipFile(archive) as data:
                 raise ValueError(f'Invalid observations in {survey}')
             if not np.allclose(samples[:, 3] * 1e-6, mat['CH4'], rtol=1e-10, atol=0):
                 raise ValueError(f'Inconsistent methane units in {survey}')
-            print(json.dumps({'survey': survey, 'rows': samples.tolist(),
+            # At the station height the archived profile reproduces the observed mean U/V.
+            reference = np.flatnonzero(np.isclose(full['WindHeights'], 3.30, atol=1e-8, rtol=0))
+            if reference.size != 1:
+                raise ValueError(f'Missing wind reference height in {survey}')
+            east, north = (float(full[k][reference[0]]) for k in ('WindU', 'WindV'))
+            bearing_from = np.arctan2(-east, -north)
+            if abs(np.angle(np.exp(1j * (bearing_from - meta['WindDirection'])))) > 1e-6:
+                raise ValueError(f'Station wind bearing convention mismatch in {survey}')
+            # Propagate the archived component uncertainties into an angular sensitivity.
+            # An uncertainty rectangle enclosing zero gives no usable direction.
+            ue, un = (float(full[k][reference[0]]) for k in ('WindUUncertainty', 'WindVUncertainty'))
+            if not np.isfinite([ue, un]).all() or min(ue, un) < 0:
+                raise ValueError(f'Invalid wind-component uncertainties in {survey}')
+            if abs(east) <= ue and abs(north) <= un:
+                spread = 180.0
+            else:
+                corners = [np.arctan2(-(east + i * ue), -(north + j * un))
+                           for i in (-1, 1) for j in (-1, 1)]
+                spread = float(np.degrees(max(abs(np.angle(np.exp(1j * (a - bearing_from)))) for a in corners)))
+            wind = {'eastMetresPerSecond': east, 'northMetresPerSecond': north,
+                    'angularSpreadDegrees': spread}
+            print(json.dumps({'survey': survey, 'rows': samples.tolist(), 'wind': wind,
                               'truth': {'latitude': meta['SourceLatitude'], 'longitude': meta['SourceLongitude']}},
                              allow_nan=False, separators=(',', ':')))

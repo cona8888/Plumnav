@@ -58,6 +58,8 @@ export const runBatch = async (
   const results: BatchResult[] = []
   const baseSnapshot: SimulationConfig = {
     ...baseConfig,
+    ...(baseConfig.assetVerification ? { assetVerification: { ...baseConfig.assetVerification } } : {}),
+    ...(baseConfig.inspectionStations ? { inspectionStations: baseConfig.inspectionStations.map(p => ({ ...p })) } : {}),
     ...(baseConfig.localInletSampling ? { localInletSampling: structuredClone(baseConfig.localInletSampling) } : {}),
     ...(baseConfig.physicalAtmosphere ? { physicalAtmosphere: structuredClone(baseConfig.physicalAtmosphere) } : {}),
     checkpointSeconds: [...baseConfig.checkpointSeconds],
@@ -83,6 +85,8 @@ export const runBatch = async (
         const observationModelSeed = baseSnapshot.observationModelSeed + run * 1_000_003
         const config: SimulationConfig = {
           ...baseSnapshot,
+          ...(algorithmId !== 'asset-inspection' && baseSnapshot.inspectionStations
+            ? { inspectionStations: undefined, assetVerification: undefined } : {}),
           algorithmId,
           scenarioKind,
           seed,

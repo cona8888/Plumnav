@@ -43,7 +43,7 @@ export const ALGORITHM_METADATA: Record<AlgorithmId, AlgorithmMetadata> = {
     sensors: ['Gas concentration', 'Robot pose', 'Obstacle map'],
     assumptions: ['Bounded searchable domain', 'Repeatable lane spacing', 'Source remains active'],
     strengths: ['Easy to audit', 'Excellent benchmark', 'Does not require wind'],
-    limitations: ['Long path', 'Peak readings can be displaced downwind', 'Weak native stopping rule'],
+    limitations: ['Long path', 'Peak readings can be displaced downwind', 'Survey completion leaves source attribution unresolved'],
     citationLabel: 'Research baseline',
     citationUrl: 'https://doi.org/10.1145/3378184.3378220',
   },

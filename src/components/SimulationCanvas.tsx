@@ -414,7 +414,7 @@ export function SimulationCanvas({ frame, plume, layers, accent }: SimulationCan
       context.restore()
       context.fillStyle = '#f8fafc'
       context.font = '600 10px ui-monospace, SFMono-Regular, Menlo, monospace'
-      context.fillText('EST', point.x + 9, point.y - 8)
+      context.fillText(frame.decision.estimateRole === 'sampled-peak' ? 'PEAK' : frame.decision.estimateRole === 'model-only' ? 'MODEL' : 'EST', point.x + 9, point.y - 8)
     }
 
     if ((layers.groundTruth || frame.completed) && frame.scenario.source) {
@@ -705,6 +705,11 @@ export function SimulationCanvas({ frame, plume, layers, accent }: SimulationCan
     context.restore()
   }, [accent, frame, layers, plume, size])
 
+  const markerDescription = frame.decision.estimateRole === 'sampled-peak' ? 'Highest sampled reading'
+    : frame.decision.estimateRole === 'model-only' ? 'Navigation prediction without a gas hit' : 'Source estimate'
+  const locationDescription = frame.decision.estimate === null ? 'No location marker yet.'
+    : frame.metrics.normalizedError === null ? `${markerDescription} shown. This trial has no source coordinate.`
+    : `${markerDescription} is ${(frame.metrics.normalizedError * 100).toFixed(2)} percent of the domain from the reference source.`
   return (
     <div className="canvas-wrap" ref={wrapRef}>
       <canvas
@@ -714,7 +719,7 @@ export function SimulationCanvas({ frame, plume, layers, accent }: SimulationCan
         aria-describedby={descriptionId}
       />
       <p id={descriptionId} className="sr-only">
-        {`State ${frame.decision.phase}. Plan-view robot position ${(frame.robot.position.x * frame.config.domainMeters).toFixed(1)}, ${(frame.robot.position.y * frame.config.domainMeters).toFixed(1)} metres. ${frame.scenario.terrainSlopeDegrees > 0 ? `The implicit terrain slopes ${frame.scenario.terrainSlopeDegrees.toFixed(0)} degrees uphill toward ${frame.scenario.terrainUphillDirectionDegrees.toFixed(0)} compass degrees. ` : 'Terrain is flat. '}${frame.activeSniff ? `Active probe ${frame.activeSniff.probeId} is in its ${frame.activeSniff.phase} phase. ` : ''}${frame.quadSniff ? `${frame.quadSniff.samplingMode === 'passive-array' ? 'Four-head passive array' : 'Four-channel aspiration'} cycle ${frame.quadSniff.scanId} is in its ${frame.quadSniff.phase} phase. ` : ''}${frame.measurement.hit ? 'Plume contact detected.' : 'No plume contact.'} ${frame.metrics.normalizedError === null ? frame.decision.estimate ? 'A source estimate exists, but localization error is not applicable because this is a no-target trial.' : 'This is a no-target trial; localization error is not applicable.' : frame.decision.estimate ? `Current estimate error is ${(frame.metrics.normalizedError * 100).toFixed(2)} percent of the domain.` : 'No source estimate yet.'}`}
+        {`State ${frame.decision.phase}. Plan-view robot position ${(frame.robot.position.x * frame.config.domainMeters).toFixed(1)}, ${(frame.robot.position.y * frame.config.domainMeters).toFixed(1)} metres. ${frame.scenario.terrainSlopeDegrees > 0 ? `The implicit terrain slopes ${frame.scenario.terrainSlopeDegrees.toFixed(0)} degrees uphill toward ${frame.scenario.terrainUphillDirectionDegrees.toFixed(0)} compass degrees. ` : 'Terrain is flat. '}${frame.activeSniff ? `Active probe ${frame.activeSniff.probeId} is in its ${frame.activeSniff.phase} phase. ` : ''}${frame.quadSniff ? `${frame.quadSniff.samplingMode === 'passive-array' ? 'Four-head passive array' : 'Four-channel aspiration'} cycle ${frame.quadSniff.scanId} is in its ${frame.quadSniff.phase} phase. ` : ''}${!frame.measurement.valid ? 'No new gas reading.' : frame.measurement.hit ? 'Plume contact detected.' : 'No plume contact.'} ${locationDescription}`}
       </p>
       <div className="canvas-readout canvas-readout--left">
         <span className={frame.activeSniff || frame.quadSniff ? 'status-dot status-dot--probe' : frame.measurement.hit ? 'status-dot status-dot--hit' : 'status-dot'} />

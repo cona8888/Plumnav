@@ -1,15 +1,17 @@
 # PlumeNav code review and real-flight validation
 
-We replayed 40 physical flights from three independent studies. Each study supplied both the recorded sensor trajectory and the reference release coordinates. The controller received only the measurements and positions for its replay. We used the release coordinates afterwards to score horizontal error. Aircraft in the original studies followed their own missions. This experiment tests PlumeNav's estimates on those recorded paths.
+We replayed 40 physical flights from three independent studies. Each study supplied both the recorded sensor trajectory and the reference release coordinates. The replay supplied recorded sensor readings, poses, the public search domain and the wind information used by each method. We used the release coordinates afterwards to score horizontal error. Aircraft in the original studies followed their own missions. This experiment tests PlumeNav's estimates on those recorded paths.
 
 | Study and evaluated task | Flights | Median horizontal error | Outcome |
 | --- | ---: | ---: | --- |
-| EPFL ethanol, Infotaxis on the recorded flight path | 10 | 0.475 m | Nine final estimates within 1 m. Worst error 4.223 m. No native source declarations. |
-| EPFL ethanol, peak estimate on identical 1 Hz observations | Same 10 | 0.609 m | Six final estimates within 1 m. Worst error 4.371 m. |
+| EPFL ethanol, numerical Infotaxis endpoint on a fixed trajectory | 1 calibration + 9 search | 0.399 m | Nine endpoints within 1 m. Eight flights had a positive encounter and supplied a gas-supported estimate. No source declarations. |
+| EPFL ethanol, strongest gas reading on the identical 1 Hz search inputs | Same 9 search flights | 0.551 m | Six peak locations within 1 m. |
 | Swiss MATRIX methane, peak estimate on downwind survey planes | 8 | 41.40 m | Range 32.36–68.31 m. These eight files explicitly label the source. |
 | UK Blackpool methane, peak estimate on two UAVs’ downwind tracks | 22 | 79.22 m | Range 47.70–117.23 m. The nearest sampled point lay a median 67.33 m from the release. |
 
-Infotaxis used binary encounters, the tunnel's reported prevailing wind and a 2 s sensor-delay correction. We estimated the binary threshold from each complete flight's upstream measurements. The result depends on that retrospective background reference. Flight 6 illustrates why a best estimate and a source declaration need separate reporting. Eight above-threshold observations yielded a 4.223 m error on that flight. The physical sensor measured ethanol response in millivolts. [EPFL flight-by-flight results and assumptions](robot-field-replay.md)
+The default tunnel replay freezes a 212.4 mV threshold using the upstream portion of one reserved commissioning flight. It then processes the nine other flights using only their measurements as they arrive. Across the eight flights with an encounter, the median Infotaxis error was 0.421 m and the median matched peak error was 0.609 m. Flight 6 supplied zero hits. Its numerical endpoint was 0.228 m from truth even when all gas detections were removed. This illustrates why a model-only endpoint is kept distinct from a gas-supported estimate. The earlier retrospective ten-flight protocol remains reproducible with `--legacy-retrospective`. [Protocol, all-miss control and individual errors](robot-field-replay.md)
+
+The outdoor replays now also combine an observed methane crossing with independent wind data. Thirteen UK surveys and one Swiss survey produced an upwind bearing. The median perpendicular miss was 4.69 m for the thirteen UK results. The single Swiss bearing missed by 29.80 m. The other sixteen surveys yielded explicit abstentions. These figures measure transverse error with unknown source range. [Per-flight eligibility, controls and errors](outdoor-wind-bearings.md)
 
 ## What the outdoor surveys test
 
@@ -36,9 +38,9 @@ The two aircraft sampled different tracks. These figures cannot rank the two ins
 | --- | --- |
 | Robot advanced beyond an off-grid mission deadline | With 0.25 s control ticks, a 0.4 s mission at 0.1 m/s travelled 0.050 m. The engine now clips the final translation and turn to the time remaining and gives that interval to the controller. The regression returns 0.040 m. |
 | EPA replay accepted edited measurements under the official workbook digest | Changing one extracted methane reading to 885.3 ppm preserved the claimed workbook checksum and changed the reported peak. The replay now fingerprints the decoded observation rows as well as checking the workbook identifier. The edited input is rejected and the authentic result reproduces exactly. |
-| A peak on a downwind track can be far from the leak | The UK and Swiss replays quantify this behaviour with real release positions. A peak remains a position to investigate. The mapped-fitting policy retains its reinspection-only output. |
+| A peak on a downwind track can be far from the leak | The UK and Swiss replays quantify this behaviour with real release positions. A peak remains a position to investigate. The mapped-fitting policy now measures upwind and both crosswind flanks before issuing a reinspection flag. |
 
-The four-inlet fitting decision needs two completed station visits per fitting, settled readings and channel-level clipping flags. None of these external flights supplied that observation sequence. The Birmingham backpack still needs a synchronised replay with its own calibration, inlet poses, wind and a surveyed release plus blanks to evaluate that policy and its false-alarm rate.
+The four-inlet fitting decision needs repeated settled fitting readings, wind-aligned spatial controls and channel-level clipping flags. None of these external flights supplied that observation sequence. The Birmingham backpack still needs a synchronised replay with its own calibration, inlet poses, wind and a surveyed release plus blanks to evaluate that policy and its false-alarm rate.
 
 ## Reproduce
 
