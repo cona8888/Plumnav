@@ -61,7 +61,10 @@
     "literature:validate:pmc": "node scripts/literature/validate-pmc-fulltext.mjs",
     "literature:human-screening-ledger": "node scripts/literature/build-human-screening-all-records.mjs",
     "test:watch": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sensor:calibrate": "vite-node scripts/field-sensor-calibration.cli.ts",
+    "survey:validate": "vite-node scripts/validate-fitting-survey.ts",
+    "test:commissioning": "vitest --config scripts/vitest.headless.config.ts run --testTimeout=30000 --maxWorkers=2 scripts/field-sensor-calibration.test.ts scripts/si-research-config.test.ts scripts/baseline-replay-reactive.test.ts scripts/baseline-replay-bayesian.test.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

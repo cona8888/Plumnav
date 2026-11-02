@@ -438,7 +438,10 @@ export class SurgeCastController implements AlgorithmController {
 
     let phase: string
     let desired: Vec2
-    if (!this.everHit && !input.measurement.hit) {
+    // Hold the last encounter state between inlet readings. Only a new
+    // observation can establish contact loss or refresh the last-hit clock.
+    const hit = input.measurement.valid ? input.measurement.hit : this.wasHit
+    if (!this.everHit && !hit) {
       phase = 'PLUME ACQUISITION SWEEP'
       while (
         this.acquisitionIndex < this.acquisitionWaypoints.length - 1 &&
@@ -451,11 +454,11 @@ export class SurgeCastController implements AlgorithmController {
       }
       const target = this.acquisitionWaypoints[this.acquisitionIndex] ?? input.position
       desired = { x: target.x - input.position.x, y: target.y - input.position.y }
-    } else if (input.measurement.hit) {
+    } else if (hit) {
       this.everHit = true
       phase = 'UPWIND SURGE'
       desired = this.lastUpwind
-      this.lastHitTime = input.time
+      if (input.measurement.valid) this.lastHitTime = input.time
       this.castProgress = 0
       if (!this.wasHit) {
         this.castLeg = 0
@@ -471,7 +474,7 @@ export class SurgeCastController implements AlgorithmController {
       }
       desired = rotate(this.lastUpwind, this.castSide * (Math.PI / 2))
     }
-    this.wasHit = input.measurement.hit
+    this.wasHit = hit
 
     if (input.time - this.lastPeakUpdate >= 0.7 || this.peak === null) {
       this.peak = this.tracker.peak(0.085)

@@ -126,6 +126,22 @@ const validateOptionalUnitPoint = (
 export const validateSimulationConfig = (config: SimulationConfig) => {
   validatePhysicalAtmosphere(config, effectiveSensorThreshold(config))
   validateLocalInletConfig(config)
+  if (config.algorithmId === 'asset-inspection') {
+    const local = config.localInletSampling
+    const stations = config.inspectionStations
+    if (!config.physicalAtmosphere || !local || config.robotSpeed <= 0) {
+      throw new Error('Asset inspection requires the mobile, flat open SI local-inlet model')
+    }
+    if (!Array.isArray(stations) || stations.length < 2) throw new Error('Supply at least two inspection stations')
+    const clearance = Math.hypot(local.robotLengthMetres, local.robotWidthMetres) / (2 * config.domainMeters)
+    for (const [index, point] of stations.entries()) {
+      if (!point || ![point.x, point.y].every(v => Number.isFinite(v) && v >= clearance && v <= 1 - clearance)) {
+        throw new RangeError('Each inspection station must allow full robot clearance')
+      }
+      if (stations.slice(0, index).some(other => Math.hypot(other.x - point.x, other.y - point.y) <=
+          2 * local.inspection.arrivalRadiusNormalized)) throw new RangeError('Inspection station arrival regions must be distinct')
+    }
+  }
   if (!['emitting', 'zero-emission', 'absent'].includes(config.targetStatus)) {
     throw new RangeError('targetStatus must be emitting, zero-emission, or absent')
   }

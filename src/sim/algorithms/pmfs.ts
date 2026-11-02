@@ -241,9 +241,12 @@ export class PmfsController implements AlgorithmController {
   }
 
   step(input: AlgorithmStepInput): AlgorithmDecision {
-    this.stepCount += 1
-    this.updateHitMap(input)
-    if (this.stepCount % 2 === 0) this.updateSourcePosterior(input)
+    // Schedule evidence updates by instrument readings, independently of the motion clock.
+    if (input.measurement.valid) {
+      this.stepCount += 1
+      this.updateHitMap(input)
+      if (this.stepCount % 2 === 0) this.updateSourcePosterior(input)
+    }
     if (
       !this.target ||
       input.time - this.lastPlanTime >= 1.4 ||
@@ -253,7 +256,7 @@ export class PmfsController implements AlgorithmController {
     }
 
     const coarseEstimate = weightedMean(this.cells)
-    if (this.stepCount % 4 === 0) {
+    if (input.measurement.valid && this.stepCount % 4 === 0) {
       this.refinedSourceEstimate = this.refineEstimate(input, coarseEstimate)
     }
     const estimate = this.refinedSourceEstimate ?? coarseEstimate

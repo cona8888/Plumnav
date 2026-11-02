@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createDefaultConfig } from './config'
 import { SimulationEngine } from './engine'
 import { evaluateArchivedLeakRun, evaluateLeakDecision, type LeakDecision, type LeakTruth } from './researchEvaluation'
+import { SI_HALFSPACE_REFERENCE, withSIResearchDesign } from '../../scripts/lib/si-research-config'
 
 const truth: LeakTruth = { geometricSource: { x: 0.5, y: 0.5 }, activeEmission: true, detectability: 'unknown' }
 const score = (decision: LeakDecision, overrides = {}) => evaluateLeakDecision({
@@ -42,6 +43,20 @@ describe('active leak decision contract', () => {
     expect(() => score({ kind: 'none' }, { truth: { ...truth, geometricSource: null } })).toThrow()
     expect(() => score({ kind: 'declare', timeSeconds: 181, estimate: null })).toThrow()
     expect(() => score({ kind: 'none' }, { toleranceNormalized: NaN })).toThrow()
+  })
+  it.each([
+    [0, 'false-leak-declaration'],
+    [2e-9, 'correct-localization'],
+  ] as const)('scores a source-coordinate declaration with an SI rate of %s kg/s as %s', (emissionRateKgPerSecond, outcome) => {
+    const config = withSIResearchDesign(createDefaultConfig('coverage', 'open'), undefined,
+      { ...SI_HALFSPACE_REFERENCE, emissionRateKgPerSecond })
+    const engine = new SimulationEngine(config)
+    engine.controller.step = () => ({ direction: { x: 0, y: 0 }, estimate: engine.scenario.source,
+      confidence: 1, phase: 'EVALUATOR WITNESS', nativeTerminated: true })
+    const metrics = engine.step().metrics
+    expect(config.emissionRateScale).toBe(1)
+    expect(metrics.nativeDeclaration).toBe(true)
+    expect(evaluateArchivedLeakRun(config, metrics, engine.scenario.source).outcome).toBe(outcome)
   })
   it.each(['emitting', 'zero-emission', 'absent'] as const)('integrates with engine checkpoints without changing native %s metrics', targetStatus => {
     const config = { ...createDefaultConfig('coverage', 'open'), targetStatus, durationSeconds: 1,

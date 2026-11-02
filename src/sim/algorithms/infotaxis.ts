@@ -126,7 +126,7 @@ export class InfotaxisController implements AlgorithmController {
     const environment = this.requireEnvironment()
 
     const assimilatedNewMeasurement =
-      !this.terminated && input.time > this.lastAssimilatedTime + 1e-9
+      !this.terminated && input.measurement.valid && input.time > this.lastAssimilatedTime + 1e-9
     if (assimilatedNewMeasurement) {
       this.assimilateMeasurement(input)
     }

@@ -164,6 +164,7 @@ export class SimulationEngine {
     validateSimulationConfig(config)
     this.config = {
       ...config,
+      ...(config.inspectionStations ? { inspectionStations: config.inspectionStations.map(p => ({ ...p })) } : {}),
       ...(config.physicalAtmosphere ? { physicalAtmosphere: structuredClone(config.physicalAtmosphere) } : {}),
       ...(config.localInletSampling ? { localInletSampling: structuredClone(config.localInletSampling) } : {}),
       checkpointSeconds: [...config.checkpointSeconds],
@@ -220,7 +221,7 @@ export class SimulationEngine {
         candidateLifecycle: local.candidateLifecycle ? { version: local.candidateLifecycle,
           maximumTurnRateRadiansPerSecond: local.maximumTurnRateRadiansPerSecond } : undefined } : undefined,
     )
-    this.controller = createController(config.algorithmId)
+    this.controller = createController(config.algorithmId, config.inspectionStations, effectiveSensorThreshold(config))
     this.controller.reset(this.environment)
     this.rng = new SeededRandom(hashNumbers(config.seed, 9_173))
     this.position = { ...this.scenario.robotStart }

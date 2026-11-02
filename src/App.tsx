@@ -4,7 +4,7 @@ import { MetricCard } from './components/MetricCard'
 import { ResearchPanel } from './components/ResearchPanel'
 import { ReplayTimeline } from './components/ReplayTimeline'
 import { SimulationCanvas } from './components/SimulationCanvas'
-import { ALGORITHM_METADATA, ALGORITHM_ORDER } from './sim/algorithms/metadata'
+import { ALGORITHM_METADATA, ALGORITHM_ORDER, isQuadSuctionPolicy } from './sim/algorithms/metadata'
 import {
   createDefaultConfig,
   DEFAULT_ACTIVE_SNIFF_CONTROLS,
@@ -72,21 +72,8 @@ export default function App() {
   })
 
   const algorithm = ALGORITHM_METADATA[config.algorithmId]
-  const usesActiveOlfaction =
-    config.algorithmId === 'pulse-sniff' ||
-    config.algorithmId === 'quad-sniff' ||
-    config.algorithmId === 'quad-sniff-wind' ||
-    config.algorithmId === 'quad-sniff-range' ||
-    config.algorithmId === 'quad-sniff-corridor' ||
-    config.algorithmId === 'quad-sniff-bracket' ||
-    config.algorithmId === 'quad-sniff-refine'
-  const usesQuadSuction =
-    config.algorithmId === 'quad-sniff' ||
-    config.algorithmId === 'quad-sniff-wind' ||
-    config.algorithmId === 'quad-sniff-range' ||
-    config.algorithmId === 'quad-sniff-corridor' ||
-    config.algorithmId === 'quad-sniff-bracket' ||
-    config.algorithmId === 'quad-sniff-refine'
+  const usesQuadSuction = isQuadSuctionPolicy(config.algorithmId)
+  const usesActiveOlfaction = config.algorithmId === 'pulse-sniff' || usesQuadSuction
   const usesQuadPassive = config.algorithmId === 'quad-passive'
   const usesQuadArray = usesQuadSuction || usesQuadPassive
   const flowBaseline = getScenarioFlowBaseline(config.scenarioKind)

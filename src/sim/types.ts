@@ -85,6 +85,7 @@ export type LocalScanPolicy = {
 }
 
 export type AlgorithmId =
+  | 'asset-inspection'
   | 'coverage'
   | 'surge-cast'
   | 'zigzag-spiral'
@@ -171,6 +172,8 @@ export type SimulationConfig = {
   /** Omit to retain the legacy sensing and confirmation implementation. */
   localInletSampling?: LocalInletSamplingConfig
   algorithmId: AlgorithmId
+  /** Public mapped fitting centres, in ordered survey sequence and normalized coordinates. */
+  inspectionStations?: Vec2[]
   scenarioKind: ScenarioKind
   /** Private world/layout seed; never exposed to an algorithm controller. */
   seed: number

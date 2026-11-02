@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ALGORITHM_METADATA, ALGORITHM_ORDER } from '../sim/algorithms/metadata'
+import { ALGORITHM_METADATA, ALGORITHM_ORDER, isQuadSuctionPolicy } from '../sim/algorithms/metadata'
 import { batchResultsToCsv, runBatch, type BatchProgress } from '../sim/batch'
 import type { AlgorithmId, BatchResult, BatchSummary, ScenarioKind, SimulationConfig } from '../sim/types'
 import { ResearchCharts } from './ResearchCharts'
@@ -200,6 +200,7 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
               <tbody>
                 {visibleSummaries.map((summary) => {
                   const item = ALGORITHM_METADATA[summary.algorithmId]
+                  const usesQuadSuction = isQuadSuctionPolicy(summary.algorithmId)
                   return (
                     <tr key={`${summary.algorithmId}-${summary.scenarioKind}-${summary.targetStatus}-${summary.obstacleComplexityLevel}-${summary.terrainSlopeDegrees}-${summary.terrainUphillDirectionDegrees}-${summary.gasBuoyancy}-${summary.terrainGasDriftScale}-${summary.robotSlopeLimitDegrees}`}>
                       <td><i style={{ background: item.color }} /> <strong>{item.shortName}</strong></td>
@@ -237,13 +238,13 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
                       <td>
                         {summary.algorithmId === 'pulse-sniff'
                           ? `${summary.medianActiveProbes.toFixed(0)} probes`
-                          : summary.algorithmId === 'quad-sniff' || summary.algorithmId === 'quad-sniff-wind' || summary.algorithmId === 'quad-sniff-range' || summary.algorithmId === 'quad-sniff-corridor' || summary.algorithmId === 'quad-sniff-bracket' || summary.algorithmId === 'quad-sniff-refine'
+                          : usesQuadSuction
                             ? `${summary.medianQuadSniffCycles.toFixed(0)} quad cycles`
                             : '—'}
                         {summary.algorithmId === 'pulse-sniff' && (
                           <small>{summary.medianPulseEnergy.toFixed(2)} energy proxy</small>
                         )}
-                        {(summary.algorithmId === 'quad-sniff' || summary.algorithmId === 'quad-sniff-wind' || summary.algorithmId === 'quad-sniff-range' || summary.algorithmId === 'quad-sniff-corridor' || summary.algorithmId === 'quad-sniff-bracket' || summary.algorithmId === 'quad-sniff-refine') && (
+                        {usesQuadSuction && (
                           <small>{summary.medianQuadSuctionEnergy.toFixed(2)} cost · {(summary.medianQuadValidDirectionRate * 100).toFixed(0)}% directional · n_eff {summary.medianQuadEffectiveSamples.toFixed(1)}</small>
                         )}
                       </td>

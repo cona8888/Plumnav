@@ -2,6 +2,18 @@
 
 PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator and seeded research workbench. It presents one algorithm at a time in the live simulator, then compares selected algorithms at fixed checkpoints on paired plume realizations.
 
+## Run the calibrated fitting survey
+
+A quadruped with four pumped methane inlets surveys four mapped fittings twice. It stops for the fitted sensor settling time and flags a fitting for a repeat inspection when both passes agree. The headless example also runs Surge–Cast and Quad-Sniff-Refine on the same releases and blanks without fitting coordinates. See the [mission protocol and results](docs/fitting-survey.md), [inlet calibration and bench CSV format](docs/inlet-calibration.md) and [replay of measured EPA methane transects](docs/empirical-epa.md).
+
+```sh
+pnpm install --frozen-lockfile
+pnpm sensor:calibrate
+pnpm survey:validate
+```
+
+The survey writes per-mission outcomes, timestamped readings and stationary visits under `benchmark-output/fitting-survey/`. Supply a fresh output directory on subsequent runs. The browser remains available with `pnpm dev`.
+
 Current research status (13 September 2026): M71 v7 completed and passed the
 independent archive audit (280 cells, 67,200 runs). Quad-Sniff-Refine produced
 zero correct declarations in 6,960 emitting missions. The
@@ -227,7 +239,7 @@ parallel AWS execution after a local packaging dry run.
 
 ## Run locally
 
-Requirements: Node.js `^20.19.0` or `>=22.12.0`, plus pnpm. Determinism checks
+Use Node.js `>=22.13.0` with the pinned pnpm `11.9.0`. Determinism checks
 must use the same Node and V8 versions across compared runs.
 
 ```bash
