@@ -2,6 +2,10 @@
 
 PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator and seeded research workbench. It presents one algorithm at a time in the live simulator, then compares selected algorithms at fixed checkpoints on paired plume realizations.
 
+## Validation with recorded flights
+
+We replayed ten physical ethanol flights and thirty outdoor methane surveys against published release positions. The [field validation report](docs/real-flight-validation.md) gives controller errors, failure cases, the limits imposed by the recorded routes and commands to reproduce the measurements.
+
 ## Run the calibrated fitting survey
 
 A quadruped with four pumped methane inlets surveys four mapped fittings twice. It stops for the fitted sensor settling time and flags a fitting for a repeat inspection when both passes agree. The headless example also runs Surge–Cast and Quad-Sniff-Refine on the same releases and blanks without fitting coordinates. See the [mission protocol and results](docs/fitting-survey.md), [inlet calibration and bench CSV format](docs/inlet-calibration.md) and [replay of measured EPA methane transects](docs/empirical-epa.md).

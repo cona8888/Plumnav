@@ -22,4 +22,4 @@ python3 scripts/inspect-public-methane-workbook.py --input /tmp/plumnav-epa.xlsx
 pnpm exec vite-node scripts/empirical-epa-replay.ts /tmp/plumnav-epa-rows.json
 ```
 
-The output identifies each peak by workbook row, records all ten offsets, and reports the peak concentration and displacement for each offset. The replay uses a local equirectangular projection centred at the first recorded point in each pass.
+The extractor verifies the XLSX digest. The replay independently checks the row numbers, coordinates, and methane readings for all three passes against the expected cell digest. The output identifies each peak by workbook row, records all ten offsets, and reports the peak concentration and displacement for each offset. The replay uses a local equirectangular projection centred at the first recorded point in each pass.

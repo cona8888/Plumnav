@@ -1,6 +1,7 @@
 /** Replay the three controlled-release passes in the EPA workbook through the
  * production coverage estimator. Commands are ignored on this recorded path.
  * The input is from scripts/inspect-public-methane-workbook.py. */
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { createDefaultConfig, effectiveSensorThreshold } from '../src/sim/config'
 import { SimulationEngine } from '../src/sim/engine'
@@ -66,8 +67,15 @@ function replay(samples: Sample[], stride: number, phase: number): Sample {
   return peak
 }
 
-const results = [['A', 'B', 'C'], ['E', 'F', 'G'], ['I', 'J', 'K']].map((cols, i) => {
-  const samples = extract(sheet.rows, cols)
+const passes = [['A', 'B', 'C'], ['E', 'F', 'G'], ['I', 'J', 'K']].map(cols => extract(sheet.rows, cols))
+// The workbook digest in an extraction is only a label. Pin the actual values that enter the replay,
+// preserving pass order and worksheet row identities while ignoring export paths and timestamps.
+const records = passes.map(pass => pass.map(s => [s.row, s.lat, s.lon, s.ppm]))
+const cellsDigest = createHash('sha256').update(JSON.stringify(records)).digest('hex')
+if (cellsDigest !== '85d8fc4e48a513a23827c4f2e87dd9a0af5b416941b9430802576bbc56fa3acd') {
+  throw new Error('Controlled-release cells differ from the verified EPA workbook')
+}
+const results = passes.map((samples, i) => {
   const peak = replay(samples, 1, 0)
   const phases = Array.from({ length: 10 }, (_, phase) => {
     const selected = replay(samples, 10, phase)

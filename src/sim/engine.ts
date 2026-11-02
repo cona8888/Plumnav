@@ -562,6 +562,8 @@ export class SimulationEngine {
       this.advanceClock()
       return this.getFrame()
     }
+    // The final command may be shorter than a sensor/control tick when the deadline is off-grid.
+    const commandSeconds = Math.min(this.config.fixedDt, this.config.durationSeconds - this.time)
     this.measurement = this.sense()
     if (this.measurement.valid) {
       const observation: Observation = { ...this.measurement, position: { ...this.position } }
@@ -622,7 +624,7 @@ export class SimulationEngine {
     if (this.measurement.valid && this.measurement.sampleMode === 'passive' && this.measurement.hit) {
       this.hitCount += 1
       this.plumeTime += this.config.localInletSampling
-        ? Math.min(this.config.localInletSampling.sampleIntervalSeconds, this.time) : this.config.fixedDt
+        ? Math.min(this.config.localInletSampling.sampleIntervalSeconds, this.time) : commandSeconds
       if (!this.wasHit) {
         this.contactEpisodes += 1
         if (Number.isFinite(this.lastHitTime) && this.time - this.lastHitTime > 1.5) this.reacquisitions += 1
@@ -634,7 +636,7 @@ export class SimulationEngine {
     const computeStart = now()
     this.decision = this.controller.step({
       time: this.time,
-      dt: this.config.fixedDt,
+      dt: commandSeconds,
       position: { ...this.position },
       heading: this.heading,
       measurement: this.measurement,
@@ -871,7 +873,7 @@ export class SimulationEngine {
       if (local && Math.hypot(requestedDirection.x, requestedDirection.y) > 0) {
         const desired = Math.atan2(requestedDirection.y, requestedDirection.x)
         const delta = Math.atan2(Math.sin(desired - this.heading), Math.cos(desired - this.heading))
-        const limit = local.maximumTurnRateRadiansPerSecond * this.config.fixedDt
+        const limit = local.maximumTurnRateRadiansPerSecond * commandSeconds
         this.heading += clamp(delta, -limit, limit)
         // Rotate in place until aligned; avoid translating away from a small inspection target.
         requestedDirection = Math.abs(delta) > limit + 1e-9 ? { x: 0, y: 0 }
@@ -882,7 +884,7 @@ export class SimulationEngine {
         this.config.robotSpeed *
         clamp(this.decision.speedScale ?? 1, 0, local ? 1 : 1.5) *
         mobilityScale
-      const displacement = scale(requestedDirection, speed * this.config.fixedDt)
+      const displacement = scale(requestedDirection, speed * commandSeconds)
       const proposed = add(this.position, displacement)
       if (this.movementIsBlocked(proposed)) {
         this.collisionAttempts += 1

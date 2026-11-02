@@ -119,6 +119,22 @@ describe('engine integration of physical sensing', () => {
     expect(Math.hypot(engine.scenario.baseWind.x, engine.scenario.baseWind.y) * domainMetres).toBeCloseTo(1)
     expect(engine.environment.inspectionContract!.settlingSeconds).toBeGreaterThan(7)
   })
+  it('integrates displacement and turning only over the remaining partial control interval', () => {
+    const base = { ...config(), durationSeconds: 0.4, checkpointSeconds: [0.4] }
+    for (const turn of [false, true]) {
+      const engine = new SimulationEngine(base)
+      const intervals: number[] = []
+      engine.controller.step = input => {
+        intervals.push(input.dt)
+        return { direction: turn ? { x: 0, y: 1 } : { x: 1, y: 0 }, estimate: null, confidence: 0, phase: 'MOVE' }
+      }
+      const frame = engine.runToCompletion()
+      expect(frame.metrics.pathLengthMeters).toBeCloseTo(turn ? 0 : 0.1 * 0.4, 12)
+      expect(frame.robot.heading).toBeCloseTo(turn ? Math.PI / 4 * 0.4 : 0, 12)
+      expect(intervals).toHaveLength(2)
+      expect(intervals[1]).toBeCloseTo(0.15, 12)
+    }
+  })
   it('bounds robot turning and speed and stops sampled-air accounting at declaration', () => {
     const engine = new SimulationEngine(config())
     vi.spyOn(engine.plume, 'concentrationAt').mockReturnValue(0)
