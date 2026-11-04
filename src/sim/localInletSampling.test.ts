@@ -153,8 +153,8 @@ describe('engine integration of physical sensing', () => {
     const p = config()
     expect(() => new SimulationEngine({ ...p, fixedDt: 0.3 })).toThrow(/cadence/)
     expect(() => new SimulationEngine({ ...p, activeSniffCycleSeconds: 0.75 })).toThrow(/clock/)
-    const edge = new SimulationEngine({ ...p, robotStartPositionOverride: { x: 0, y: 0.5 } })
-    expect(() => edge.step()).toThrow(/inlet intersects/)
+    expect(() => new SimulationEngine({ ...p, robotStartPositionOverride: { x: 0, y: 0.5 } }))
+      .toThrow(/start.*footprint clearance/)
   })
   it('does not share a mutable physical configuration with its caller', () => {
     const p = config(), engine = new SimulationEngine(p)

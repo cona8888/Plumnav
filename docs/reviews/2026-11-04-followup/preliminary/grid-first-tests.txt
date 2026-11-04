@@ -1,0 +1,54 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ src/sim/gridPlume.sourceNormalization.test.ts > GridPlume source normalization > keeps the integrated source increment stable across resolutions 28ms
+ ✓ src/sim/gridPlume.sourceNormalization.test.ts > GridPlume source normalization > renormalizes the footprint when the source is close to a domain edge 3ms
+ ✓ src/sim/gridPlume.sourceNormalization.test.ts > GridPlume source normalization > uses the same normalized source footprint for the initial field 4ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=32 133ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > advects concentration in the configured wind direction 43ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > broadens a still plume when molecular diffusivity increases 32ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > uses solid cells and no-through-flow transport at obstacles 68ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > is deterministic for repeated and out-of-order time queries 33ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > automatically enforces diffusion stability and bounds the field 1ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > limits backtrace length under strong ambient and dense-gas transport 3ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > shares the configured wind and inverse observation model 2ms
+ ✓ src/sim/gridPlume.test.ts > GridPlume > validates numerical settings 0ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=64 336ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=128 1546ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > measures exterior outflow from the independent boundary integral ({ x: 0.1, y: 0.07 }) 3ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > measures exterior outflow from the independent boundary integral ({ x: -0.1, y: -0.07 }) 2ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > matches the closed-form integrated decay/source recurrence without transport 14ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > accounts for initial and subsequent concentration ceiling losses 2ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > enforces the sum-of-outgoing-speeds CFL even above the design envelope 3ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > closes thin solid faces for both advection and diffusion 25ms
+ ✓ src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > preserves fields and interpolated budgets under reordered checkpoint queries 43ms
+ × src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > leaves the historical default explicit and reports no budget for it 72ms
+   → expected 0.00004351844859940002 to be 0.00004351844946619464 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/sim/gridPlume.conservation.test.ts > GridPlume conservative scalar transport > leaves the historical default explicit and reports no budget for it
+AssertionError: expected 0.00004351844859940002 to be 0.00004351844946619464 // Object.is equality
+
+- Expected
++ Received
+
+- 0.00004351844946619464
++ 0.00004351844859940002
+
+ ❯ src/sim/gridPlume.conservation.test.ts:167:37
+    165|     expect(implicit.massBudgetAt(6)).toBeNull()
+    166|     // Frozen pre-fix diagnostic value from the independent original w…
+    167|     expect(implicit.totalMassAt(6)).toBe(0.000043518449466194645)
+       |                                     ^
+    168|   })
+    169| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 21 passed (22)
+   Start at  09:51:24
+   Duration  2.61s (transform 189ms, setup 0ms, collect 463ms, tests 2.41s, environment 0ms, prepare 202ms)
+

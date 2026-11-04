@@ -1,0 +1,61 @@
+Command: pnpm test --maxWorkers=2
+
+$ vitest run --maxWorkers=2
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ src/sim/gridPlume.conservation.test.ts (11 tests) 2735ms
+   ✓ GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=64  404ms
+   ✓ GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=128  2014ms
+ ✓ src/sim/flow.test.ts (37 tests) 1164ms
+ ✓ src/sim/engine.test.ts (40 tests) 3903ms
+   ✓ SimulationEngine > infotaxis produces finite, in-domain state  487ms
+   ✓ SimulationEngine > infotaxis applies the strict 1% criterion without a tuned acceptance assertion  852ms
+   ✓ SimulationEngine > smc-kl applies the strict 1% criterion without a tuned acceptance assertion  1016ms
+   ✓ SimulationEngine > pmfs applies the strict 1% criterion without a tuned acceptance assertion  366ms
+ ✓ src/sim/algorithms/physicalCandidateLifecycle.test.ts (11 tests) 1134ms
+   ✓ bounded physical candidate inspection > runs actual motion and channels on a seeded uniform field  575ms
+ ✓ src/sim/algorithms/localMaximumProbe.test.ts (20 tests) 1129ms
+ ✓ src/sim/algorithms/localGradientStep.test.ts (6 tests) 247ms
+ ✓ src/sim/coverageCompletion.test.ts (3 tests) 185ms
+ ✓ src/sim/gridPlume.test.ts (8 tests) 181ms
+ ✓ src/sim/algorithms/assetInspection.test.ts (13 tests) 1154ms
+   ✓ opt-in wind bracket and fitting revisit > uses a distinct, settled upwind view to discriminate an advected plume from an on-fitting release  310ms
+ ✓ src/sim/sourceTruth.test.ts (7 tests) 134ms
+ ✓ src/sim/algorithms/quadBoundedScans.test.ts (4 tests) 149ms
+ ✓ src/sim/localInletSampling.test.ts (16 tests) 119ms
+ ✓ src/sim/physicalStart.test.ts (73 tests) 142ms
+ ✓ src/sim/terrain.test.ts (11 tests) 89ms
+ ✓ src/sim/fractalObstacles.test.ts (7 tests) 55ms
+ ✓ src/sim/batch.gridTransport.test.ts (5 tests) 63ms
+ ✓ src/sim/sensor.test.ts (5 tests) 105ms
+ ✓ src/sim/algorithms/quadSoilSniff.test.ts (39 tests) 33ms
+ ✓ src/sim/gridPlume.sourceNormalization.test.ts (3 tests) 28ms
+ ✓ src/sim/quadNuisance.test.ts (5 tests) 37ms
+ ✓ src/sim/batch.test.ts (7 tests) 40ms
+ ✓ src/sim/checkpointContract.test.ts (18 tests) 19ms
+ ✓ src/sim/researchPlacement.test.ts (4 tests) 36ms
+ ✓ src/sim/algorithms/quadConfirmation.test.ts (3 tests) 17ms
+ ✓ src/sim/researchEvaluation.test.ts (12 tests) 20ms
+ ✓ src/sim/algorithms/rollingRayWindow.test.ts (6 tests) 12ms
+ ✓ src/sim/algorithms/quadPhysicalConfirmation.test.ts (3 tests) 10ms
+ ✓ src/sim/curtainBearing.test.ts (6 tests) 12ms
+ ✓ src/components/ResearchCharts.test.ts (7 tests) 19ms
+ ✓ src/sim/research/scenarioAblations.test.ts (4 tests) 16ms
+ ✓ src/sim/replay.test.ts (2 tests) 13ms
+ ✓ src/sim/quadSniff.test.ts (12 tests) 11ms
+ ✓ src/sim/stats/pairedBenchmark.test.ts (11 tests) 8ms
+ ✓ src/sim/algorithms/physicalAcquisition.test.ts (6 tests) 10ms
+ ✓ src/sim/algorithms/bearingAblations.test.ts (3 tests) 9ms
+ ✓ src/sim/baseline.test.ts (10 tests) 10ms
+ ✓ src/sim/algorithms/physicalBearingGeometry.test.ts (6 tests) 9ms
+ ✓ src/sim/sensorProfiles.test.ts (5 tests) 9ms
+ ✓ src/sim/controllerObservationModel.test.ts (3 tests) 7ms
+ ✓ src/sim/algorithms/quadGradientScaling.test.ts (8 tests) 6ms
+ ✓ src/sim/activeSniff.test.ts (5 tests) 5ms
+
+ Test Files  41 passed (41)
+      Tests  465 passed (465)
+   Start at  09:58:07
+   Duration  11.89s (transform 987ms, setup 0ms, collect 2.84s, tests 13.08s, environment 9ms, prepare 2.43s)
+

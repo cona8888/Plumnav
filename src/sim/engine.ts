@@ -10,7 +10,7 @@ import {
   createActiveSniffEvent,
   type ActiveSniffEvent,
 } from './activeSniff'
-import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveSensorThreshold, validateSimulationConfig } from './config'
+import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveGridTransportVersion, effectiveSensorThreshold, validateSimulationConfig } from './config'
 import { createEnvironment } from './environment'
 import {
   createControllerObservationModel,
@@ -71,6 +71,7 @@ export class SimulationEngine {
 
   private rng: SeededRandom
   private time = 0
+  private controlTicks = 0
   private running = false
   private completed = false
   private completionReason: string | null = null
@@ -186,6 +187,7 @@ export class SimulationEngine {
       ? new PhysicalHalfspacePlume(this.scenario, config.seed, config)
       : config.physicsMode === 'grid'
       ? new GridPlume(this.scenario, config.seed, {
+          transportVersion: effectiveGridTransportVersion(config),
           resolution: config.gridResolution,
           stepSeconds: config.physicsStepSeconds ?? DEFAULT_PHYSICS_STEP_SECONDS,
         })
@@ -222,6 +224,16 @@ export class SimulationEngine {
         candidateLifecycle: local.candidateLifecycle ? { version: local.candidateLifecycle,
           maximumTurnRateRadiansPerSecond: local.maximumTurnRateRadiansPerSecond } : undefined } : undefined,
     )
+    // Validate the same physical footprint used by every movement proposal
+    // before controller initialization. An impossible setup is not a mission
+    // timeout or a controller navigation failure. Legacy point-robot recipes
+    // retain their existing start semantics.
+    if (local && this.environment.isBlocked(this.scenario.robotStart)) {
+      const context = config.algorithmId === 'asset-inspection'
+        ? 'Asset inspection requires a reachable start on an open SI site'
+        : 'Physical robot start is blocked'
+      throw new RangeError(`${context}: the start must allow full robot footprint clearance from domain edges and obstacles`)
+    }
     const verification = config.assetVerification
     this.controller = createController(config.algorithmId, config.inspectionStations, effectiveSensorThreshold(config),
       verification && { offsetNormalized: verification.offsetMetres / config.domainMeters,
@@ -921,7 +933,6 @@ export class SimulationEngine {
   }
 
   private advanceClock() {
-    const previousTime = this.time
     const activeEvent = this.activeSniffEvent ?? this.quadSniffEvent
     if (activeEvent) {
       const remainingCycle = Math.max(
@@ -950,9 +961,18 @@ export class SimulationEngine {
         }
       }
     }
-    this.time = Math.min(this.config.durationSeconds, this.time + this.config.fixedDt)
+    // Use a tick count rather than cumulative addition: decimal fixedDt can
+    // otherwise delay an aligned checkpoint (or the deadline) by a full tick.
+    this.controlTicks += 1
+    const nextTime = this.controlTicks * this.config.fixedDt
+    const deadline = this.config.durationSeconds
+    const roundoff = 8 * Number.EPSILON * Math.max(nextTime, deadline)
+    this.time = deadline - nextTime <= roundoff ? deadline : nextTime
     for (const checkpoint of this.config.checkpointSeconds) {
-      if (previousTime < checkpoint && this.time >= checkpoint && !this.checkpoints[checkpoint]) {
+      const atCheckpoint = checkpoint === deadline
+        ? this.time === deadline
+        : Math.round(checkpoint / this.config.fixedDt) === this.controlTicks
+      if (atCheckpoint && !this.checkpoints[checkpoint]) {
         this.checkpoints[checkpoint] = this.getMetrics(checkpoint)
       }
     }

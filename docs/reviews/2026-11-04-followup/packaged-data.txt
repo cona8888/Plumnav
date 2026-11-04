@@ -1,0 +1,10 @@
+Command: pnpm validate:data
+
+$ node validation/verify.mjs
+Node 24.22.1: verified 74 file checksums
+epfl: 9 scored flights, surveys or passes match the reference
+blackpool: 22 scored flights, surveys or passes match the reference
+matrix: 8 scored flights, surveys or passes match the reference
+epa: 3 scored flights, surveys or passes match the reference
+EPFL transfer: all ten commissioning choices and their held-out results match the reference
+simulated fitting holdout: all 12 mission outcomes, visits and sensor traces match the reference

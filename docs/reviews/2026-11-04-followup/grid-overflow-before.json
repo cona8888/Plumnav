@@ -1,0 +1,16 @@
+[
+  {
+    "version": "legacy",
+    "timedOut": false,
+    "returncode": 0,
+    "stdout": "{\"phase\":\"before-query\",\"version\":\"legacy-semi-lagrangian-v1\",\"finiteFaceVelocities\":true}\n{\"phase\":\"query-returned\",\"version\":\"legacy-semi-lagrangian-v1\",\"mass\":0.000013980117216760846}\n",
+    "stderr": ""
+  },
+  {
+    "version": "conservative",
+    "timedOut": true,
+    "timeoutSeconds": 3,
+    "stdout": "{\"phase\":\"before-query\",\"version\":\"conservative-upwind-v1\",\"finiteFaceVelocities\":true}\n",
+    "stderr": null
+  }
+]

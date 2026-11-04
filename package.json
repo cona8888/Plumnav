@@ -1,7 +1,7 @@
 {
   "name": "gas-source-localization-lab",
   "private": true,
-  "version": "0.21.0",
+  "version": "0.22.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -66,7 +66,9 @@
     "field:analyze": "vite-node scripts/analyze-field-record.ts",
     "validate:data": "node validation/verify.mjs",
     "survey:validate": "vite-node scripts/validate-fitting-survey.ts",
-    "test:commissioning": "vitest --config scripts/vitest.headless.config.ts run --testTimeout=30000 --maxWorkers=2 scripts/field-sensor-calibration.test.ts scripts/si-research-config.test.ts scripts/baseline-replay-reactive.test.ts scripts/baseline-replay-bayesian.test.ts scripts/measured-peak.test.ts scripts/curtain-replay.test.ts scripts/empirical-epa-replay.test.ts"
+    "test:commissioning": "vitest --config scripts/vitest.headless.config.ts run --testTimeout=30000 --maxWorkers=2 scripts/field-sensor-calibration.test.ts scripts/si-research-config.test.ts scripts/baseline-replay-reactive.test.ts scripts/baseline-replay-bayesian.test.ts scripts/measured-peak.test.ts scripts/curtain-replay.test.ts scripts/empirical-epa-replay.test.ts",
+    "test:review": "vitest run --maxWorkers=2 src/sim/checkpointContract.test.ts src/sim/physicalStart.test.ts src/sim/gridPlume.conservation.test.ts src/sim/batch.gridTransport.test.ts src/components/ResearchCharts.test.ts",
+    "validate:grid": "vite-node scripts/validate-grid-transport.ts"
   },
   "dependencies": {
     "react": "^19.1.0",

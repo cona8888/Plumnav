@@ -1,0 +1,253 @@
+[
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0.05,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.05,
+        "elapsedSeconds": 0.05,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 0.25
+      }
+    ],
+    "produced": [
+      1,
+      0.05
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0.1,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.1,
+        "elapsedSeconds": 0.1,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 0.5
+      }
+    ],
+    "produced": [
+      1,
+      0.1
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0.15,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.15,
+        "elapsedSeconds": 0.15,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 0.75
+      }
+    ],
+    "produced": [
+      1,
+      0.15
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0.2,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.2,
+        "elapsedSeconds": 0.2,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 1
+      }
+    ],
+    "produced": [
+      1,
+      0.2
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0,
+      1,
+      2
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [],
+    "produced": [
+      1
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "checkpoint",
+    "requested": [
+      0.2,
+      0.2,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.2,
+        "elapsedSeconds": 0.2,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 1
+      }
+    ],
+    "produced": [
+      1,
+      0.2
+    ]
+  },
+  {
+    "version": "audit3507527",
+    "case": "decimal-grid-deadline",
+    "time": 0.9,
+    "passiveSamples": 4
+  },
+  {
+    "version": "audit3507527",
+    "case": "off-grid-final-deadline",
+    "time": 0.85,
+    "produced": [
+      0.2,
+      0.6,
+      0.85
+    ],
+    "pathMetres": 4.250000000000018,
+    "physicalPathBoundMetres": 4.25
+  },
+  {
+    "version": "audit3507527",
+    "case": "physical-edge-start",
+    "accepted": true,
+    "startBlocked": true,
+    "pathMetres": 0,
+    "blockedMotionTicks": 20,
+    "completionReason": "Fixed research time budget reached"
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0.05,
+      1
+    ],
+    "accepted": false,
+    "error": "RangeError: checkpointSeconds must align with fixedDt control-step boundaries, except the final durationSeconds deadline"
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0.1,
+      1
+    ],
+    "accepted": false,
+    "error": "RangeError: checkpointSeconds must align with fixedDt control-step boundaries, except the final durationSeconds deadline"
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0.15,
+      1
+    ],
+    "accepted": false,
+    "error": "RangeError: checkpointSeconds must align with fixedDt control-step boundaries, except the final durationSeconds deadline"
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0.2,
+      1
+    ],
+    "accepted": true,
+    "firstFrameTime": 0.2,
+    "firstSnapshots": [
+      {
+        "time": 0.2,
+        "elapsedSeconds": 0.2,
+        "pathMetres": 1.0000000000000053,
+        "physicalPathBoundMetres": 1
+      }
+    ],
+    "produced": [
+      1,
+      0.2
+    ]
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0,
+      1,
+      2
+    ],
+    "accepted": false,
+    "error": "RangeError: checkpointSeconds must be positive and no later than durationSeconds"
+  },
+  {
+    "version": "working-fix",
+    "case": "checkpoint",
+    "requested": [
+      0.2,
+      0.2,
+      1
+    ],
+    "accepted": false,
+    "error": "RangeError: checkpointSeconds must not contain duplicate control-step times"
+  },
+  {
+    "version": "working-fix",
+    "case": "decimal-grid-deadline",
+    "time": 0.9,
+    "passiveSamples": 3
+  },
+  {
+    "version": "working-fix",
+    "case": "off-grid-final-deadline",
+    "time": 0.85,
+    "produced": [
+      0.2,
+      0.6,
+      0.85
+    ],
+    "pathMetres": 4.250000000000018,
+    "physicalPathBoundMetres": 4.25
+  },
+  {
+    "version": "working-fix",
+    "case": "physical-edge-start",
+    "accepted": false,
+    "error": "RangeError: Physical robot start is blocked: the start must allow full robot footprint clearance from domain edges and obstacles"
+  }
+]

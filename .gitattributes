@@ -1,0 +1,5 @@
+*.pdf binary
+*.zip binary
+
+# Preserve raw verification output, including whitespace emitted by test reporters.
+docs/reviews/**/*.txt -whitespace

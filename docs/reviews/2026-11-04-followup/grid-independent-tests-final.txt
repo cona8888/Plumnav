@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ src/sim/gridPlume.test.ts (8 tests) 223ms
+ ✓ src/sim/batch.gridTransport.test.ts (5 tests) 74ms
+ ✓ src/sim/gridPlume.sourceNormalization.test.ts (3 tests) 42ms
+ ✓ src/sim/gridPlume.conservation.test.ts (20 tests) 2819ms
+   ✓ GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=64  444ms
+   ✓ GridPlume conservative scalar transport > conserves the independently specified source budget at a solid wall, n=128  1933ms
+
+ Test Files  4 passed (4)
+      Tests  36 passed (36)
+   Start at  10:08:50
+   Duration  3.48s (transform 646ms, setup 0ms, collect 1.07s, tests 3.16s, environment 1ms, prepare 336ms)
+

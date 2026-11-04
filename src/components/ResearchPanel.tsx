@@ -107,8 +107,8 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
         <p>
           Native declaration remains visible in the live simulator. Here every method receives the same fixed time budget,
           scenario seed and robot start; controller randomness uses a separate paired seed. {baseConfig.targetStatus === 'absent'
-            ? 'No target coordinate exists, so the endpoints are spurious declaration, explicit abstention and fixed-budget rejection.'
-            : 'The hidden source placement is paired across methods, declared estimates are carried forward to later checkpoints, and success is normalized error ≤ 0.01.'}
+            ? 'No target coordinate exists, so the endpoints are spurious declarations, explicit abstentions and no declaration at the deadline. Source absence remains unverified.'
+            : 'The hidden source placement is paired across methods and declared estimates are carried forward to later checkpoints. Estimate accuracy and native declaration are reported separately.'}
           {' '}The selected process-floor stratum is L{baseConfig.obstacleComplexityLevel}; terrain is {baseConfig.terrainSlopeDegrees > 0
             ? `${baseConfig.terrainSlopeDegrees}° uphill toward ${baseConfig.terrainUphillDirectionDegrees}° with ${baseConfig.gasBuoyancy} gas behavior, ${baseConfig.terrainGasDriftScale}× coupling, and ${baseConfig.robotSlopeLimitDegrees}° robot reference grade`
             : 'flat'}.
@@ -189,20 +189,27 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
                   <th>Method</th>
                   <th>Scenario</th>
                   <th>Median error</th>
-                  <th>Success</th>
+                  <th>Estimate within tolerance</th>
                   <th>Direct-distance overhead</th>
                   <th>Contacts</th>
                   <th>Active cost</th>
                   <th>Compute / step</th>
-                  <th>Declaration safety</th>
+                  <th>Declaration outcomes</th>
                 </tr>
               </thead>
               <tbody>
                 {visibleSummaries.map((summary) => {
                   const item = ALGORITHM_METADATA[summary.algorithmId]
                   const usesQuadSuction = isQuadSuctionPolicy(summary.algorithmId)
+                  const transportLabel = summary.physicsMode === 'grid'
+                    ? summary.gridTransportVersion === 'conservative-upwind-v1'
+                      ? 'Grid · conservative upwind v1'
+                      : 'Grid · legacy semi-Lagrangian v1'
+                    : summary.physicsMode === 'halfspace-si-v1'
+                      ? 'SI half-space v1'
+                      : 'Lagrangian puffs'
                   return (
-                    <tr key={`${summary.algorithmId}-${summary.scenarioKind}-${summary.targetStatus}-${summary.obstacleComplexityLevel}-${summary.terrainSlopeDegrees}-${summary.terrainUphillDirectionDegrees}-${summary.gasBuoyancy}-${summary.terrainGasDriftScale}-${summary.robotSlopeLimitDegrees}`}>
+                    <tr key={`${summary.algorithmId}-${summary.scenarioKind}-${summary.targetStatus}-${summary.physicsMode}-${summary.gridTransportVersion ?? 'none'}-${summary.gridResolution ?? 'none'}-${summary.physicsStepSeconds ?? 'none'}-${summary.obstacleComplexityLevel}-${summary.terrainSlopeDegrees}-${summary.terrainUphillDirectionDegrees}-${summary.gasBuoyancy}-${summary.terrainGasDriftScale}-${summary.robotSlopeLimitDegrees}`}>
                       <td><i style={{ background: item.color }} /> <strong>{item.shortName}</strong></td>
                       <td>
                         <span className="scenario-label">
@@ -213,6 +220,10 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
                               ? `${summary.terrainSlopeDegrees}° slope · ${summary.gasBuoyancy}`
                               : 'flat terrain'}
                           </small>
+                          <small>{transportLabel}</small>
+                          {summary.physicsMode === 'grid' && (
+                            <small>{summary.gridResolution} × {summary.gridResolution} · configured step {summary.physicsStepSeconds}s</small>
+                          )}
                         </span>
                       </td>
                       <td className={summary.medianNormalizedError !== null && summary.medianNormalizedError <= 0.01 ? 'result-good' : ''}>
@@ -256,8 +267,8 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
                           : '—'}
                         <small>{summary.targetStatus === 'absent'
                           ? summary.correctRejectionRate === null
-                            ? (summary.algorithmId === 'coverage' || summary.algorithmId === 'asset-inspection' ? 'absence unverified' : 'rejection pending')
-                            : `${(summary.correctRejectionRate * 100).toFixed(0)}% correct rejection`
+                            ? (summary.algorithmId === 'coverage' || summary.algorithmId === 'asset-inspection' ? 'absence unverified' : 'no-declaration rate pending')
+                            : `${(summary.correctRejectionRate * 100).toFixed(0)}% no declaration`
                           : `${(summary.declarationRate * 100).toFixed(0)}% declared`}</small>
                       </td>
                     </tr>
@@ -266,6 +277,9 @@ export function ResearchPanel({ baseConfig }: ResearchPanelProps) {
               </tbody>
             </table>
           </div>
+          <p className="results-footnote">
+            For absent-source trials, the no-declaration rate includes explicit abstention and reaching the deadline without a declaration. Its denominator is all trials in the group; the rate is withheld until every trial has a scorable terminal outcome. Coverage and asset-inspection surveys leave absence unverified. No declaration does not confirm source absence. Estimate within tolerance describes the current estimate, independently of any declaration.
+          </p>
           <p className="results-footnote">
             Each cell contains n={resultRuns} paired seeds. Compute/step is local browser-device timing. Terrain-aware inverse likelihoods and ambient-wind-reactive policies use different model knowledge by design; report that distinction, uncertainty intervals, grid sensitivity, and independent validation for formal work.
           </p>

@@ -1,0 +1,6 @@
+Preliminary integration checks, 2026-11-04
+
+TypeScript application check passed after the grid/config wiring was added:
+  pnpm exec tsc -p tsconfig.app.json --noEmit --pretty false --incremental false
+
+A concurrent pnpm exec vitest invocation did not reach Vitest. pnpm 11.25.0 automatically attempted install in the shared checkout and failed with ENOENT while chowning a node_modules/.pnpm/lock.yaml temporary file. The TypeScript invocation had also automatically installed. This was a concurrent dependency-setup race. No test result is inferred from that failed invocation. Subsequent concurrent agent checks use the installed Node executables directly; final package-level verification is sequential.

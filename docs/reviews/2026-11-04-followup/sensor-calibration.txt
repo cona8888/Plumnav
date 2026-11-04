@@ -1,0 +1,26 @@
+Command: pnpm --silent sensor:calibrate
+
+{
+  "dataSource": "manufactured RK4 pulse traces with independent noise seeds",
+  "fit": {
+    "riseSeconds": 1.7535900577543022,
+    "recoverySeconds": 3.497186635215138,
+    "setup": {
+      "tubeLengthMetres": 1,
+      "tubeInnerDiameterMetres": 0.002,
+      "actualFlowLitresPerMinute": 0.25,
+      "averagingSeconds": 1
+    }
+  },
+  "baseline": {
+    "riseSeconds": 0.9102392266268373,
+    "recoverySeconds": 2
+  },
+  "trainingSamples": 100,
+  "holdoutSamples": 108,
+  "trainingRmsePpm": 0.001874534873705159,
+  "holdoutRmsePpm": 0.001972242127118368,
+  "baselineHoldoutRmsePpm": 0.05281488811660615,
+  "settlingSeconds": 12.230617106617226,
+  "dwellSeconds": 14.5
+}

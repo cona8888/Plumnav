@@ -1,8 +1,8 @@
-import type { AlgorithmId, ScenarioKind, SimulationConfig } from './types'
+import type { AlgorithmId, GridTransportVersion, ScenarioKind, SimulationConfig } from './types'
 import { validateLocalInletConfig } from './localInletSampling'
 import { validatePhysicalAtmosphere } from './physicalAtmosphere'
 
-export const SIMULATOR_VERSION = '0.21.0' as const
+export const SIMULATOR_VERSION = '0.22.0' as const
 
 export const SENSOR_THRESHOLD_BY_SCENARIO: Record<ScenarioKind, number> = {
   open: 0.115,
@@ -66,10 +66,16 @@ export const DEFAULT_QUAD_CHANNEL_NUISANCE_CONTROLS = {
 
 export const DEFAULT_PHYSICS_CONTROLS = {
   physicsMode: 'filament',
+  gridTransportVersion: 'conservative-upwind-v1',
   gridResolution: 48,
   physicsStepSeconds: 0.25,
-} satisfies Pick<SimulationConfig, 'physicsMode' | 'gridResolution' | 'physicsStepSeconds'>
+} satisfies Pick<SimulationConfig, 'physicsMode' | 'gridTransportVersion' | 'gridResolution' | 'physicsStepSeconds'>
 export const DEFAULT_PHYSICS_STEP_SECONDS = DEFAULT_PHYSICS_CONTROLS.physicsStepSeconds
+
+/** Omitted fields in frozen manifests retain the original transport scheme. */
+export const effectiveGridTransportVersion = (
+  config: Pick<SimulationConfig, 'gridTransportVersion'>,
+): GridTransportVersion => config.gridTransportVersion ?? 'legacy-semi-lagrangian-v1'
 
 export const DEFAULT_OBSTACLE_COMPLEXITY_LEVEL = 3
 
@@ -286,6 +292,11 @@ export const validateSimulationConfig = (config: SimulationConfig) => {
   if (config.physicsMode !== 'filament' && config.physicsMode !== 'grid') {
     throw new RangeError('physicsMode must be filament or grid')
   }
+  if (config.gridTransportVersion !== undefined &&
+      config.gridTransportVersion !== 'legacy-semi-lagrangian-v1' &&
+      config.gridTransportVersion !== 'conservative-upwind-v1') {
+    throw new RangeError('gridTransportVersion must be legacy-semi-lagrangian-v1 or conservative-upwind-v1')
+  }
   if (!Number.isInteger(config.gridResolution) || config.gridResolution < 24 || config.gridResolution > 256) {
     throw new RangeError('gridResolution must be an integer in [24, 256]')
   }
@@ -343,8 +354,26 @@ export const validateSimulationConfig = (config: SimulationConfig) => {
   if (config.successThreshold <= 0 || config.successThreshold > Math.SQRT2) {
     throw new RangeError('successThreshold must be in (0, sqrt(2)]')
   }
-  if (config.checkpointSeconds.some((checkpoint) => checkpoint < 0)) {
-    throw new RangeError('checkpointSeconds cannot be negative')
+  // A checkpoint describes the complete state at a control-step boundary.
+  // The final deadline may truncate the last step, but intermediate partial
+  // steps are not simulated and must never be labelled with an earlier time.
+  const checkpointTicks = new Set<number | 'deadline'>()
+  for (const checkpoint of config.checkpointSeconds) {
+    if (checkpoint <= 0 || checkpoint > config.durationSeconds) {
+      throw new RangeError('checkpointSeconds must be positive and no later than durationSeconds')
+    }
+    const ticks = checkpoint / config.fixedDt
+    const roundedTicks = Math.round(ticks)
+    const aligned = roundedTicks >= 1 &&
+      Math.abs(ticks - roundedTicks) <= 8 * Number.EPSILON * Math.max(1, Math.abs(ticks))
+    if (checkpoint !== config.durationSeconds && !aligned) {
+      throw new RangeError('checkpointSeconds must align with fixedDt control-step boundaries, except the final durationSeconds deadline')
+    }
+    const key = aligned ? roundedTicks : 'deadline'
+    if (checkpointTicks.has(key)) {
+      throw new RangeError('checkpointSeconds must not contain duplicate control-step times')
+    }
+    checkpointTicks.add(key)
   }
   return config
 }

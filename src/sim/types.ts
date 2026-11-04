@@ -109,6 +109,29 @@ export type ScenarioKind = 'open' | 'obstructed'
 
 export type PhysicsMode = 'filament' | 'grid'
 
+export type GridTransportVersion =
+  | 'legacy-semi-lagrangian-v1'
+  | 'conservative-upwind-v1'
+
+/** Area-integrated normalized scalar budget; these are not SI gas masses. */
+export type GridMassBudget = {
+  time: number
+  initialMass: number
+  /** Initial concentration removed by the display-scale ceiling, before t=0. */
+  initialClippingLossMass: number
+  currentMass: number
+  injectedMass: number
+  decayLossMass: number
+  boundaryOutflowMass: number
+  upperClippingLossMass: number
+  lowerClippingGainMass: number
+  /** Current - (initial + source - decay - outflow - upper clip + lower clip). */
+  balanceResidual: number
+  /** Diagnostics cover the upper bracketing state for interpolated query times. */
+  maximumAdvectiveCourant: number
+  advectionSubsteps: number
+}
+
 export type GasBuoyancy = 'neutral' | 'dense' | 'light'
 
 /** Ground-truth target condition. This field is never exposed to controllers. */
@@ -238,6 +261,8 @@ export type SimulationConfig = {
   activeSniffReach: number
   activeSniffCycleSeconds: number
   physicsMode: PhysicsMode
+  /** Missing in historical configurations: replay the original nonconservative grid. */
+  gridTransportVersion?: GridTransportVersion
   gridResolution: number
   /** Compass direction the mean wind travels toward; 0° north, clockwise. */
   windDirectionDegrees: number
@@ -705,12 +730,18 @@ export type BatchResult = {
   metrics: MetricSnapshot
   /** Effective capped grid solver timestep; null for the filament model. */
   effectivePhysicsStepSeconds?: number | null
+  /** Budget at this row's checkpoint, not the mission's later final state. */
+  gridMassBudget?: GridMassBudget | null
 }
 
 export type BatchSummary = {
   algorithmId: AlgorithmId
   scenarioKind: ScenarioKind
   targetStatus: TargetStatus
+  physicsMode: PhysicsMode | PhysicalAtmosphereConfig['version']
+  gridTransportVersion: GridTransportVersion | null
+  gridResolution: number | null
+  physicsStepSeconds: number | null
   /** 0 for open flow or the clear process-flow control; 1-5 for geometry. */
   obstacleComplexityLevel: number
   terrainSlopeDegrees: number

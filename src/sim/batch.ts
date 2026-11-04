@@ -1,4 +1,4 @@
-import { DEFAULT_PHYSICS_STEP_SECONDS, SIMULATOR_VERSION } from './config'
+import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveGridTransportVersion, SIMULATOR_VERSION } from './config'
 import {
   QUAD_CANDIDATE_FORMATION_GATE_NAMES,
   QUAD_DECLARATION_GATE_NAMES,
@@ -135,6 +135,9 @@ export const runBatch = async (
             observationModelSeed: engine.environment.observationModelSeed,
             metrics,
             effectivePhysicsStepSeconds: engine.plume instanceof GridPlume ? engine.plume.stepSeconds : null,
+            gridMassBudget: engine.plume instanceof GridPlume
+              ? engine.plume.massBudgetAt(checkpointSeconds)
+              : null,
           })
         }
         completed += 1
@@ -158,6 +161,11 @@ export const summarizeBatch = (results: BatchResult[]): BatchSummary[] => {
       result.algorithmId,
       result.scenarioKind,
       result.config.targetStatus,
+      result.config.physicalAtmosphere?.version ?? result.config.physicsMode,
+      ...(!result.config.physicalAtmosphere && result.config.physicsMode === 'grid'
+        ? [effectiveGridTransportVersion(result.config), result.config.gridResolution,
+            result.config.physicsStepSeconds ?? DEFAULT_PHYSICS_STEP_SECONDS]
+        : []),
       obstacleComplexityLevel,
       result.config.terrainSlopeDegrees,
       result.config.terrainUphillDirectionDegrees,
@@ -187,6 +195,13 @@ export const summarizeBatch = (results: BatchResult[]): BatchSummary[] => {
       algorithmId: first.algorithmId,
       scenarioKind: first.scenarioKind,
       targetStatus: first.config.targetStatus,
+      physicsMode: first.config.physicalAtmosphere?.version ?? first.config.physicsMode,
+      gridTransportVersion: !first.config.physicalAtmosphere && first.config.physicsMode === 'grid'
+        ? effectiveGridTransportVersion(first.config) : null,
+      gridResolution: !first.config.physicalAtmosphere && first.config.physicsMode === 'grid'
+        ? first.config.gridResolution : null,
+      physicsStepSeconds: !first.config.physicalAtmosphere && first.config.physicsMode === 'grid'
+        ? first.config.physicsStepSeconds ?? DEFAULT_PHYSICS_STEP_SECONDS : null,
       obstacleComplexityLevel:
         first.scenarioKind === 'obstructed' ? first.config.obstacleComplexityLevel : 0,
       terrainSlopeDegrees: first.config.terrainSlopeDegrees,
@@ -437,6 +452,20 @@ export const batchResultsToCsv = (results: BatchResult[]) => {
     'active_sniff_cycle_s',
     'physics_mode',
     'grid_resolution',
+    'grid_transport_version',
+    'grid_transport_scope',
+    'grid_mass_budget_time_s',
+    'grid_initial_mass',
+    'grid_initial_clipping_loss_mass',
+    'grid_current_mass',
+    'grid_injected_mass',
+    'grid_decay_loss_mass',
+    'grid_boundary_outflow_mass',
+    'grid_upper_clipping_loss_mass',
+    'grid_lower_clipping_gain_mass',
+    'grid_balance_residual',
+    'grid_maximum_advective_courant',
+    'grid_advection_substeps',
     'wind_direction_toward_deg',
     'wind_speed_scale',
     'turbulence_scale',
@@ -451,6 +480,12 @@ export const batchResultsToCsv = (results: BatchResult[]) => {
   const rows = results.map((result) => {
     const metric = result.metrics
     const experimentConfig = result.config
+    const isGrid = !experimentConfig.physicalAtmosphere && experimentConfig.physicsMode === 'grid'
+    const transportVersion = isGrid ? effectiveGridTransportVersion(experimentConfig) : null
+    const gridBudget = transportVersion === 'conservative-upwind-v1' ? result.gridMassBudget : null
+    if (gridBudget && Math.abs(gridBudget.time - result.checkpointSeconds) > 1e-8) {
+      throw new Error('Grid mass budget time does not match its batch checkpoint')
+    }
     if (metric.targetStatus !== experimentConfig.targetStatus) {
       throw new Error('Cannot export a batch row whose metric target status differs from its configuration')
     }
@@ -640,6 +675,21 @@ export const batchResultsToCsv = (results: BatchResult[]) => {
       experimentConfig.activeSniffCycleSeconds,
       experimentConfig.physicalAtmosphere?.version ?? experimentConfig.physicsMode,
       experimentConfig.gridResolution,
+      transportVersion ?? '',
+      transportVersion === 'legacy-semi-lagrangian-v1' ? 'qualitative-nonconservative'
+        : transportVersion === 'conservative-upwind-v1' ? 'prescribed-velocity-scalar-transport' : '',
+      gridBudget?.time ?? '',
+      gridBudget?.initialMass ?? '',
+      gridBudget?.initialClippingLossMass ?? '',
+      gridBudget?.currentMass ?? '',
+      gridBudget?.injectedMass ?? '',
+      gridBudget?.decayLossMass ?? '',
+      gridBudget?.boundaryOutflowMass ?? '',
+      gridBudget?.upperClippingLossMass ?? '',
+      gridBudget?.lowerClippingGainMass ?? '',
+      gridBudget?.balanceResidual ?? '',
+      gridBudget?.maximumAdvectiveCourant ?? '',
+      gridBudget?.advectionSubsteps ?? '',
       experimentConfig.windDirectionDegrees,
       experimentConfig.windSpeedScale,
       experimentConfig.turbulenceScale,

@@ -1,7 +1,8 @@
 import { useId } from 'react'
 import { ALGORITHM_METADATA, ALGORITHM_ORDER } from '../sim/algorithms/metadata'
+import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveGridTransportVersion } from '../sim/config'
 import { percentile } from '../sim/math'
-import type { AlgorithmId, BatchResult, GasBuoyancy, ScenarioKind, TargetStatus } from '../sim/types'
+import type { AlgorithmId, BatchResult, BatchSummary, GasBuoyancy, ScenarioKind, TargetStatus } from '../sim/types'
 
 type ResearchChartsProps = {
   results: readonly BatchResult[]
@@ -26,6 +27,10 @@ export type ResearchChartSeries = {
 export type ResearchChartScenario = {
   scenarioKind: ScenarioKind
   targetStatus: TargetStatus
+  physicsMode: BatchSummary['physicsMode']
+  gridTransportVersion: BatchSummary['gridTransportVersion']
+  gridResolution: number | null
+  physicsStepSeconds: number | null
   obstacleComplexityLevel: number
   terrainSlopeDegrees: number
   terrainUphillDirectionDegrees: number
@@ -79,9 +84,15 @@ export const aggregateResearchChartData = (
   const stratumFor = (result: BatchResult) => {
     const obstacleComplexityLevel =
       result.scenarioKind === 'obstructed' ? result.config.obstacleComplexityLevel : 0
+    const isGrid = !result.config.physicalAtmosphere && result.config.physicsMode === 'grid'
     const value = {
       scenarioKind: result.scenarioKind,
       targetStatus: result.config.targetStatus,
+      physicsMode: result.config.physicalAtmosphere?.version ?? result.config.physicsMode,
+      gridTransportVersion: isGrid ? effectiveGridTransportVersion(result.config) : null,
+      gridResolution: isGrid ? result.config.gridResolution : null,
+      physicsStepSeconds: isGrid
+        ? result.config.physicsStepSeconds ?? DEFAULT_PHYSICS_STEP_SECONDS : null,
       obstacleComplexityLevel,
       terrainSlopeDegrees: result.config.terrainSlopeDegrees,
       terrainUphillDirectionDegrees: result.config.terrainUphillDirectionDegrees,
@@ -94,6 +105,10 @@ export const aggregateResearchChartData = (
       key: [
         value.scenarioKind,
         value.targetStatus,
+        value.physicsMode,
+        value.gridTransportVersion,
+        value.gridResolution,
+        value.physicsStepSeconds,
         value.obstacleComplexityLevel,
         value.terrainSlopeDegrees,
         value.terrainUphillDirectionDegrees,
@@ -122,6 +137,10 @@ export const aggregateResearchChartData = (
       ['open', 'obstructed'].indexOf(b.scenarioKind)
     return scenarioOrder ||
       a.targetStatus.localeCompare(b.targetStatus) ||
+      a.physicsMode.localeCompare(b.physicsMode) ||
+      (a.gridTransportVersion ?? '').localeCompare(b.gridTransportVersion ?? '') ||
+      (a.gridResolution ?? 0) - (b.gridResolution ?? 0) ||
+      (a.physicsStepSeconds ?? 0) - (b.physicsStepSeconds ?? 0) ||
       a.obstacleComplexityLevel - b.obstacleComplexityLevel ||
       a.terrainSlopeDegrees - b.terrainSlopeDegrees ||
       a.terrainUphillDirectionDegrees - b.terrainUphillDirectionDegrees ||
@@ -133,6 +152,10 @@ export const aggregateResearchChartData = (
   return strata.map((stratum) => ({
     scenarioKind: stratum.scenarioKind,
     targetStatus: stratum.targetStatus,
+    physicsMode: stratum.physicsMode,
+    gridTransportVersion: stratum.gridTransportVersion,
+    gridResolution: stratum.gridResolution,
+    physicsStepSeconds: stratum.physicsStepSeconds,
     obstacleComplexityLevel: stratum.obstacleComplexityLevel,
     terrainSlopeDegrees: stratum.terrainSlopeDegrees,
     terrainUphillDirectionDegrees: stratum.terrainUphillDirectionDegrees,
@@ -169,6 +192,15 @@ export const aggregateResearchChartData = (
       return points.length > 0 ? [{ algorithmId, points }] : []
     }),
   }))
+}
+
+const transportTitle = (scenario: ResearchChartScenario) => {
+  if (scenario.physicsMode !== 'grid') {
+    return scenario.physicsMode === 'halfspace-si-v1' ? 'SI half-space v1' : 'Lagrangian puffs'
+  }
+  const scheme = scenario.gridTransportVersion === 'conservative-upwind-v1'
+    ? 'conservative upwind v1' : 'legacy semi-Lagrangian v1'
+  return `Grid · ${scheme} · ${scenario.gridResolution} × ${scenario.gridResolution} · configured step ${scenario.physicsStepSeconds}s`
 }
 
 const niceCeiling = (value: number) => {
@@ -231,22 +263,23 @@ function MetricChart({
   const yTicks = Array.from({ length: 5 }, (_, index) => (yMax * index) / 4)
   const x = (value: number) => MARGIN.left + (value / maxCheckpoint) * PLOT_WIDTH
   const y = (value: number) => MARGIN.top + PLOT_HEIGHT - (clamp(value, 0, yMax) / yMax) * PLOT_HEIGHT
-  const metricTitle = metric === 'error' ? 'Localization error over time' : 'Success rate over time'
+  const metricTitle = metric === 'error' ? 'Localization error over time' : 'Estimates within tolerance over time'
   const scenarioTitle = scenario.scenarioKind === 'obstructed'
     ? `${scenario.scenarioKind} L${scenario.obstacleComplexityLevel}, ${scenario.targetStatus}`
     : `${scenario.scenarioKind}, ${scenario.targetStatus}`
   const terrainTitle = scenario.terrainSlopeDegrees > 0
     ? `${scenarioTitle}, ${scenario.terrainSlopeDegrees}° uphill ${scenario.terrainUphillDirectionDegrees}°, ${scenario.gasBuoyancy}, coupling ${scenario.terrainGasDriftScale}, robot reference grade ${scenario.robotSlopeLimitDegrees}°`
     : `${scenarioTitle}, flat, robot reference grade ${scenario.robotSlopeLimitDegrees}° inactive`
+  const conditionTitle = `${terrainTitle}, ${transportTitle(scenario)}`
   const intervalDescription = metric === 'error'
     ? 'Lines show median normalized error and shaded regions show the interquartile range.'
-    : 'Lines show observed success rate and shaded regions show a two-sided Wilson 95 percent interval.'
+    : 'Lines show the fraction of current estimates within tolerance and shaded regions show a two-sided Wilson 95 percent interval. This is independent of source declaration.'
 
   return (
     <article className="research-charts__card">
       <header className="research-charts__card-header">
         <div>
-          <span>{metric === 'error' ? 'ACCURACY' : 'RELIABILITY'}</span>
+          <span>{metric === 'error' ? 'ACCURACY' : 'WITHIN TOLERANCE'}</span>
           <h4>{metricTitle}</h4>
         </div>
         <small>{metric === 'error' ? 'Median + IQR' : 'Rate + Wilson 95% interval'}</small>
@@ -259,7 +292,7 @@ function MetricChart({
         aria-labelledby={`${titleId} ${descriptionId}`}
         preserveAspectRatio="xMidYMid meet"
       >
-        <title id={titleId}>{metricTitle}, {terrainTitle} scenario</title>
+        <title id={titleId}>{metricTitle}, {conditionTitle} scenario</title>
         <desc id={descriptionId}>{intervalDescription} Results are grouped by algorithm and checkpoint.</desc>
 
         {yTicks.map((tick) => (
@@ -319,7 +352,7 @@ function MetricChart({
               y2={y(0.01)}
             />
             <text className="research-charts__target-text" x={VIEW_WIDTH - MARGIN.right - 4} y={y(0.01) - 7} textAnchor="end">
-              1% success target
+              1% error reference
             </text>
           </g>
         )}
@@ -379,12 +412,12 @@ function MetricChart({
           textAnchor="middle"
           transform={`rotate(-90 15 ${MARGIN.top + PLOT_HEIGHT / 2})`}
         >
-          {metric === 'error' ? 'Normalized error' : 'Successful runs'}
+          {metric === 'error' ? 'Normalized error' : 'Estimates within tolerance'}
         </text>
       </svg>
 
       <table className="research-charts__sr-only">
-        <caption>{metricTitle}, {terrainTitle} scenario</caption>
+        <caption>{metricTitle}, {conditionTitle} scenario</caption>
         <thead>
           <tr><th>Algorithm</th><th>Time</th><th>Estimate</th><th>Interval low</th><th>Interval high</th><th>Runs</th></tr>
         </thead>
@@ -478,11 +511,11 @@ export function ResearchCharts({ results }: ResearchChartsProps) {
       {scenarios.map((scenario) => (
         <section
           className="research-charts__scenario"
-          key={`${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}
-          aria-labelledby={`${headingId}-${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}
+          key={`${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.physicsMode}-${scenario.gridTransportVersion ?? 'none'}-${scenario.gridResolution ?? 'none'}-${scenario.physicsStepSeconds ?? 'none'}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}
+          aria-labelledby={`${headingId}-${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.physicsMode}-${scenario.gridTransportVersion ?? 'none'}-${scenario.gridResolution ?? 'none'}-${scenario.physicsStepSeconds ?? 'none'}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}
         >
-          <h4 className="research-charts__scenario-title" id={`${headingId}-${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}>
-            {scenario.scenarioKind} scenario · {scenario.targetStatus}
+          <h4 className="research-charts__scenario-title" id={`${headingId}-${scenario.scenarioKind}-${scenario.targetStatus}-${scenario.physicsMode}-${scenario.gridTransportVersion ?? 'none'}-${scenario.gridResolution ?? 'none'}-${scenario.physicsStepSeconds ?? 'none'}-${scenario.obstacleComplexityLevel}-${scenario.terrainSlopeDegrees}-${scenario.terrainUphillDirectionDegrees}-${scenario.gasBuoyancy}-${scenario.terrainGasDriftScale}-${scenario.robotSlopeLimitDegrees}`}>
+            {scenario.scenarioKind} scenario · {scenario.targetStatus} · {transportTitle(scenario)}
             {scenario.scenarioKind === 'obstructed' && ` · complexity L${scenario.obstacleComplexityLevel}`}
             {scenario.terrainSlopeDegrees > 0
               ? ` · ${scenario.terrainSlopeDegrees}° slope · uphill ${scenario.terrainUphillDirectionDegrees}° · ${scenario.gasBuoyancy} gas · coupling ${scenario.terrainGasDriftScale}× · robot ref ${scenario.robotSlopeLimitDegrees}°`
@@ -496,7 +529,7 @@ export function ResearchCharts({ results }: ResearchChartsProps) {
       ))}
 
       <p className="research-charts__method-note">
-        Error bands are descriptive interquartile ranges and appear when n≥3. Success bands are two-sided Wilson 95% intervals for the observed binomial rate. Seed identities remain paired across algorithms.
+        Error bands are descriptive interquartile ranges and appear when n≥3. Within-tolerance bands are two-sided Wilson 95% intervals for the observed estimate rate, independently of source declaration. Physics modes, grid schemes, resolutions and configured steps are separate strata. Seed identities remain paired across algorithms.
       </p>
     </section>
   )

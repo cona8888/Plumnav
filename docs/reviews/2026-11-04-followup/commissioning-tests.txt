@@ -1,0 +1,22 @@
+Command: pnpm test:commissioning
+
+$ vitest --config scripts/vitest.headless.config.ts run --testTimeout=30000 --maxWorkers=2 scripts/field-sensor-calibration.test.ts scripts/si-research-config.test.ts scripts/baseline-replay-reactive.test.ts scripts/baseline-replay-bayesian.test.ts scripts/measured-peak.test.ts scripts/curtain-replay.test.ts scripts/empirical-epa-replay.test.ts
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ scripts/baseline-replay-bayesian.test.ts (9 tests) 384ms
+ ✓ scripts/si-research-config.test.ts (11 tests) 103ms
+ ✓ scripts/field-sensor-calibration.test.ts (3 tests) 7ms
+ ✓ scripts/baseline-replay-reactive.test.ts (9 tests) 1537ms
+   ✓ reactive baseline black-box replay fixtures (development behaviour only) > [S2] transitions miss-hit-miss and exposes the expanding reversal schedule through actions  934ms
+   ✓ reactive baseline black-box replay fixtures (development behaviour only) > [Z2] gates refinement at 0.58 and infers monotone contraction from public target/estimate  426ms
+ ✓ scripts/curtain-replay.test.ts (1 test) 5ms
+ ✓ scripts/measured-peak.test.ts (2 tests) 7ms
+ ✓ scripts/empirical-epa-replay.test.ts (1 test) 631ms
+   ✓ rejects plausible replacement observations carrying the official workbook digest  629ms
+
+ Test Files  7 passed (7)
+      Tests  36 passed (36)
+   Start at  09:58:19
+   Duration  2.81s (transform 687ms, setup 0ms, collect 1.06s, tests 2.67s, environment 1ms, prepare 407ms)
+

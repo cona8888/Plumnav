@@ -2,6 +2,14 @@
 
 PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator and seeded research workbench. It presents one algorithm at a time in the live simulator, then compares selected algorithms at fixed checkpoints on paired plume realizations.
 
+## Engineering review and version 0.22
+
+The [3 November audit](docs/reviews/2026-11-03-pstack/README.md) and its complete evidence are preserved in this repository. The [implementation response](docs/review-followup-2026-11-04.md) records the subsequent fixes and fresh verification: enforce checkpoint timing, reject an impossible physical robot start before a mission, version conservative grid transport with explicit mass budgets, and distinguish no declaration from supported source absence.
+
+New numerical-grid configurations use conservative upwind face fluxes. Historical configurations without a transport version retain the original solver for replay; the UI and CSV identify its nonconservative limitation. See [grid transport, boundaries and budgets](docs/grid-transport.md). The SI half-space atmosphere and measured-data references remain separate from this normalized-grid change.
+
+The next physical gate is the [proposed 12-mission installed-system protocol](docs/field-validation-plan.md), after independent channel commissioning. It has not been executed by this software update. Fitting reinspection flags, source declarations, abstentions and failed missions remain distinct outcomes.
+
 ## Reproduce the validation dataset
 
 The [`validation/` directory](validation/README.md) includes the measured flight and transect inputs, source references, dataset licences, expected outputs and a separate simulated holdout. Install the locked dependencies and run `pnpm validate:data` from the repository root. The replay needs no API keys, external data downloads, Python or robot. The ten commissioning choices are included so another group can see where transfer failed.
@@ -23,13 +31,18 @@ pnpm survey:validate --holdout
 
 `benchmark-output/fitting-survey-bracket/` holds the default mission outputs, including the recorded wind-check visits. Supply a fresh output directory for repeat runs. Use `--legacy` to replay the original two-pass standard mission, or `pnpm dev` to open the browser simulator.
 
-Current research status (13 September 2026): M71 v7 completed and passed the
+Historical research status (13 September 2026): M71 v7 completed and passed the
 independent archive audit (280 cells, 67,200 runs). Quad-Sniff-Refine produced
 zero correct declarations in 6,960 emitting missions. The
 [updated publication plan](research/protocols/publication_plan_review_2026-09-13.md)
 prioritizes physical sampling/evaluation integration, observable independent
 transport cases, mechanism tests and then held-out comparison. The demo's
 normalized remote sampling footprint is not a validated suction device.
+
+These archive-dependent reports are retained as project history. Their private
+campaign archives are outside this public checkout; the November audit did not
+revalidate the 67,200-run claim. Use the packaged validation commands above and
+the dated implementation response for the checks reproducible from this repository.
 
 [Stage 1 diagnostic progress](research/results/m72_stage1_diagnostic_findings_2026-09-13.md):
 eleven selected frozen-code M71 replays now retain full decision histories and
@@ -476,7 +489,7 @@ derivative estimates.
 The live simulator offers two deterministic forward models:
 
 - **Fast puffs:** the original Lagrangian filament approximation for responsive demonstrations and broad Monte Carlo studies.
-- **2D numerical:** a selectable 32²–128² live grid using semi-Lagrangian convection, a stable five-point diffusion stencil, first-order dilution, a boundary-aware resolution-normalized source kernel, and solid obstacle cells. Research manifests may request up to 256² for convergence checks. The field is evaluated on canonical solver ticks, so results do not depend on visualization or query order. The requested grid step is separate from controller/sensor/motion cadence and may be reduced by stability or Courant limits; exports retain both requested and effective values.
+- **2D numerical:** a selectable 32²–128² live grid. New configurations use conservative upwind face fluxes, a stable five-point diffusion stencil, first-order dilution, a boundary-aware resolution-normalized source kernel, and solid obstacle faces. The versioned legacy semi-Lagrangian solver remains available for historical replay and qualitative comparisons. Research manifests may request up to 256² for convergence checks. Canonical solver states make fields and budgets independent of visualization or query order. The requested grid step is separate from controller/sensor/motion cadence; stability limits can reduce it and actual face Courant limits can subdivide advection. Exports retain the version, requested/effective step and the conservative mass budget at each checkpoint. [Boundary conditions, units and limitations](docs/grid-transport.md)
 
 Both modes use the same configured wind field, source, start, obstacles and seeded randomness. The numerical forward field deliberately retains the lightweight analytical inverse encounter model used by the controllers. This creates an explicit forward/inverse model-mismatch test rather than giving an algorithm the true grid solver as an oracle. Neither mode is CFD or a Navier–Stokes solution.
 
@@ -486,7 +499,9 @@ source coordinate but produces no physical gas, so localization remains
 source-referenced under an intentionally uninformed controller prior. `Absent`
 has no source coordinate and no gas; localization error and source-relative
 path overhead are therefore N/A, while spurious declaration, explicit
-abstention and correct rejection at the fixed deadline are scored separately.
+abstention and reaching the deadline without a declaration are recorded separately.
+The legacy `correctRejection` field is an offline no-declaration score on known
+absent-source trials; it does not establish operational source absence.
 Controllers do not receive the selected truth label.
 
 The live scenario card exposes six transport and source overrides. Every change rebuilds the seeded run so the canvas, sensor, controller likelihood and later benchmark use the same atmosphere and source forcing.
@@ -502,7 +517,7 @@ The live scenario card exposes six transport and source overrides. Every change 
 
 In fast-puff mode, puff centres advect with the controlled mean wind and bounded gust factor, while Gaussian width grows as `sigma = sigma0 + sqrt(2 D t)`. Gaussian amplitude is adjusted as width changes so a diffusivity override redistributes, rather than creates, emitted puff mass. The emission-rate multiplier scales source forcing before transport; it changes signal strength without changing the source location, wind, or diffusion. Turbulence adds crosswind meander, and puff intensity decays through dilution. Obstructed fast flow adds orientation-aware heuristic wake displacement and line-of-sight attenuation.
 
-Emission rate is intentionally dimensionless because the simulator has no calibrated gas species, nozzle geometry, pressure–flow relation, or concentration unit. Raising it can increase plume contacts but can also drive the configurable sensor into saturation; lowering it can push readings below the detection threshold. Treat it as a signal-strength sensitivity variable, not as a physical leak-rate prediction.
+Emission rate in these normalized demonstration modes is intentionally dimensionless: they do not model a calibrated gas species, nozzle geometry or pressure–flow relation. Raising it can increase plume contacts but can also drive the configurable sensor into saturation; lowering it can push readings below the detection threshold. Treat it as a signal-strength sensitivity variable, not as a physical leak-rate prediction. The separately configured SI half-space reference uses explicit mass and concentration units.
 
 ## Planar 2.5D slope model
 
@@ -526,7 +541,7 @@ Model knowledge is intentionally explicit but not identical across method famili
 
 The benchmark treats every slope angle, aspect, gas class, coupling value, and robot reference grade as a separate experimental stratum. CSV export records those controls plus nominal rise, dense-gas drift, surface error/path metrics, ascent/descent, and mean mobility. Recommended comparisons include flat versus 5°, 10°, 15°, and 20° slopes; uphill, downhill, and cross-slope search orientations; all three gas classes; both plume solvers; and L0–L5 process-floor complexity on held-out paired seeds.
 
-The dense-gas treatment is consistent in direction with established observations and reduced shallow-layer models of gravity currents over slopes ([Hankin et al., 2003](https://doi.org/10.1016/S0304-3894(03)00224-3); [TWODEE model](https://doi.org/10.1016/S0304-3894(98)00269-6)). The robot grade term follows the standard gravitational power contribution `mgv sin(θ)` ([NASA vehicle power analysis](https://ntrs.nasa.gov/api/citations/19800014727/downloads/19800014727.pdf)). These sources motivate the structure, not the simulator's uncalibrated coefficients. Complex terrain boundary layers, vertical concentration profiles, dense-gas pooling, slope breaks, 3D obstacle wakes, and gas-specific buoyancy require CFD or experimental data and are outside this model. The numerical solver caps an estimated advective Courant number at 0.9 using ambient gust, obstacle-deflection allowance, and terrain drift in addition to its diffusion-stability cap. This reduces long-backtrace diffusion but is not a convergence proof; formal work should still report 48²/96²/128²/192² spatial refinement at a common effective step and an independent 0.05/0.025/0.0125 s physics-step refinement rather than treating one grid as ground truth.
+The dense-gas treatment is consistent in direction with established observations and reduced shallow-layer models of gravity currents over slopes ([Hankin et al., 2003](https://doi.org/10.1016/S0304-3894(03)00224-3); [TWODEE model](https://doi.org/10.1016/S0304-3894(98)00269-6)). The robot grade term follows the standard gravitational power contribution `mgv sin(θ)` ([NASA vehicle power analysis](https://ntrs.nasa.gov/api/citations/19800014727/downloads/19800014727.pdf)). These sources motivate the structure, not the simulator's uncalibrated coefficients. Complex terrain boundary layers, vertical concentration profiles, dense-gas pooling, slope breaks, 3D obstacle wakes, and gas-specific buoyancy require CFD or experimental data and are outside this model. Both grid versions cap a design estimate of advective Courant number at 0.9 using ambient gust, obstacle-deflection allowance, and terrain drift in addition to the diffusion-stability cap. The conservative version also enforces an actual outgoing-face Courant limit using substeps. Neither cap is a convergence proof; formal work should still report 48²/96²/128²/192² spatial refinement at a common effective step and an independent 0.05/0.025/0.0125 s physics-step refinement rather than treating one grid as ground truth.
 
 ## Fractal-inspired process-floor complexity
 
@@ -611,11 +626,12 @@ Physical validation should proceed from a tracer-flow bench to controlled soil r
 - User-selected wind, turbulence, gust, diffusion, and source-emission overrides are part of the experiment configuration and are held fixed across paired algorithms.
 - User-selected slope, uphill aspect, gas-response class, buoyancy coupling, and robot reference grade are also held fixed across paired algorithms and are never pooled across benchmark strata.
 - Paired comparisons reuse the same seed and scenario for every selected algorithm.
-- Controller invocation, sensing and robot motion use a fixed 0.25 s cadence. The numerical grid has a separate requested physics step (0.25 s by default) that is automatically reduced when diffusion stability or the Courant accuracy cap requires it. The default filtered sensor response is intentionally fast (0.05 s time constant) so the binary encounter likelihood is not dominated by pose/lag misregistration.
+- Controller invocation, sensing and robot motion use a fixed 0.25 s cadence. The numerical grid has a separate requested physics step (0.25 s by default) that is automatically reduced when diffusion stability or the design Courant cap requires it; conservative advection additionally checks actual outgoing face fluxes. The default filtered sensor response is intentionally fast (0.05 s time constant) so the binary encounter likelihood is not dominated by pose/lag misregistration.
+- Checkpoints must be positive, unique control-step boundaries within the mission. The final deadline may be off the control-step grid; the engine charges only the remaining motion time. Invalid checkpoint schedules fail at setup. SI/local-inlet starts must also leave the full configured robot footprint clear of domain edges and obstacles.
 - Controllers receive filtered concentration, hit/miss, noisy local wind, pose, and a deep-frozen copy of the public obstacle map as required by each method. Model-based arms query the versioned, separately seeded `controller-observation-v1` planning prior rather than the truth plume. Quad-Suction also receives configured sensor-noise calibration, actuator timing, and reach. The controller interface excludes the hidden source, world seed, source seed, truth plume object, and unfiltered concentration truth. Source placement is not derivable from the public layout/start seed.
 - Live mode can stop on a method's native declaration. In fixed-budget benchmarking, a declared estimate and its mission costs are carried forward to later checkpoints; all methods therefore receive the same post-declaration semantics.
 
-The benchmark reports median and p90 normalized error, proximity-within-tolerance rate, direct-distance path overhead, passive plume-contact episodes, browser compute time, active-probe costs, and declaration behavior. The overhead denominator is straight-line start-to-source distance, not the obstacle-aware shortest path, so it must not be interpreted as navigation efficiency across different clutter levels. Time-resolved charts show median error with descriptive interquartile ranges and proximity rate with Wilson 95% intervals; correct terminal declaration is the publication-facing source-present primary endpoint. Raw CSV export includes per-run metrics, source/start/estimate coordinates, all four seeds, controller-observation-model version, physics mode, grid resolution, requested/effective grid step, process-floor geometry, transport/source settings, and sensor configuration. Emission and complexity sensitivity should be reported as separate pre-registered strata; selecting favorable settings after seeing results would confound algorithm quality with scenario difficulty.
+The benchmark reports median and p90 normalized error, proximity-within-tolerance rate, direct-distance path overhead, passive plume-contact episodes, browser compute time, active-probe costs, and declaration behavior. The overhead denominator is straight-line start-to-source distance, not the obstacle-aware shortest path, so it must not be interpreted as navigation efficiency across different clutter levels. Time-resolved charts show median error with descriptive interquartile ranges and proximity rate with Wilson 95% intervals; correct terminal declaration is the publication-facing source-present primary endpoint. Raw CSV export includes per-run metrics, source/start/estimate coordinates, all four seeds, controller-observation-model version, physics mode, grid transport version and scope, grid resolution, requested/effective grid step, per-checkpoint normalized mass budgets when available, process-floor geometry, transport/source settings, and sensor configuration. Emission and complexity sensitivity should be reported as separate pre-registered strata; selecting favorable settings after seeing results would confound algorithm quality with scenario difficulty.
 
 ## What the two scenarios mean
 

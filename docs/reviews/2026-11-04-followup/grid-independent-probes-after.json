@@ -1,0 +1,72 @@
+[
+  {
+    "case": "exact-legacy-replay",
+    "gridSnapshotsCompared": 28,
+    "passed": true
+  },
+  {
+    "case": "conservative-query-order-and-returned-snapshot-mutation",
+    "gridSnapshotsCompared": 14,
+    "passed": true
+  },
+  {
+    "case": "thin-wall-public-sampling",
+    "transportVersion": "legacy-semi-lagrangian-v1",
+    "rightFieldMaximum": 0.2803638279438019,
+    "publicReadings": [
+      {
+        "x": 0.5011,
+        "concentration": 0.3041079675197601
+      },
+      {
+        "x": 0.505,
+        "concentration": 0.29773260474205016
+      },
+      {
+        "x": 0.51,
+        "concentration": 0.28955906271934506
+      },
+      {
+        "x": 0.515625,
+        "concentration": 0.2803638279438019
+      }
+    ]
+  },
+  {
+    "case": "thin-wall-public-sampling",
+    "transportVersion": "conservative-upwind-v1",
+    "rightFieldMaximum": 0,
+    "publicReadings": [
+      {
+        "x": 0.5011,
+        "concentration": 0
+      },
+      {
+        "x": 0.505,
+        "concentration": 0
+      },
+      {
+        "x": 0.51,
+        "concentration": 0
+      },
+      {
+        "x": 0.515625,
+        "concentration": 0
+      }
+    ]
+  },
+  {
+    "case": "finite-source-budget",
+    "sourceRate": 80,
+    "accepted": true,
+    "fieldFinite": true,
+    "nonfiniteBudgetFields": [],
+    "balanceResidual": "1.3877787807814457e-17"
+  },
+  {
+    "case": "finite-source-budget",
+    "sourceRate": 1.7976931348623157e+308,
+    "accepted": false,
+    "error": "RangeError: Grid initial clipping budget must be finite"
+  }
+]

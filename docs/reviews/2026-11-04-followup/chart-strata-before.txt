@@ -1,0 +1,80 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ❯ src/components/ResearchCharts.test.ts (7 tests | 3 failed) 26ms
+   ✓ research chart statistics > uses Wilson intervals that remain valid at extreme observed rates 2ms
+   ✓ research chart statistics > aggregates median, IQR and observed success from raw seeded runs 1ms
+   ✓ research chart statistics > does not pool obstructed process-floor complexity strata 8ms
+   × research chart statistics > separates grid transport versions, resolutions and requested steps 9ms
+     → expected [ { scenarioKind: 'open', …(8) } ] to have a length of 4 but got 1
+   × research chart statistics > pools omitted historical version and timestep with their explicit effective values 2ms
+     → expected undefined to be 'legacy-semi-lagrangian-v1' // Object.is equality
+   × research chart statistics > separates effective physics modes while ignoring inactive grid settings 2ms
+     → expected [ { scenarioKind: 'open', …(8) } ] to have a length of 2 but got 1
+   ✓ research chart statistics > does not pool flat and sloped gas-response strata 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/ResearchCharts.test.ts > research chart statistics > separates grid transport versions, resolutions and requested steps
+AssertionError: expected [ { scenarioKind: 'open', …(8) } ] to have a length of 4 but got 1
+
+- Expected
++ Received
+
+- 4
++ 1
+
+ ❯ src/components/ResearchCharts.test.ts:180:18
+    178|         config: { ...reference.config, physicsStepSeconds: 0.125 } },
+    179|     ])
+    180|     expect(data).toHaveLength(4)
+       |                  ^
+    181|     expect(data.map(scenario => scenario.series[0]!.points[0]!.runs)).…
+    182|     expect(data.map(scenario => scenario.series[0]!.points[0]!.medianE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/components/ResearchCharts.test.ts > research chart statistics > pools omitted historical version and timestep with their explicit effective values
+AssertionError: expected undefined to be 'legacy-semi-lagrangian-v1' // Object.is equality
+
+- Expected: 
+"legacy-semi-lagrangian-v1"
+
++ Received: 
+undefined
+
+ ❯ src/components/ResearchCharts.test.ts:199:43
+    197|     ])
+    198|     expect(data).toHaveLength(1)
+    199|     expect(data[0]!.gridTransportVersion).toBe('legacy-semi-lagrangian…
+       |                                           ^
+    200|     expect(data[0]!.physicsStepSeconds).toBe(DEFAULT_PHYSICS_STEP_SECO…
+    201|     expect(data[0]!.series[0]!.points[0]!.runs).toBe(2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/components/ResearchCharts.test.ts > research chart statistics > separates effective physics modes while ignoring inactive grid settings
+AssertionError: expected [ { scenarioKind: 'open', …(8) } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/components/ResearchCharts.test.ts:217:18
+    215|         gridTransportVersion: 'conservative-upwind-v1', gridResolution…
+    216|     ])
+    217|     expect(data).toHaveLength(2)
+       |                  ^
+    218|     expect(data.map(scenario => scenario.physicsMode).sort()).toEqual(…
+    219|     for (const scenario of data) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  09:54:38
+   Duration  428ms (transform 163ms, setup 0ms, collect 204ms, tests 26ms, environment 0ms, prepare 71ms)
+

@@ -1,0 +1,640 @@
+Command: pnpm --silent validate:grid --output /workspace/scratch/8442b2e50dcd/plumnav_update/repo/docs/reviews/2026-11-04-followup/grid-transport.json
+
+{
+  "schemaVersion": 1,
+  "runtime": {
+    "node": "v24.22.1"
+  },
+  "scope": "Normalized 2D prescribed-flow scalar transport. No SI calibration, airflow solve, or navigation benchmark.",
+  "wallQualification": "Constant imposed wind into a full-height wall is not a self-consistent incompressible wall flow. This fixture tests zero scalar face flux and source/sink accounting for an accepted prescribed-flow scenario.",
+  "smoothReference": "Uniform divergence-free flow; continuum first/second moments of a radially truncated Gaussian initial field plus constant emission. The source sigma is fixed at 0.012 for all smooth-grid resolutions.",
+  "schemeOrder": "First-order upwind advection, midpoint-frozen velocity, explicit diffusion, then exact exponential decay and source injection. Space/time errors are expected and reported.",
+  "passed": true,
+  "checks": {
+    "legacyWallLossReproduced": true,
+    "conservativeWallRelativeResidualBelow1eMinus12": true,
+    "wallSourceMatchesIndependentIntegral": true,
+    "wallHasNoOutflowOrClipping": true,
+    "spatialVarianceErrorDecreases": true,
+    "temporalMeanErrorDecreases": true,
+    "smoothBoundaryOutflowNegligible": true,
+    "boundaryFluxMatchesIndependentIntegral": true,
+    "decayMatchesIntegratedClosedForm": true,
+    "clippingMeasuredAndBalanceCloses": true
+  },
+  "wall": [
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.000043494162390800284,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.49775248457319277,
+      "maximumConcentration": 0.0030042713042348623,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907107856,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.082063444021808e-9,
+      "maximumConcentration": 0.02221971368319905,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169354,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907107856,
+        "injectedMass": 0.00008388070321526708,
+        "decayLossMass": 2.669037591298841e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -1.7076184216646695e-18,
+        "maximumAdvectiveCourant": 0.052000000000000005,
+        "advectionSubsteps": 240
+      },
+      "relativeBudgetResidual": -1.9718671712126877e-14
+    },
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.05,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00004351844859940002,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4974720403191167,
+      "maximumConcentration": 0.003004364436492324,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.05,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907212716,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0699547711140114e-9,
+      "maximumConcentration": 0.022214999438971147,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169354,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907212716,
+        "injectedMass": 0.00008388070321526391,
+        "decayLossMass": 2.658552502593812e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 1.5585406229479126e-18,
+        "maximumAdvectiveCourant": 0.10400000000000001,
+        "advectionSubsteps": 120
+      },
+      "relativeBudgetResidual": 1.799720037217929e-14
+    },
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.1,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00004356270930827577,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.49696094113150296,
+      "maximumConcentration": 0.0030045106541365385,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 32,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.1,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907422413,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.045740085754125e-9,
+      "maximumConcentration": 0.022206778742930453,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169354,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907422413,
+        "injectedMass": 0.00008388070321526524,
+        "decayLossMass": 2.6375823251827227e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 1.7618285302889447e-19,
+        "maximumAdvectiveCourant": 0.20800000000000002,
+        "advectionSubsteps": 60
+      },
+      "relativeBudgetResidual": 2.0344661290289635e-15
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.000045356311989763753,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4762493687980457,
+      "maximumConcentration": 0.005815280135720968,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907107864,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0820625050374406e-9,
+      "maximumConcentration": 0.0771708313525119,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169337,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907107864,
+        "injectedMass": 0.00008388070321526292,
+        "decayLossMass": 2.669037591298838e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 2.5343225781848666e-18,
+        "maximumAdvectiveCourant": 0.10400000000000001,
+        "advectionSubsteps": 240
+      },
+      "relativeBudgetResidual": 2.926501277910894e-14
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.05,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00004536104249197592,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4761947434678362,
+      "maximumConcentration": 0.005815283861011267,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.05,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907212713,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0699550841088005e-9,
+      "maximumConcentration": 0.07716716799928984,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169337,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907212713,
+        "injectedMass": 0.00008388070321526681,
+        "decayLossMass": 2.6585525025938123e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -1.3688052427629493e-18,
+        "maximumAdvectiveCourant": 0.20800000000000002,
+        "advectionSubsteps": 120
+      },
+      "relativeBudgetResidual": -1.580623684860964e-14
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.07460212201591512,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00004536424180301425,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4761577995210683,
+      "maximumConcentration": 0.005815284792333841,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.07460212201591512,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907314949,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0581493901568345e-9,
+      "maximumConcentration": 0.07716483810744093,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169337,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907314949,
+        "injectedMass": 0.00008388070321526716,
+        "decayLossMass": 2.6483285307686315e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -1.7618285302889447e-18,
+        "maximumAdvectiveCourant": 0.3103448275862069,
+        "advectionSubsteps": 81
+      },
+      "relativeBudgetResidual": -2.0344661290289635e-14
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00004452805398535986,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4858136528761363,
+      "maximumConcentration": 0.006846975069493055,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907107872,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0820615660530736e-9,
+      "maximumConcentration": 0.178279678221396,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907107872,
+        "injectedMass": 0.00008388070321526509,
+        "decayLossMass": 2.6690375912987767e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 4.472333961502706e-19,
+        "maximumAdvectiveCourant": 0.20800000000000002,
+        "advectionSubsteps": 240
+      },
+      "relativeBudgetResidual": 5.164414019842754e-15
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.03730106100795756,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.000044528044548393096,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4858137618492226,
+      "maximumConcentration": 0.006846967618912458,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.03730106100795756,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907159334,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0761190469875745e-9,
+      "maximumConcentration": 0.1782796599857265,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907159334,
+        "injectedMass": 0.0000838807032152688,
+        "decayLossMass": 2.663889729612484e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -3.4287893704854078e-18,
+        "maximumAdvectiveCourant": 0.3103448275862069,
+        "advectionSubsteps": 161
+      },
+      "relativeBudgetResidual": -3.959384081879444e-14
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.03730106100795756,
+      "transportVersion": "legacy-semi-lagrangian-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.000044528044548393096,
+      "relativeDifferenceIgnoringNegligibleDecay": -0.4858137618492226,
+      "maximumConcentration": 0.006846967618912458,
+      "budget": null,
+      "relativeBudgetResidual": null
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.03730106100795756,
+      "transportVersion": "conservative-upwind-v1",
+      "time": 6,
+      "independentInitialMass": 0.000002718356122716934,
+      "independentInjectedMass": 0.00008388070321526541,
+      "currentMass": 0.00008659905907159334,
+      "relativeDifferenceIgnoringNegligibleDecay": -3.0761190469875745e-9,
+      "maximumConcentration": 0.1782796599857265,
+      "budget": {
+        "time": 6,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00008659905907159334,
+        "injectedMass": 0.0000838807032152688,
+        "decayLossMass": 2.663889729612484e-13,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -3.4287893704854078e-18,
+        "maximumAdvectiveCourant": 0.3103448275862069,
+        "advectionSubsteps": 161
+      },
+      "relativeBudgetResidual": -3.959384081879444e-14
+    }
+  ],
+  "spatialRefinement": [
+    {
+      "resolution": 64,
+      "requestedStepSeconds": 0.04807692307692308,
+      "actualStepSeconds": 0.04807692307692308,
+      "time": 2,
+      "measured": {
+        "mass": 0.00003067859052777267,
+        "meanX": 0.31934365871467774,
+        "varianceX": 0.0026453198805220374
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.0014158349562083394,
+      "absoluteVarianceError": 0.000883859753133161,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169337,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00003067859052777267,
+        "injectedMass": 0.00002796023440508879,
+        "decayLossMass": 3.2725799067603753e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -3.3203691532368573e-19,
+        "maximumAdvectiveCourant": 0.2,
+        "advectionSubsteps": 42
+      }
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.02403846153846154,
+      "actualStepSeconds": 0.02403846153846154,
+      "time": 2,
+      "measured": {
+        "mass": 0.00003067859052777225,
+        "meanX": 0.32004883763386005,
+        "varianceX": 0.002207887602796693
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.0007106560370260251,
+      "absoluteVarianceError": 0.00044642747540781674,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00003067859052777225,
+        "injectedMass": 0.000027960234405089194,
+        "decayLossMass": 3.313494649558034e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -7.453889935837843e-19,
+        "maximumAdvectiveCourant": 0.2,
+        "advectionSubsteps": 84
+      }
+    },
+    {
+      "resolution": 256,
+      "requestedStepSeconds": 0.01201923076923077,
+      "actualStepSeconds": 0.01201923076923077,
+      "time": 2,
+      "measured": {
+        "mass": 0.000030678590527772196,
+        "meanX": 0.3204039944924288,
+        "varianceX": 0.0019857325778579182
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.00035549917845728585,
+      "absoluteVarianceError": 0.0002242724504690418,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169265,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.000030678590527772196,
+        "injectedMass": 0.000027960234405088337,
+        "decayLossMass": 3.3149475257779365e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 8.131516293641283e-20,
+        "maximumAdvectiveCourant": 0.2,
+        "advectionSubsteps": 167
+      }
+    }
+  ],
+  "temporalRefinement": [
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.1,
+      "actualStepSeconds": 0.1,
+      "time": 2,
+      "measured": {
+        "mass": 0.000030678590527773396,
+        "meanX": 0.3177974683544047,
+        "varianceX": 0.0018825670170882908
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.002962025316481376,
+      "absoluteVarianceError": 0.00012110688969941435,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.000030678590527773396,
+        "injectedMass": 0.00002796023440508871,
+        "decayLossMass": 3.200888484506099e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -2.371692252312041e-19,
+        "maximumAdvectiveCourant": 0.8320000000000001,
+        "advectionSubsteps": 20
+      }
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.05,
+      "actualStepSeconds": 0.05,
+      "time": 2,
+      "measured": {
+        "mass": 0.00003067859052777274,
+        "meanX": 0.3192784810126327,
+        "varianceX": 0.0020943730477725464
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.0014810126582534,
+      "absoluteVarianceError": 0.00033291292038367,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00003067859052777274,
+        "injectedMass": 0.000027960234405088974,
+        "decayLossMass": 3.2671806050971445e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": -4.946672411965114e-19,
+        "maximumAdvectiveCourant": 0.41600000000000004,
+        "advectionSubsteps": 40
+      }
+    },
+    {
+      "resolution": 128,
+      "requestedStepSeconds": 0.025,
+      "actualStepSeconds": 0.025,
+      "time": 2,
+      "measured": {
+        "mass": 0.00003067859052777237,
+        "meanX": 0.32001898734174716,
+        "varianceX": 0.0022034443053831065
+      },
+      "exact": {
+        "mass": 0.0000306785905278054,
+        "meanX": 0.3207594936708861,
+        "varianceX": 0.0017614601273888764
+      },
+      "absoluteMeanError": 0.0007405063291389125,
+      "absoluteVarianceError": 0.0004419841779942301,
+      "budget": {
+        "time": 2,
+        "initialMass": 0.0000027183561227169346,
+        "initialClippingLossMass": 0,
+        "currentMass": 0.00003067859052777237,
+        "injectedMass": 0.00002796023440508788,
+        "decayLossMass": 3.302102963108842e-17,
+        "boundaryOutflowMass": 0,
+        "upperClippingLossMass": 0,
+        "lowerClippingGainMass": 0,
+        "balanceResidual": 5.759824041329242e-19,
+        "maximumAdvectiveCourant": 0.20800000000000002,
+        "advectionSubsteps": 80
+      }
+    }
+  ],
+  "exteriorOutflow": {
+    "independentOutflow": 1.1649907040547365e-7,
+    "budget": {
+      "time": 0.01,
+      "initialMass": 0.0000027183561227169346,
+      "initialClippingLossMass": 0,
+      "currentMass": 0.0000027416582243108844,
+      "injectedMass": 1.398011720254423e-7,
+      "decayLossMass": 2.6018572675900784e-17,
+      "boundaryOutflowMass": 1.1649907040547365e-7,
+      "upperClippingLossMass": 0,
+      "lowerClippingGainMass": 0,
+      "balanceResidual": 0,
+      "maximumAdvectiveCourant": 0.054400000000000004,
+      "advectionSubsteps": 1
+    }
+  },
+  "decayBudget": {
+    "exactSplitMass": 0.000010813339276864283,
+    "budget": {
+      "time": 2,
+      "initialMass": 0.0000027183561227169354,
+      "initialClippingLossMass": 0,
+      "currentMass": 0.000010813339276864285,
+      "injectedMass": 0.000027960234405088316,
+      "decayLossMass": 0.000019865251250941107,
+      "boundaryOutflowMass": 0,
+      "upperClippingLossMass": 0,
+      "lowerClippingGainMass": 0,
+      "balanceResidual": 1.4060746924421386e-19,
+      "maximumAdvectiveCourant": 0,
+      "advectionSubsteps": 40
+    }
+  },
+  "clipping": {
+    "time": 0.2,
+    "initialMass": 0.009073876164680719,
+    "initialClippingLossMass": 0.012672972817054758,
+    "currentMass": 0.012428712872860695,
+    "injectedMass": 0.022368187524070774,
+    "decayLossMass": 2.1773402072656017e-12,
+    "boundaryOutflowMass": 0,
+    "upperClippingLossMass": 0.019013350813713463,
+    "lowerClippingGainMass": 0,
+    "balanceResidual": 6.938893903907228e-18,
+    "maximumAdvectiveCourant": 0,
+    "advectionSubsteps": 4
+  }
+}

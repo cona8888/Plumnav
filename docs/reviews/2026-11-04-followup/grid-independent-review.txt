@@ -1,0 +1,73 @@
+FINAL DISPOSITION: PASS after physics-owner fixes. Independently re-reviewed current source and re-ran preserved reproductions. No remaining actionable regression identified within the reviewed scope. Reviewer did not modify tracked source.
+
+Independent review of versioned conservative GridPlume — 2026-11-04
+
+Scope: shared editable checkout plumnav_update/repo; review of current GridPlume implementation, version/replay integration, tests, source/sink budgets, numeric termination and public sampling. No tracked source changes made by reviewer. Model: inherited session model, no selected override.
+
+PRE-FIX RESULTS
+
+1. P2 — public conservative sampling crosses the new closed solid faces.
+   Location: src/sim/gridPlume.ts, sample(), pre-fix lines 586-609; concentrationAt()/concentrationsAt() use this sampler.
+   Field transport correctly closes an unresolved full-height thin wall. Its right-half grid values remain exactly zero. The unchanged bilinear sampler nevertheless mixes donor centres from the opposite side of the solid. This is pre-existing sampler behavior but materially undermines the newly added thin-wall conservative path; accumulation on the left makes the false right-side sensor value larger than legacy in the probe.
+   Repro: source=(.42,.5), wind=(.065,0), diffusivity=.0004, no turbulence/gust/intermittency, thin rectangle x=.499 width=.002 y=0 height=1, n=32, requested dt=.05, sourceRate=1.8, seed=4. At t=3 conservative right-half maximum is 0, while public concentration readings at y=.5 are .4648 at x=.5011, .34 at x=.505, and .18 at x=.51. The point x=.515625 at the right cell centre reads zero. Legacy right-half max is .2803638279 and reads .2977326047 at x=.505; no claim that this sampler defect was newly introduced.
+   Expected: a public concentration query on the zero-concentration side of this impermeable wall returns zero.
+   Minimal remedy: for conservative transport only, exclude interpolation donors whose segment from the query point to the donor cell centre intersects a solid; renormalize remaining weights. Preserve the historical sampling path for legacy replay.
+   Regression: check grid values plus both scalar and batched concentration APIs at points on the right side, and verify legacy outputs remain identical.
+
+2. P2 — derived CFL overflow can enter a non-terminating new subcycle loop.
+   Location: src/sim/gridPlume.ts, advectConservative(), pre-fix lines 477-491.
+   Per-face finite checks do not ensure that the sum of outgoing velocities, derived Courant or number of substeps remains finite/safe. When substeps becomes Infinity the for loop never completes.
+   Repro: n=16, dt=1, zero nominal wind/diffusion, sourceRate=.01, then manufacture transportAt=()=>({x:1e308,y:1e308}). Both components are finite. Conservative gridAt(1) was terminated by an external 3-second subprocess timeout after printing its before-query marker; the same legacy query returned successfully. Arithmetic inspection establishes maximumOutgoing/canonicalCourant/substeps overflow to Infinity.
+   Scope qualification: this is an extreme direct solver/manufactured-velocity API input. Bounded ordinary mission wind controls cannot reach it.
+   Minimal remedy: reject nonfinite/unsafe derived CFL/substep values before allocating/looping; reject any invalid effective constructor step. Do not allow tick/substep counters that cannot increment reliably.
+   Regression: assert prompt RangeError for finite-but-overflowing face velocities; existing above-envelope moderate velocities still produce finite nonnegative balanced output.
+
+3. P3 — accepted extreme finite source forcing can create nonfinite budget fields.
+   Location: sourceRate validation/initial budget setup, diffuseEmitAndDecay(), preparedBudget().
+   Direct options sourceRate=Number.MAX_VALUE, source=(.001,.001), n=64, dt=1, no wind/diffusion, conservative query at t=1 produce a bounded finite field but initialClippingLossMass=Infinity and injectedMass/upperClippingLossMass/balanceResidual=NaN. sourceRate=80 in the same fixture remains finite and balanced (residual about 1.39e-17).
+   Scope qualification: this is an extreme direct solver option, not reachable from bounded ordinary mission emission controls. Treat as input hardening, not evidence against normal conservation results. Reject unrepresentable source forcing/budgets clearly rather than export NaN/Infinity if included in scope.
+
+Verified positives:
+- Shared internal upwind face transfers have opposite signed contributions; exterior inflow is zero and exterior outflow is accounted with correct signs.
+- The sum-of-outgoing-speeds guard handles normal finite actual velocities above the constructor design estimate.
+- Symmetric solid masks are used by advection and diffusion.
+- Exponential loss, source injection and upper/lower concentration clipping enter the same cumulative balance as the field; initial ceiling losses are explicitly separate.
+- Field states and cumulative budgets are copied at checkpoints and on replay. Returned grid arrays/budget objects do not mutate internal state.
+- Off-tick fields and budgets interpolate consistently; upper-bracketing work diagnostics are explicitly documented.
+- Historical omitted-version routing selects legacy; old Float32 solver output is preserved in direct independent comparisons.
+- Batch mass budgets are fetched at each requested checkpoint. Integration tests reject a mismatched budget time.
+
+Tests actually run:
+node node_modules/vitest/vitest.mjs run src/sim/gridPlume.test.ts src/sim/gridPlume.conservation.test.ts src/sim/gridPlume.sourceNormalization.test.ts src/sim/batch.gridTransport.test.ts --maxWorkers=2
+  PASS: 27 tests, 4 files, 2.82 s. Log software-grid-review-tests.txt.
+node node_modules/typescript/bin/tsc --noEmit -p tsconfig.app.json
+  PASS: exit 0. Log software-grid-review-tsc.txt (empty).
+node node_modules/vite-node/vite-node.mjs ../logs/software-grid-review-probes.ts
+  PASS for assertions: 28 exact legacy grid snapshot comparisons (open/obstructed, 24/48 cells, reordered times) and 14 conservative comparisons to fresh engines (low source and clipped source), plus returned-snapshot mutation checks. Numerical observations above in software-grid-review-probes.json.
+External Python subprocess timeout harness with direct Node probe --cfl-overflow and --legacy variants.
+  Legacy returned exit0; conservative timed out after 3 s. Log software-grid-cfl-overflow.json.
+
+Reproduction source: software-grid-review-probes.ts. No full benchmark run. Parent notified; physics owner is applying the two primary fixes. Final independent rereview to follow.
+
+FINAL INDEPENDENT REREVIEW
+
+The physics owner fixed all three reported edge cases. Final source inspection confirms:
+- Conservative-only sampler rejects donor-to-query segments that cross a solid; legacy interpolation branch retains its historical arithmetic.
+- Conservative solver rejects nonfinite effective steps, unsafe query ticks, nonfinite derived Courant and unsafe substep counts before entering loops.
+- Conservative initialization, source forcing, concentration updates and cumulative budget sums reject nonfinite arithmetic clearly.
+- Existing moderate above-envelope transport, open-region interpolation, clipping and canonical replay behavior remain covered.
+
+Independent reruns against final source:
+1. node node_modules/vitest/vitest.mjs run src/sim/gridPlume.test.ts src/sim/gridPlume.conservation.test.ts src/sim/gridPlume.sourceNormalization.test.ts src/sim/batch.gridTransport.test.ts --maxWorkers=2
+   PASS: 36 tests, 4 files, 3.48 seconds (8 existing grid, 20 conservation/edge, 3 source normalization, 5 batch reporting). software-grid-review-tests-after.txt.
+2. node node_modules/typescript/bin/tsc --noEmit -p tsconfig.app.json
+   PASS: exit 0. software-grid-review-tsc-after.txt (empty).
+3. node node_modules/vite-node/vite-node.mjs ../logs/software-grid-review-probes.ts > ../logs/software-grid-review-probes-after.json
+   PASS: all 28 exact historical grid snapshot comparisons and all 14 conservative reordered/fresh-engine comparisons, plus returned-field/budget mutation isolation, remain valid. The four thin-wall right-side readings are now exactly zero. All legacy readings remain equal to the pre-fix values. Extreme finite sourceRate=Number.MAX_VALUE now throws RangeError: Grid initial clipping budget must be finite. sourceRate=80 retains finite fields/budgets and balance residual 1.3877787807814457e-17.
+4. Preserved external overflow harness, output software-grid-cfl-overflow-after.json:
+   Legacy unchanged: exit 0 in 0.736 seconds.
+   Conservative: no timeout; rejects with RangeError: Grid advective Courant number must be finite in 0.725 seconds including Node/vite-node startup. Exit1 is expected because the deliberate invalid-input probe leaves the rejection uncaught; this is not a test failure.
+5. git diff --check -- src/sim/gridPlume.ts src/sim/gridPlume.conservation.test.ts
+   PASS: exit 0.
+
+Before-fix evidence remains preserved in the original JSON/log files. Final after-fix evidence uses separate -after filenames. Parent notified of final PASS; full integrated source, build and commissioning gate remains parent responsibility.

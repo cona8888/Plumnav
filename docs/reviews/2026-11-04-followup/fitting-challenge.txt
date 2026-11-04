@@ -1,0 +1,17 @@
+Command: pnpm --silent survey:validate --challenge /workspace/scratch/8442b2e50dcd/plumnav_update/results/fitting-challenge
+
+near-35 asset-inspection: unresolved-abstention, nominated B
+upwind-35 asset-inspection: unresolved-abstention, nominated none
+lateral-35 asset-inspection: unresolved-abstention, nominated none
+blank-35 asset-inspection: unresolved-abstention, nominated none
+near-155 asset-inspection: unresolved-abstention, nominated C
+upwind-155 asset-inspection: unresolved-abstention, nominated none
+lateral-155 asset-inspection: unresolved-abstention, nominated none
+blank-155 asset-inspection: unresolved-abstention, nominated none
+near-290 asset-inspection: unresolved-abstention, nominated D
+upwind-290 asset-inspection: unresolved-abstention, nominated none
+lateral-290 asset-inspection: unresolved-abstention, nominated none
+blank-290 asset-inspection: unresolved-abstention, nominated none
+weak-wind asset-inspection: unresolved-abstention, nominated none
+short-budget asset-inspection: unresolved-abstention, nominated none
+Wrote 14 missions to /workspace/scratch/8442b2e50dcd/plumnav_update/results/fitting-challenge

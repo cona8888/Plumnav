@@ -1,0 +1,190 @@
+[
+  {
+    "name": "source-tests",
+    "command": [
+      "pnpm",
+      "test",
+      "--maxWorkers=2"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:58:06.458553+00:00",
+    "exit_code": 0,
+    "wall_seconds": 12.733,
+    "log": "source-tests.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "commissioning-tests",
+    "command": [
+      "pnpm",
+      "test:commissioning"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:58:19.192374+00:00",
+    "exit_code": 0,
+    "wall_seconds": 3.687,
+    "log": "commissioning-tests.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "production-build",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:58:22.879456+00:00",
+    "exit_code": 0,
+    "wall_seconds": 4.503,
+    "log": "production-build.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "grid-validation",
+    "command": [
+      "pnpm",
+      "--silent",
+      "validate:grid",
+      "--output",
+      "/workspace/scratch/8442b2e50dcd/plumnav_update/repo/docs/reviews/2026-11-04-followup/grid-transport.json"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:58:27.382893+00:00",
+    "exit_code": 0,
+    "wall_seconds": 10.099,
+    "log": "grid-validation.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "packaged-data",
+    "command": [
+      "pnpm",
+      "validate:data"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:58:37.481924+00:00",
+    "exit_code": 0,
+    "wall_seconds": 37.204,
+    "log": "packaged-data.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "sensor-calibration",
+    "command": [
+      "pnpm",
+      "--silent",
+      "sensor:calibrate"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:59:14.686010+00:00",
+    "exit_code": 0,
+    "wall_seconds": 0.767,
+    "log": "sensor-calibration.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "fitting-standard",
+    "command": [
+      "pnpm",
+      "--silent",
+      "survey:validate",
+      "/workspace/scratch/8442b2e50dcd/plumnav_update/results/fitting-standard"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:59:15.453237+00:00",
+    "exit_code": 0,
+    "wall_seconds": 18.683,
+    "log": "fitting-standard.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "fitting-challenge",
+    "command": [
+      "pnpm",
+      "--silent",
+      "survey:validate",
+      "--challenge",
+      "/workspace/scratch/8442b2e50dcd/plumnav_update/results/fitting-challenge"
+    ],
+    "started_utc_container_clock": "2026-11-04T08:59:34.137168+00:00",
+    "exit_code": 0,
+    "wall_seconds": 5.633,
+    "log": "fitting-challenge.txt",
+    "phase": "initial integrated verification"
+  },
+  {
+    "name": "source-tests-final",
+    "phase": "final after independent review corrections",
+    "command": [
+      "pnpm",
+      "test",
+      "--maxWorkers=2"
+    ],
+    "started_utc_container_clock": "2026-11-04T09:09:03.187678+00:00",
+    "exit_code": 0,
+    "wall_seconds": 11.833,
+    "log": "preliminary/source-tests-final-incomplete.txt",
+    "note": "Command returned 0, but console output omitted several files and final totals. Repeated with machine-readable reporter to establish complete final counts."
+  },
+  {
+    "name": "review-tests-final",
+    "phase": "final after independent review corrections",
+    "command": [
+      "pnpm",
+      "test:review"
+    ],
+    "started_utc_container_clock": "2026-11-04T09:09:15.021692+00:00",
+    "exit_code": 0,
+    "wall_seconds": 3.628,
+    "log": "review-tests-final.txt"
+  },
+  {
+    "name": "production-build-final",
+    "phase": "final after independent review corrections",
+    "command": [
+      "pnpm",
+      "build"
+    ],
+    "started_utc_container_clock": "2026-11-04T09:09:18.650495+00:00",
+    "exit_code": 0,
+    "wall_seconds": 4.457,
+    "log": "production-build-final.txt"
+  },
+  {
+    "name": "grid-validation-final",
+    "phase": "final after independent review corrections",
+    "command": [
+      "pnpm",
+      "--silent",
+      "validate:grid",
+      "--output",
+      "/workspace/scratch/8442b2e50dcd/plumnav_update/repo/docs/reviews/2026-11-04-followup/grid-transport.json"
+    ],
+    "started_utc_container_clock": "2026-11-04T09:09:23.108144+00:00",
+    "exit_code": 0,
+    "wall_seconds": 9.439,
+    "log": "grid-validation-final.txt"
+  },
+  {
+    "name": "source-tests-final-json",
+    "phase": "final complete machine-readable source verification",
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "--maxWorkers=2",
+      "--reporter=json",
+      "--outputFile",
+      "/workspace/scratch/8442b2e50dcd/plumnav_update/repo/docs/reviews/2026-11-04-followup/source-tests-final.json"
+    ],
+    "started_utc_container_clock": "2026-11-04T09:10:43.721977+00:00",
+    "exit_code": 0,
+    "wall_seconds": 10.792,
+    "log": "source-tests-final.txt",
+    "report": "source-tests-final.json",
+    "summary": {
+      "numTotalTestSuites": 93,
+      "numPassedTestSuites": 93,
+      "numFailedTestSuites": 0,
+      "numTotalTests": 474,
+      "numPassedTests": 474,
+      "numFailedTests": 0,
+      "numPendingTests": 0,
+      "success": true,
+      "testFiles": 41
+    }
+  }
+]
