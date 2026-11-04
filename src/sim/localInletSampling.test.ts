@@ -119,6 +119,22 @@ describe('engine integration of physical sensing', () => {
     expect(Math.hypot(engine.scenario.baseWind.x, engine.scenario.baseWind.y) * domainMetres).toBeCloseTo(1)
     expect(engine.environment.inspectionContract!.settlingSeconds).toBeGreaterThan(7)
   })
+  it('integrates displacement and turning only over the remaining partial control interval', () => {
+    const base = { ...config(), durationSeconds: 0.4, checkpointSeconds: [0.4] }
+    for (const turn of [false, true]) {
+      const engine = new SimulationEngine(base)
+      const intervals: number[] = []
+      engine.controller.step = input => {
+        intervals.push(input.dt)
+        return { direction: turn ? { x: 0, y: 1 } : { x: 1, y: 0 }, estimate: null, confidence: 0, phase: 'MOVE' }
+      }
+      const frame = engine.runToCompletion()
+      expect(frame.metrics.pathLengthMeters).toBeCloseTo(turn ? 0 : 0.1 * 0.4, 12)
+      expect(frame.robot.heading).toBeCloseTo(turn ? Math.PI / 4 * 0.4 : 0, 12)
+      expect(intervals).toHaveLength(2)
+      expect(intervals[1]).toBeCloseTo(0.15, 12)
+    }
+  })
   it('bounds robot turning and speed and stops sampled-air accounting at declaration', () => {
     const engine = new SimulationEngine(config())
     vi.spyOn(engine.plume, 'concentrationAt').mockReturnValue(0)
@@ -137,12 +153,54 @@ describe('engine integration of physical sensing', () => {
     const p = config()
     expect(() => new SimulationEngine({ ...p, fixedDt: 0.3 })).toThrow(/cadence/)
     expect(() => new SimulationEngine({ ...p, activeSniffCycleSeconds: 0.75 })).toThrow(/clock/)
-    const edge = new SimulationEngine({ ...p, robotStartPositionOverride: { x: 0, y: 0.5 } })
-    expect(() => edge.step()).toThrow(/inlet intersects/)
+    expect(() => new SimulationEngine({ ...p, robotStartPositionOverride: { x: 0, y: 0.5 } }))
+      .toThrow(/start.*footprint clearance/)
   })
   it('does not share a mutable physical configuration with its caller', () => {
     const p = config(), engine = new SimulationEngine(p)
     p.localInletSampling!.inspection.dwellSeconds = 999
     expect(engine.config.localInletSampling!.inspection.dwellSeconds).not.toBe(999)
+  })
+})
+
+describe('controller behaviour between 1 Hz inlet samples', () => {
+  const stationaryEngine = (algorithmId: 'infotaxis' | 'pmfs' | 'surge-cast', fixedDt = 0.25) => {
+    const engine = new SimulationEngine({ ...config(), algorithmId, fixedDt, robotSpeed: 0 })
+    vi.spyOn(engine.plume, 'concentrationAt').mockReturnValue(1)
+    return engine
+  }
+
+  it('holds the Infotaxis posterior while waiting for the next sample', () => {
+    const engine = stationaryEngine('infotaxis')
+    const initial = engine.step()
+    const waiting = engine.step()
+    expect(waiting.measurement.valid).toBe(false)
+    expect(waiting.decision.debug!.grid!.values).toEqual(initial.decision.debug!.grid!.values)
+  })
+
+  it('gives PMFS the same posterior for the same sequence of stationary inlet readings', () => {
+    const sampleRate = stationaryEngine('pmfs', 1)
+    const fasterControl = stationaryEngine('pmfs')
+    for (let time = 0; time < 12; time++) {
+      const expected = sampleRate.step()
+      const actual = fasterControl.step()
+      expect(actual.measurement.time).toBe(expected.measurement.time)
+      expect(actual.measurement.concentration).toBeCloseTo(expected.measurement.concentration, 12)
+      expect(actual.measurement.hit).toBe(expected.measurement.hit)
+      const values = actual.decision.debug!.grid!.values
+      const reference = expected.decision.debug!.grid!.values
+      expect(Math.max(...values.map((value, i) => Math.abs(value - reference[i]!)))).toBeLessThan(1e-12)
+      for (let tick = 1; tick < 4; tick++) fasterControl.step()
+    }
+  })
+
+  it('keeps surging between a valid hit and the next gas reading', () => {
+    const engine = stationaryEngine('surge-cast')
+    let frame = engine.step()
+    while (!engine.isCompleted() && !frame.measurement.hit) frame = engine.step()
+    expect(frame.decision.phase).toBe('UPWIND SURGE')
+    const waiting = engine.step()
+    expect(waiting.measurement.valid).toBe(false)
+    expect(waiting.decision.phase).toBe('UPWIND SURGE')
   })
 })

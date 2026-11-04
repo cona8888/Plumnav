@@ -1,8 +1,8 @@
-import type { AlgorithmId, ScenarioKind, SimulationConfig } from './types'
+import type { AlgorithmId, GridTransportVersion, ScenarioKind, SimulationConfig } from './types'
 import { validateLocalInletConfig } from './localInletSampling'
 import { validatePhysicalAtmosphere } from './physicalAtmosphere'
 
-export const SIMULATOR_VERSION = '0.20.1' as const
+export const SIMULATOR_VERSION = '0.22.0' as const
 
 export const SENSOR_THRESHOLD_BY_SCENARIO: Record<ScenarioKind, number> = {
   open: 0.115,
@@ -66,10 +66,16 @@ export const DEFAULT_QUAD_CHANNEL_NUISANCE_CONTROLS = {
 
 export const DEFAULT_PHYSICS_CONTROLS = {
   physicsMode: 'filament',
+  gridTransportVersion: 'conservative-upwind-v1',
   gridResolution: 48,
   physicsStepSeconds: 0.25,
-} satisfies Pick<SimulationConfig, 'physicsMode' | 'gridResolution' | 'physicsStepSeconds'>
+} satisfies Pick<SimulationConfig, 'physicsMode' | 'gridTransportVersion' | 'gridResolution' | 'physicsStepSeconds'>
 export const DEFAULT_PHYSICS_STEP_SECONDS = DEFAULT_PHYSICS_CONTROLS.physicsStepSeconds
+
+/** Omitted fields in frozen manifests retain the original transport scheme. */
+export const effectiveGridTransportVersion = (
+  config: Pick<SimulationConfig, 'gridTransportVersion'>,
+): GridTransportVersion => config.gridTransportVersion ?? 'legacy-semi-lagrangian-v1'
 
 export const DEFAULT_OBSTACLE_COMPLEXITY_LEVEL = 3
 
@@ -126,6 +132,33 @@ const validateOptionalUnitPoint = (
 export const validateSimulationConfig = (config: SimulationConfig) => {
   validatePhysicalAtmosphere(config, effectiveSensorThreshold(config))
   validateLocalInletConfig(config)
+  if (config.assetVerification && config.algorithmId !== 'asset-inspection') {
+    throw new Error('Wind-bracket verification requires the asset-inspection controller')
+  }
+  if (config.algorithmId === 'asset-inspection') {
+    const local = config.localInletSampling
+    const stations = config.inspectionStations
+    if (!config.physicalAtmosphere || !local || config.robotSpeed <= 0) {
+      throw new Error('Asset inspection requires the mobile, flat open SI local-inlet model')
+    }
+    const verification = config.assetVerification
+    if (verification && (verification.version !== 'wind-bracket-v1' ||
+        !Number.isFinite(verification.minimumWindMetresPerSecond) || verification.minimumWindMetresPerSecond <= 0 ||
+        !Number.isFinite(verification.offsetMetres) || verification.offsetMetres >= config.domainMeters ||
+        verification.offsetMetres <= Math.max(local.opposingInletSpacingMetres,
+          2 * local.inspection.arrivalRadiusNormalized * config.domainMeters))) {
+      throw new RangeError('Invalid wind-bracket control offset or minimum wind speed')
+    }
+    if (!Array.isArray(stations) || stations.length < 2) throw new Error('Supply at least two inspection stations')
+    const clearance = Math.hypot(local.robotLengthMetres, local.robotWidthMetres) / (2 * config.domainMeters)
+    for (const [index, point] of stations.entries()) {
+      if (!point || ![point.x, point.y].every(v => Number.isFinite(v) && v >= clearance && v <= 1 - clearance)) {
+        throw new RangeError('Each inspection station must allow full robot clearance')
+      }
+      if (stations.slice(0, index).some(other => Math.hypot(other.x - point.x, other.y - point.y) <=
+          2 * local.inspection.arrivalRadiusNormalized)) throw new RangeError('Inspection station arrival regions must be distinct')
+    }
+  }
   if (!['emitting', 'zero-emission', 'absent'].includes(config.targetStatus)) {
     throw new RangeError('targetStatus must be emitting, zero-emission, or absent')
   }
@@ -259,6 +292,11 @@ export const validateSimulationConfig = (config: SimulationConfig) => {
   if (config.physicsMode !== 'filament' && config.physicsMode !== 'grid') {
     throw new RangeError('physicsMode must be filament or grid')
   }
+  if (config.gridTransportVersion !== undefined &&
+      config.gridTransportVersion !== 'legacy-semi-lagrangian-v1' &&
+      config.gridTransportVersion !== 'conservative-upwind-v1') {
+    throw new RangeError('gridTransportVersion must be legacy-semi-lagrangian-v1 or conservative-upwind-v1')
+  }
   if (!Number.isInteger(config.gridResolution) || config.gridResolution < 24 || config.gridResolution > 256) {
     throw new RangeError('gridResolution must be an integer in [24, 256]')
   }
@@ -316,8 +354,26 @@ export const validateSimulationConfig = (config: SimulationConfig) => {
   if (config.successThreshold <= 0 || config.successThreshold > Math.SQRT2) {
     throw new RangeError('successThreshold must be in (0, sqrt(2)]')
   }
-  if (config.checkpointSeconds.some((checkpoint) => checkpoint < 0)) {
-    throw new RangeError('checkpointSeconds cannot be negative')
+  // A checkpoint describes the complete state at a control-step boundary.
+  // The final deadline may truncate the last step, but intermediate partial
+  // steps are not simulated and must never be labelled with an earlier time.
+  const checkpointTicks = new Set<number | 'deadline'>()
+  for (const checkpoint of config.checkpointSeconds) {
+    if (checkpoint <= 0 || checkpoint > config.durationSeconds) {
+      throw new RangeError('checkpointSeconds must be positive and no later than durationSeconds')
+    }
+    const ticks = checkpoint / config.fixedDt
+    const roundedTicks = Math.round(ticks)
+    const aligned = roundedTicks >= 1 &&
+      Math.abs(ticks - roundedTicks) <= 8 * Number.EPSILON * Math.max(1, Math.abs(ticks))
+    if (checkpoint !== config.durationSeconds && !aligned) {
+      throw new RangeError('checkpointSeconds must align with fixedDt control-step boundaries, except the final durationSeconds deadline')
+    }
+    const key = aligned ? roundedTicks : 'deadline'
+    if (checkpointTicks.has(key)) {
+      throw new RangeError('checkpointSeconds must not contain duplicate control-step times')
+    }
+    checkpointTicks.add(key)
   }
   return config
 }
@@ -333,6 +389,8 @@ export const createDefaultConfig = (
 ): SimulationConfig => ({
   algorithmId,
   scenarioKind,
+  ...(algorithmId === 'asset-inspection' ? { assetVerification: { version: 'wind-bracket-v1' as const,
+    offsetMetres: 0.4, minimumWindMetresPerSecond: 0.005 } } : {}),
   seed: 42,
   sourceSeed: 2_097_169,
   controllerSeed: 1_048_573,

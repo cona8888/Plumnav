@@ -1,0 +1,18 @@
+[
+  {
+    "version": "legacy",
+    "timedOut": false,
+    "elapsedSeconds": 0.7359290200001851,
+    "returncode": 0,
+    "stdout": "{\"phase\":\"before-query\",\"version\":\"legacy-semi-lagrangian-v1\",\"finiteFaceVelocities\":true}\n{\"phase\":\"query-returned\",\"version\":\"legacy-semi-lagrangian-v1\",\"mass\":0.000013980117216760846}\n",
+    "stderr": ""
+  },
+  {
+    "version": "conservative",
+    "timedOut": false,
+    "elapsedSeconds": 0.7245801690000917,
+    "returncode": 1,
+    "stdout": "{\"phase\":\"before-query\",\"version\":\"conservative-upwind-v1\",\"finiteFaceVelocities\":true}\n",
+    "stderr": "/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:355\n      throw new RangeError(\"Grid advective Courant number must be finite\");\n            ^\n\nRangeError: Grid advective Courant number must be finite\n    at GridPlume.advectConservative (/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:492:13)\n    at GridPlume.evolve (/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:401:14)\n    at GridPlume.stateAtTick (/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:364:31)\n    at GridPlume.prepareField (/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:308:24)\n    at GridPlume.gridAt (/workspace/scratch/8442b2e50dcd/plumnav_update/repo/src/sim/gridPlume.ts:261:24)\n    at /workspace/scratch/8442b2e50dcd/plumnav_update/logs/software-grid-review-probes.ts:24:26\n    at ViteNodeRunner.runModule (file:///workspace/scratch/8442b2e50dcd/plumnav_update/repo/node_modules/.pnpm/vite-node@3.2.4_lightningcss@1.33.0/node_modules/vite-node/dist/client.mjs:397:4)\n    at ViteNodeRunner.directRequest (file:///workspace/scratch/8442b2e50dcd/plumnav_update/repo/node_modules/.pnpm/vite-node@3.2.4_lightningcss@1.33.0/node_modules/vite-node/dist/client.mjs:375:3)\n    at ViteNodeRunner.cachedRequest (file:///workspace/scratch/8442b2e50dcd/plumnav_update/repo/node_modules/.pnpm/vite-node@3.2.4_lightningcss@1.33.0/node_modules/vite-node/dist/client.mjs:189:11)\n    at ViteNodeRunner.executeFile (file:///workspace/scratch/8442b2e50dcd/plumnav_update/repo/node_modules/.pnpm/vite-node@3.2.4_lightningcss@1.33.0/node_modules/vite-node/dist/client.mjs:162:10)\n\nNode.js v24.22.1\n"
+  }
+]

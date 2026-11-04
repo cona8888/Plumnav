@@ -1,0 +1,15 @@
+case,method,emitting_fitting,flagged_fitting,flag_to_source_m,strict_source_outcome,declared_error_m,decision_s,elapsed_s,path_m,passive_hits,valid_samples,max_excess_ppm,blocked_motion_ticks
+near-35,asset-inspection,B,B,0.0799999999999997,unresolved-abstention,,407.25,407.5,20.402997739924135,132,408,0.8538944358733253,0
+upwind-35,asset-inspection,,,,unresolved-abstention,,336,336.25,18.637312314974817,96,337,0.8989838102327863,0
+lateral-35,asset-inspection,,,,unresolved-abstention,,384.75,385,20.00299773992412,107,385,0.8006720544025612,0
+blank-35,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,0,287,0.002335169973740204,0
+near-155,asset-inspection,C,C,0.07999999999999996,unresolved-abstention,,391,391.25,18.826078667898095,92,392,0.6986274630908054,0
+upwind-155,asset-inspection,,,,unresolved-abstention,,321,321.25,17.06039324294879,78,322,0.898456912936238,0
+lateral-155,asset-inspection,,,,unresolved-abstention,,368.5,368.75,18.426078667898082,63,369,0.6034730154353172,0
+blank-155,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,0,287,0.0023372154222366347,0
+near-290,asset-inspection,D,D,0.08000000000000014,unresolved-abstention,,378.25,378.5,17.579898987322167,99,379,0.74042026832378,0
+upwind-290,asset-inspection,,,,unresolved-abstention,,307,307.25,15.814213562372881,70,308,0.8993443354160515,0
+lateral-290,asset-inspection,,,,unresolved-abstention,,355.75,356,17.179898987322158,62,356,0.6028229634806801,0
+blank-290,asset-inspection,,,,unresolved-abstention,,286,286.25,15.414213562372868,0,287,0.0019205010036571855,0
+weak-wind,asset-inspection,B,,,unresolved-abstention,,286,286.25,15.414213562372868,87,287,1.8778015723774106,0
+short-budget,asset-inspection,B,,,unresolved-abstention,,286,286.25,15.414213562372868,67,287,0.7776033191412841,0

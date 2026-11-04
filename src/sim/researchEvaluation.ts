@@ -101,7 +101,8 @@ export function evaluateArchivedLeakRun(config: SimulationConfig, metrics: Metri
       : { kind: 'none' }
   return evaluateLeakDecision({
     truth: { geometricSource: source,
-      activeEmission: config.targetStatus === 'emitting' && config.emissionRateScale > 0,
+      activeEmission: config.targetStatus === 'emitting' &&
+        (config.physicalAtmosphere?.emissionRateKgPerSecond ?? config.emissionRateScale) > 0,
       detectability: 'unknown' },
     decision, elapsedSeconds: metrics.elapsedSeconds, deadlineSeconds: config.durationSeconds,
     toleranceNormalized: config.successThreshold,

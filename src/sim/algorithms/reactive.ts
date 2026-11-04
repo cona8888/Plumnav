@@ -285,6 +285,9 @@ const buildPlumeAcquisitionWaypoints = (startAtTop: boolean): Vec2[] => {
 export class CoverageController implements AlgorithmController {
   readonly metadata = ALGORITHM_METADATA.coverage
 
+  // Only the archived C1 reference fixture requests the original end-of-sweep declaration.
+  constructor(private readonly completion: 'screening' | 'archived-peak' = 'screening') {}
+
   private environment!: AlgorithmEnvironment
   private readonly tracker = new ObservationTracker()
   private waypoints: Vec2[] = []
@@ -317,6 +320,11 @@ export class CoverageController implements AlgorithmController {
       ? clamp(progress * 0.8 + Math.min(0.15, this.tracker.hitCount() * 0.004))
       : 0
 
+    if (this.terminated && this.completion === 'screening') {
+      return { direction: ZERO, estimate, estimateRole: 'sampled-peak', confidence: 0, phase: 'COVERAGE COMPLETE', nativeAbstained: true,
+        terminationReason: 'Survey complete. The highest sampled reading is available for reinspection. Source location is unresolved.',
+        debug: { target: estimate ?? undefined, note: 'The peak is a measured location on the route.' } }
+    }
     if (this.terminated) {
       return {
         direction: ZERO,
@@ -339,7 +347,8 @@ export class CoverageController implements AlgorithmController {
     return {
       direction,
       estimate,
-      confidence,
+      ...(this.completion === 'screening' ? { estimateRole: 'sampled-peak' as const } : {}),
+      confidence: this.completion === 'screening' ? 0 : confidence,
       phase: 'BOUSTROPHEDON SWEEP',
       debug: {
         target: copyPoint(target),
@@ -438,7 +447,10 @@ export class SurgeCastController implements AlgorithmController {
 
     let phase: string
     let desired: Vec2
-    if (!this.everHit && !input.measurement.hit) {
+    // Hold the last encounter state between inlet readings. Only a new
+    // observation can establish contact loss or refresh the last-hit clock.
+    const hit = input.measurement.valid ? input.measurement.hit : this.wasHit
+    if (!this.everHit && !hit) {
       phase = 'PLUME ACQUISITION SWEEP'
       while (
         this.acquisitionIndex < this.acquisitionWaypoints.length - 1 &&
@@ -451,11 +463,11 @@ export class SurgeCastController implements AlgorithmController {
       }
       const target = this.acquisitionWaypoints[this.acquisitionIndex] ?? input.position
       desired = { x: target.x - input.position.x, y: target.y - input.position.y }
-    } else if (input.measurement.hit) {
+    } else if (hit) {
       this.everHit = true
       phase = 'UPWIND SURGE'
       desired = this.lastUpwind
-      this.lastHitTime = input.time
+      if (input.measurement.valid) this.lastHitTime = input.time
       this.castProgress = 0
       if (!this.wasHit) {
         this.castLeg = 0
@@ -471,7 +483,7 @@ export class SurgeCastController implements AlgorithmController {
       }
       desired = rotate(this.lastUpwind, this.castSide * (Math.PI / 2))
     }
-    this.wasHit = input.measurement.hit
+    this.wasHit = hit
 
     if (input.time - this.lastPeakUpdate >= 0.7 || this.peak === null) {
       this.peak = this.tracker.peak(0.085)

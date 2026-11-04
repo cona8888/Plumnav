@@ -1,0 +1,59 @@
+{
+  "node": "v24.22.1",
+  "outputs": [
+    {
+      "resolution": 32,
+      "wall": false,
+      "timeSeconds": 6,
+      "expectedMass": 0.00008659906328567502,
+      "observedMass": 0.00008659150841372476,
+      "relativeBalanceError": -0.000087239649756173,
+      "maxConcentration": 0.003004364436492324
+    },
+    {
+      "resolution": 32,
+      "wall": true,
+      "timeSeconds": 6,
+      "expectedMass": 0.00008659906328567502,
+      "observedMass": 0.00004351844859940002,
+      "relativeBalanceError": -0.49747206322728527,
+      "maxConcentration": 0.003004364436492324
+    },
+    {
+      "resolution": 64,
+      "wall": false,
+      "timeSeconds": 6,
+      "expectedMass": 0.00008659905191166217,
+      "observedMass": 0.00008659903366208346,
+      "relativeBalanceError": -2.1073647241714137e-7,
+      "maxConcentration": 0.005815283861011267
+    },
+    {
+      "resolution": 64,
+      "wall": true,
+      "timeSeconds": 6,
+      "expectedMass": 0.00008659905191166217,
+      "observedMass": 0.00004536104249197592,
+      "relativeBalanceError": -0.47619469854880464,
+      "maxConcentration": 0.005815283861011267
+    },
+    {
+      "resolution": 128,
+      "wall": false,
+      "timeSeconds": 6,
+      "expectedMass": 0.00008659906524854932,
+      "observedMass": 0.00008659910399619465,
+      "relativeBalanceError": 4.474372236322877e-7,
+      "maxConcentration": 0.00684696901589632
+    },
+    {
+      "resolution": 128,
+      "wall": true,
+      "timeSeconds": 6,
+      "expectedMass": 0.0000865990618859177,
+      "observedMass": 0.000044528044548393096,
+      "relativeBalanceError": -0.4858137769777155,
+      "maxConcentration": 0.006846967618912458
+    }
+  ]
+}

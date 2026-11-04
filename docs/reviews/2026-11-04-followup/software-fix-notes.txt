@@ -1,0 +1,40 @@
+Plumnav B1/B2 implementation handoff — 2026-11-04
+
+STATUS: config.ts and engine.ts edits complete. Parent may add grid transport version/default/helper and solver option wiring now. No further edits to these files by software agent.
+
+Checkout: /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+Branch: fix/pstack-followup-2026-11-04
+Audit baseline: 3507527250400d25081f3793191084c9c3356a56 (immutable prior review checkout retained).
+
+B1 design: Explicit rejection of unsupported checkpoint requests. Config accepts unique positive finite checkpoint times no later than duration; intermediate requests must coincide with fixedDt control ticks; the exact final duration may be off-grid. Empty and unsorted valid schedules remain supported. Duplicate equivalent floating tick times also reject. No accepted request is silently filtered. Clock uses integer tick count multiplied by fixedDt, with floating roundoff handling at final deadline, so decimal fixedDt does not delay checkpoints or add a final sensor sample. Existing partial final-step behavior remains.
+
+B2 design: Common engine validates the same footprint collision predicate used by movement before controller construction/reset whenever localInletSampling is active. Rejects physical footprint overlaps at domain edges and obstacles. Asset-specific failure retains 'reachable start' for diagnostic compatibility. Legacy point-robot setups keep existing semantics.
+
+Owned source files changed:
+- src/sim/config.ts
+- src/sim/engine.ts
+- src/sim/checkpointContract.test.ts (new, 18 tests)
+- src/sim/physicalStart.test.ts (new, 73 tests; exhaustive factory metadata keys)
+- src/sim/sensor.test.ts (duration=3 fixture now explicitly requests checkpoint [3])
+- src/sim/localInletSampling.test.ts (invalid edge-start fixture now expects immediate setup error)
+
+Actual tests and evidence:
+1. node node_modules/vitest/vitest.mjs run src/sim/checkpointContract.test.ts src/sim/physicalStart.test.ts --maxWorkers=2
+   Before fix: 47 failed, 44 passed, 91 total. software-regressions-before.txt.
+   After fix: 91 passed. software-regressions-after.txt.
+2. node node_modules/vitest/vitest.mjs run src/sim/checkpointContract.test.ts src/sim/physicalStart.test.ts src/sim/engine.test.ts src/sim/localInletSampling.test.ts src/sim/algorithms/assetInspection.test.ts src/sim/sensor.test.ts src/sim/replay.test.ts src/sim/researchPlacement.test.ts --maxWorkers=2
+   Final focused suite: 171 passed, 8 files, 4.52 seconds. software-focused-final.txt.
+3. node node_modules/vitest/vitest.mjs run --config scripts/vitest.headless.config.ts scripts/si-research-config.test.ts scripts/physical-acquisition-budget.test.ts scripts/grid-commissioning.test.ts --maxWorkers=2
+   20 passed, 3 files, 1.03 seconds. software-si-compatibility.txt.
+4. Initial compatibility suite: 84 passed, 3 failed. software-compatibility.txt. Two invalid existing fixtures subsequently repaired and passed above. Third failure was parent concurrent batch.ts import of effectiveGridTransportVersion before helper integration; root acknowledged this temporary unresolved import. Full batch/source rerun belongs to integration gate after root grid wiring.
+5. node node_modules/vite-node/vite-node.mjs ../logs/software-before-after.ts > ../logs/software-before-after.json
+   Bounded external probe imports immutable audit and working fix; successful exit 0. Probe copies first-frame checkpoint summaries immediately, before runToCompletion mutates the engine checkpoint object.
+   Old .05/.1/.15 requests contain state after .2s with 1m travelled; new requests reject explicitly. Old .9s/dt.3 deadline samples=4; new samples=3. Off-grid final .85s is accepted, reaches exact .85s and valid checkpoints. Old physical edge setup runs blocked until normal budget completion; new fails immediately with footprint setup error.
+6. git diff --check -- src/sim/config.ts src/sim/engine.ts src/sim/checkpointContract.test.ts src/sim/physicalStart.test.ts src/sim/sensor.test.ts src/sim/localInletSampling.test.ts
+   exit 0; no whitespace errors.
+
+No full benchmark was run. Parent owns full integrated build, commissioning and replay checks. No commits or pushes by this agent. No simulator version edit by this agent. No source changes to immutable prior audit. Model identity: inherited session model; no selected override.
+
+POST-INTEGRATION TARGETED GATE: After parent added version0.22.0/helper/engine grid option, ran:
+node node_modules/vitest/vitest.mjs run src/sim/checkpointContract.test.ts src/sim/physicalStart.test.ts src/sim/batch.test.ts --maxWorkers=2
+Exit0; 98 tests passed, 3 files. software-integrated-targeted.txt. The earlier temporary batch helper failure is resolved. Parent retains full integration gate.

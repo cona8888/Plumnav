@@ -1,4 +1,5 @@
-import type { AlgorithmController, AlgorithmId } from '../types'
+import type { AlgorithmController, AlgorithmId, Vec2 } from '../types'
+import { AssetInspectionController, type WindBracket } from './assetInspection'
 import { createInfotaxisController } from './infotaxis'
 import { createPmfsController } from './pmfs'
 import { createPulseSniffController } from './pulseSniff'
@@ -22,7 +23,7 @@ import {
 } from './reactive'
 import { createSmcKlController } from './smc'
 
-const FACTORIES: Record<AlgorithmId, () => AlgorithmController> = {
+const FACTORIES: Record<Exclude<AlgorithmId, 'asset-inspection'>, () => AlgorithmController> = {
   coverage: createCoverageController,
   'surge-cast': createSurgeCastController,
   'zigzag-spiral': createZigzagSpiralController,
@@ -43,6 +44,11 @@ const FACTORIES: Record<AlgorithmId, () => AlgorithmController> = {
   'quad-passive': createQuadPassiveController,
 }
 
-export const createController = (algorithmId: AlgorithmId) => FACTORIES[algorithmId]()
+export const createController = (algorithmId: AlgorithmId, stations?: readonly Vec2[], sensorThreshold?: number,
+  verification?: WindBracket): AlgorithmController => {
+  if (algorithmId !== 'asset-inspection') return FACTORIES[algorithmId]()
+  if (!stations || sensorThreshold === undefined) throw new Error('Asset inspection requires public stations and sensor threshold')
+  return new AssetInspectionController(stations, sensorThreshold, verification)
+}
 
 export { ALGORITHM_METADATA, ALGORITHM_ORDER } from './metadata'

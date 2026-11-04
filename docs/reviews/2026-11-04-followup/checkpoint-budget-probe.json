@@ -1,0 +1,33 @@
+{
+  "status": "pass",
+  "partialDeadlineAndUnsortedCheckpoints": [
+    {
+      "checkpoint": 0.9,
+      "elapsed": 0.9,
+      "budgetTime": 0.9,
+      "balanceResidual": -4.336808689942018e-19
+    },
+    {
+      "checkpoint": 0.3,
+      "elapsed": 0.3,
+      "budgetTime": 0.3,
+      "balanceResidual": 2.168404344971009e-19
+    },
+    {
+      "checkpoint": 1.05,
+      "elapsed": 1.05,
+      "budgetTime": 1.05,
+      "balanceResidual": -4.336808689942018e-18
+    }
+  ],
+  "frozenAbstention": {
+    "commands": 1,
+    "finalTime": 1.05,
+    "checkpoints": [
+      0.9,
+      0.3,
+      1.05
+    ],
+    "correctRejectionMeansNoDeclaration": true
+  }
+}

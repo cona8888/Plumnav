@@ -1,0 +1,13 @@
+case,method,phase,stop_reason,strict_source_outcome,flagged_fitting
+mapped-60,asset-inspection,FITTING FLAGGED FOR REINSPECTION,All three fitting medians exceeded all three settled control medians,unresolved-abstention,D
+upwind-diagonal-60,asset-inspection,NO FITTING FLAGGED,The fitting did not reproducibly exceed the upwind control,unresolved-abstention,
+left-60,asset-inspection,NO FITTING FLAGGED,The fitting did not reproducibly exceed the crosswind-right control,unresolved-abstention,
+right-60,asset-inspection,NO FITTING FLAGGED,The fitting did not reproducibly exceed the crosswind-left control,unresolved-abstention,
+neighbour-60,asset-inspection,FITTING FLAGGED FOR REINSPECTION,All three fitting medians exceeded all three settled control medians,unresolved-abstention,D
+blank-60,asset-inspection,NO FITTING FLAGGED,Two passes yielded insufficient or inconsistent fitting evidence,unresolved-abstention,
+mapped-225,asset-inspection,FITTING FLAGGED FOR REINSPECTION,All three fitting medians exceeded all three settled control medians,unresolved-abstention,A
+upwind-diagonal-225,asset-inspection,NO FITTING FLAGGED,The fitting did not reproducibly exceed the upwind control,unresolved-abstention,
+left-225,asset-inspection,NO FITTING FLAGGED,Two passes yielded insufficient or inconsistent fitting evidence,unresolved-abstention,
+right-225,asset-inspection,NO FITTING FLAGGED,Two passes yielded insufficient or inconsistent fitting evidence,unresolved-abstention,
+neighbour-225,asset-inspection,FITTING FLAGGED FOR REINSPECTION,All three fitting medians exceeded all three settled control medians,unresolved-abstention,A
+blank-225,asset-inspection,NO FITTING FLAGGED,Two passes yielded insufficient or inconsistent fitting evidence,unresolved-abstention,

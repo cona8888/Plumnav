@@ -1,0 +1,95 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ src/sim/algorithms/assetInspection.test.ts (13 tests) 896ms
+ ❯ src/sim/sensor.test.ts (5 tests | 1 failed) 106ms
+   ✓ configurable sensor model > does not accumulate rectified readout noise as physical blank state 10ms
+   ✓ configurable sensor model > replays seeded classification errors deterministically 8ms
+   × configurable sensor model > clips the reported concentration at sensor saturation 13ms
+     → checkpointSeconds must be positive and no later than durationSeconds
+   ✓ configurable sensor model > runs the numerical forward model through the common engine boundary 73ms
+   ✓ configurable sensor model > rejects impossible or invalid sensor settings 1ms
+ ❯ src/sim/localInletSampling.test.ts (16 tests | 1 failed) 134ms
+   ✓ physical inlet chain > has causal fractional tube delay and exact first-order step response 3ms
+   ✓ physical inlet chain > uses separate recovery, exact averaging, and retains old gas after inlet drops 0ms
+   ✓ physical inlet chain > does not change constant-input output when integration ticks are refined 1ms
+   ✓ physical inlet chain > rejects invalid concentration and non-increasing clocks 1ms
+   ✓ engine integration of physical sensing > routes the opt-in scale-invariant estimator to the controller and engine metrics 21ms
+   ✓ engine integration of physical sensing > uses only four local inlet positions, no remote kernel, and continues filtering during waits 14ms
+   ✓ engine integration of physical sensing > uses the same four-channel mean for ordinary passive samples without a fifth sensor 4ms
+   ✓ engine integration of physical sensing > holds SI head size, speed and tubing timing fixed on a 1 m domain 1ms
+   ✓ engine integration of physical sensing > holds SI head size, speed and tubing timing fixed on a 100 m domain 0ms
+   ✓ engine integration of physical sensing > integrates displacement and turning only over the remaining partial control interval 2ms
+   ✓ engine integration of physical sensing > bounds robot turning and speed and stops sampled-air accounting at declaration 4ms
+   × engine integration of physical sensing > fails explicitly on an unsupported inlet location, cadence or inconsistent physical clock 7ms
+     → Physical robot start is blocked: the start must allow full robot footprint clearance from domain edges and obstacles
+   ✓ engine integration of physical sensing > does not share a mutable physical configuration with its caller 1ms
+   ✓ controller behaviour between 1 Hz inlet samples > holds the Infotaxis posterior while waiting for the next sample 16ms
+   ✓ controller behaviour between 1 Hz inlet samples > gives PMFS the same posterior for the same sequence of stationary inlet readings 53ms
+   ✓ controller behaviour between 1 Hz inlet samples > keeps surging between a valid hit and the next gas reading 3ms
+ ❯ src/sim/batch.test.ts (7 tests | 1 failed) 46ms
+   × batch reporting > groups summaries and exports raw values 10ms
+     → (0 , effectiveGridTransportVersion) is not a function
+   ✓ batch reporting > keeps process-floor complexity levels in separate summary strata 1ms
+   ✓ batch reporting > keeps terrain and gas-response settings in separate summary strata 0ms
+   ✓ batch reporting > reports false declarations conditionally instead of rewarding abstention 0ms
+   ✓ batch reporting > exports target-absent safety outcomes without fabricated source errors 1ms
+   ✓ batch reporting > supports prompt benchmark cancellation 1ms
+   ✓ batch reporting > snapshots flow configuration before asynchronous batch yields 31ms
+ ✓ src/sim/researchPlacement.test.ts (4 tests) 21ms
+ ✓ src/sim/replay.test.ts (2 tests) 9ms
+ ✓ src/sim/engine.test.ts (40 tests) 3820ms
+   ✓ SimulationEngine > infotaxis produces finite, in-domain state  389ms
+   ✓ SimulationEngine > infotaxis applies the strict 1% criterion without a tuned acceptance assertion  823ms
+   ✓ SimulationEngine > smc-kl applies the strict 1% criterion without a tuned acceptance assertion  1057ms
+   ✓ SimulationEngine > pmfs applies the strict 1% criterion without a tuned acceptance assertion  447ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/sim/batch.test.ts > batch reporting > groups summaries and exports raw values
+TypeError: (0 , effectiveGridTransportVersion) is not a function
+ ❯ src/sim/batch.ts:484:39
+    482|     const experimentConfig = result.config
+    483|     const isGrid = !experimentConfig.physicalAtmosphere && experimentC…
+    484|     const transportVersion = isGrid ? effectiveGridTransportVersion(ex…
+       |                                       ^
+    485|     const gridBudget = transportVersion === 'conservative-upwind-v1' ?…
+    486|     if (gridBudget && Math.abs(gridBudget.time - result.checkpointSeco…
+ ❯ batchResultsToCsv src/sim/batch.ts:480:24
+ ❯ src/sim/batch.test.ts:129:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/sim/localInletSampling.test.ts > engine integration of physical sensing > fails explicitly on an unsupported inlet location, cadence or inconsistent physical clock
+RangeError: Physical robot start is blocked: the start must allow full robot footprint clearance from domain edges and obstacles
+ ❯ new SimulationEngine src/sim/engine.ts:234:13
+    232|         ? 'Asset inspection requires a reachable start on an open SI s…
+    233|         : 'Physical robot start is blocked'
+    234|       throw new RangeError(`${context}: the start must allow full robo…
+       |             ^
+    235|     }
+    236|     const verification = config.assetVerification
+ ❯ src/sim/localInletSampling.test.ts:156:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/sim/sensor.test.ts > configurable sensor model > clips the reported concentration at sensor saturation
+RangeError: checkpointSeconds must be positive and no later than durationSeconds
+ ❯ validateSimulationConfig src/sim/config.ts:352:13
+    350|   for (const checkpoint of config.checkpointSeconds) {
+    351|     if (checkpoint <= 0 || checkpoint > config.durationSeconds) {
+    352|       throw new RangeError('checkpointSeconds must be positive and no …
+       |             ^
+    353|     }
+    354|     const ticks = checkpoint / config.fixedDt
+ ❯ new SimulationEngine src/sim/engine.ts:165:5
+ ❯ src/sim/sensor.test.ts:52:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 4 passed (7)
+      Tests  3 failed | 84 passed (87)
+   Start at  09:50:32
+   Duration  4.39s (transform 462ms, setup 0ms, collect 1.05s, tests 5.03s, environment 1ms, prepare 370ms)
+

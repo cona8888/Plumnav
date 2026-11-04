@@ -1,0 +1,10 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ✓ src/components/ResearchCharts.test.ts (7 tests) 13ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  09:55:08
+   Duration  414ms (transform 146ms, setup 0ms, collect 191ms, tests 13ms, environment 0ms, prepare 58ms)
+

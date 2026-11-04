@@ -4,7 +4,7 @@ import { MetricCard } from './components/MetricCard'
 import { ResearchPanel } from './components/ResearchPanel'
 import { ReplayTimeline } from './components/ReplayTimeline'
 import { SimulationCanvas } from './components/SimulationCanvas'
-import { ALGORITHM_METADATA, ALGORITHM_ORDER } from './sim/algorithms/metadata'
+import { ALGORITHM_METADATA, ALGORITHM_ORDER, isQuadSuctionPolicy } from './sim/algorithms/metadata'
 import {
   createDefaultConfig,
   DEFAULT_ACTIVE_SNIFF_CONTROLS,
@@ -31,7 +31,7 @@ import {
   sensorT90Seconds,
 } from './sim/sensorProfiles'
 import { terrainGasDrift } from './sim/terrain'
-import type { AlgorithmId, ScenarioKind, SimulationConfig, SimulationFrame } from './sim/types'
+import type { AlgorithmId, GridTransportVersion, ScenarioKind, SimulationConfig, SimulationFrame } from './sim/types'
 
 type View = 'simulation' | 'benchmark'
 
@@ -72,21 +72,8 @@ export default function App() {
   })
 
   const algorithm = ALGORITHM_METADATA[config.algorithmId]
-  const usesActiveOlfaction =
-    config.algorithmId === 'pulse-sniff' ||
-    config.algorithmId === 'quad-sniff' ||
-    config.algorithmId === 'quad-sniff-wind' ||
-    config.algorithmId === 'quad-sniff-range' ||
-    config.algorithmId === 'quad-sniff-corridor' ||
-    config.algorithmId === 'quad-sniff-bracket' ||
-    config.algorithmId === 'quad-sniff-refine'
-  const usesQuadSuction =
-    config.algorithmId === 'quad-sniff' ||
-    config.algorithmId === 'quad-sniff-wind' ||
-    config.algorithmId === 'quad-sniff-range' ||
-    config.algorithmId === 'quad-sniff-corridor' ||
-    config.algorithmId === 'quad-sniff-bracket' ||
-    config.algorithmId === 'quad-sniff-refine'
+  const usesQuadSuction = isQuadSuctionPolicy(config.algorithmId)
+  const usesActiveOlfaction = config.algorithmId === 'pulse-sniff' || usesQuadSuction
   const usesQuadPassive = config.algorithmId === 'quad-passive'
   const usesQuadArray = usesQuadSuction || usesQuadPassive
   const flowBaseline = getScenarioFlowBaseline(config.scenarioKind)
@@ -121,6 +108,8 @@ export default function App() {
   const rasterizedObstacleArea = config.physicsMode === 'grid'
     ? rasterizedObstacleFraction(frame.scenario.obstacles, config.gridResolution)
     : null
+  // Unversioned historical configurations retain the legacy transport scheme.
+  const gridTransportVersion = config.gridTransportVersion ?? 'legacy-semi-lagrangian-v1'
   const gridCellMeters = config.domainMeters / config.gridResolution
   const cellsPerSuccessRadius = config.gridResolution * config.successThreshold
   const obstacleComplexityLabel =
@@ -248,6 +237,9 @@ export default function App() {
     }
     patchConfig({ sourceSeed: Math.max(1, Math.min(9_999_999, Math.round(candidate))) })
   }
+  const isCoverage = frame.config.algorithmId === 'coverage'
+  const modelOnly = frame.decision.estimateRole === 'model-only'
+  const pointLabel = isCoverage ? 'Peak reading' : modelOnly ? 'Model only · no gas hit' : 'Estimate'
   const hasEstimate = frame.decision.estimate !== null
   const normalizedError = frame.metrics.normalizedError
   const localizationEvaluable = normalizedError !== null
@@ -261,6 +253,7 @@ export default function App() {
       : errorPercent <= 3
         ? 'warn'
         : 'neutral'
+  // Legacy absent-trial outcomes describe observed decisions, not verified source absence.
   const budgetOutcome = !frame.completed
     ? 'IN PROGRESS'
     : frame.metrics.terminalOutcome === 'correct-declaration'
@@ -270,17 +263,11 @@ export default function App() {
         : frame.metrics.terminalOutcome === 'spurious-declaration'
           ? 'SPURIOUS DECL.'
           : frame.metrics.terminalOutcome === 'correct-abstention'
-            ? 'CORRECT ABSTAIN'
+            ? 'ABSTAINED'
             : frame.metrics.terminalOutcome === 'missed-source-abstention'
               ? 'MISSED SOURCE'
-              : frame.metrics.terminalOutcome === 'correct-rejection-at-deadline'
-                ? 'CORRECT REJECT.'
-                : 'NO DECLARATION'
-  const outcomeIsGood = [
-    'correct-declaration',
-    'correct-abstention',
-    'correct-rejection-at-deadline',
-  ].includes(frame.metrics.terminalOutcome)
+              : 'NO DECLARATION'
+  const outcomeIsGood = frame.metrics.terminalOutcome === 'correct-declaration'
   const outcomeIsWarning = [
     'wrong-declaration',
     'spurious-declaration',
@@ -319,14 +306,14 @@ export default function App() {
           <>
             <section className="metric-strip" aria-label="Live run metrics">
               <MetricCard
-                label="Normalized error"
-                value={!localizationEvaluable ? 'N/A' : hasEstimate ? `${errorPercent!.toFixed(2)}%` : '—'}
+                label={isCoverage ? 'Peak-to-release distance' : 'Normalized error'}
+                value={!localizationEvaluable ? 'N/A' : hasEstimate ? isCoverage ? `${frame.metrics.errorMeters!.toFixed(2)} m` : `${errorPercent!.toFixed(2)}%` : '—'}
                 detail={!localizationEvaluable
                   ? 'No target coordinate by design'
                   : hasEstimate
-                    ? `${frame.metrics.errorMeters!.toFixed(2)} m · target ≤ 1.00%`
+                    ? modelOnly ? 'Model prediction before the first gas hit' : isCoverage ? 'Diagnostic offset of the strongest reading' : `${frame.metrics.errorMeters!.toFixed(2)} m · target ≤ 1.00%`
                     : 'Waiting for an estimate'}
-                tone={errorTone}
+                tone={isCoverage || modelOnly ? 'neutral' : errorTone}
               />
               <MetricCard label="Mission clock" value={formatTime(frame.time)} detail={`${frame.config.durationSeconds}s research budget`} />
               <MetricCard
@@ -356,9 +343,11 @@ export default function App() {
                 value={budgetOutcome}
                 detail={frame.metrics.spuriousDeclaration
                   ? 'Declared a source in a no-target trial'
-                  : frame.metrics.nativeAbstention
-                    ? 'Explicit controller abstention recorded'
-                    : 'Controller cannot access target truth'}
+                  : frame.metrics.targetStatus === 'absent' && frame.completed
+                    ? 'Source absence remains unverified'
+                    : frame.metrics.nativeAbstention
+                      ? 'Explicit controller abstention recorded'
+                      : 'Controller cannot access target truth'}
                 tone={outcomeIsGood ? 'good' : outcomeIsWarning ? 'warn' : 'neutral'}
               />
             </section>
@@ -419,7 +408,7 @@ export default function App() {
                       <i /> {label}
                     </button>
                   ))}
-                  <span className="layer-legend"><i className="legend-robot" /> Robot <i className="legend-estimate" /> Estimate</span>
+                  <span className="layer-legend"><i className="legend-robot" /> Robot <i className="legend-estimate" /> {pointLabel}</span>
                 </div>
               </div>
 
@@ -548,6 +537,24 @@ export default function App() {
                     </div>
                     {config.physicsMode === 'grid' && (
                       <>
+                        <label className="grid-resolution" htmlFor="grid-transport-version">
+                          Grid transport scheme
+                          <select
+                            id="grid-transport-version"
+                            value={gridTransportVersion}
+                            aria-describedby="grid-transport-note"
+                            onChange={(event) => patchConfig({ gridTransportVersion: event.target.value as GridTransportVersion })}
+                          >
+                            <option value="conservative-upwind-v1">Conservative upwind v1</option>
+                            <option value="legacy-semi-lagrangian-v1">Legacy semi-Lagrangian v1</option>
+                          </select>
+                        </label>
+                        <p id="grid-transport-note" className={`physics-note ${gridTransportVersion === 'legacy-semi-lagrangian-v1' ? 'physics-note--warning' : ''}`}>
+                          {gridTransportVersion === 'legacy-semi-lagrangian-v1'
+                            ? 'Historical qualitative solver: transport can change the scalar mass. This version is retained for reproducing legacy results.'
+                            : 'Conservative scalar transport with a normalized scalar budget.'}
+                          {' '}Wind is prescribed; this model does not solve fluid momentum or establish physical airflow accuracy. Changing the scheme restarts the run.
+                        </p>
                         <label className="grid-resolution" htmlFor="grid-resolution">
                           Grid resolution
                           <select id="grid-resolution" value={config.gridResolution} onChange={(event) => patchConfig({ gridResolution: Number(event.target.value) })}>
@@ -643,7 +650,7 @@ export default function App() {
                       ? 'Emission rate scales source output only—not wind or diffusion.'
                       : config.targetStatus === 'zero-emission'
                         ? 'A hidden source coordinate is retained but physical gas output is zero; localization remains scorable.'
-                        : 'No source coordinate exists, so localization error is not applicable; spurious declaration and rejection are scored instead.'} Ratios are dimensionless; changes restart the run.</p>
+                        : 'No source coordinate exists, so localization error is not applicable; spurious declarations, abstentions and no declaration at the deadline are recorded.'} Ratios are dimensionless; changes restart the run.</p>
                   </fieldset>
                   <fieldset className="flow-controls terrain-controls" aria-describedby="terrain-controls-note">
                     <legend>
@@ -966,8 +973,8 @@ export default function App() {
                   </div>
                   <div className="normalization-note">
                     <span>ε</span>
-                    <p><strong>{config.targetStatus === 'absent' ? 'No-target safety endpoint' : 'Scale-independent success'}</strong>{config.targetStatus === 'absent'
-                      ? 'Localization error is undefined. Report spurious-declaration probability, correct rejection, explicit abstention and decision time.'
+                    <p><strong>{config.targetStatus === 'absent' ? 'Absent-source outcomes' : 'Scale-independent success'}</strong>{config.targetStatus === 'absent'
+                      ? 'Localization error is undefined. Report spurious declarations, explicit abstentions, no declaration at the deadline and decision time. Abstention or silence does not verify source absence.'
                       : `Normalized error ≤ 0.01 = ${(config.domainMeters * 0.01).toFixed(config.domainMeters < 10 ? 2 : 1)} m tolerance here. Physics stays dimensionless; this selector converts display units only.`}</p>
                   </div>
                 </section>

@@ -1,0 +1,31 @@
+dataset,survey,status,reason,mean_wind_east_mps,mean_wind_north_mps,wind_sensitivity_deg,upwind_bearing_deg,enhancement_width_m,crosswind_line_error_m,signed_along_ray_m,distance_to_ray_m,track_midpoint_line_error_m,peak_line_error_m
+MATRIX,313_01,abstain,unbracketed or multiple enhancements,3.036923,-0.846925,16.950697,,,,,,,
+MATRIX,313_02,abstain,unbracketed or multiple enhancements,2.742805,-0.633804,14.39197,,,,,,,
+MATRIX,313_03,abstain,insufficient crosswind traverse,1.92881,0.027808,33.46933,,,,,,,
+MATRIX,313_04,bearing,,2.202137,-0.868712,26.294083,291.528537,23.094669,29.800649,57.419036,29.800649,23.979348,11.60746
+MATRIX,313_05,abstain,insufficient sustained methane contrast,1.89881,-0.554424,23.483864,,,,,,,
+MATRIX,314_01,abstain,unbracketed or multiple enhancements,-0.580125,0.064329,32.165343,,,,,,,
+MATRIX,314_02,abstain,insufficient crosswind traverse,-0.027114,0.387979,36.930535,,,,,,,
+MATRIX,314_03,abstain,insufficient sustained methane contrast,-0.244512,0.453361,33.2884,,,,,,,
+Blackpool,T1.1,bearing,,3.431052,0.359707,39.240006,264.01505,26.204333,1.210573,50.086339,1.210573,2.356546,4.960536
+Blackpool,T1.2,bearing,,4.781013,1.82473,30.628332,249.110059,13.150343,0.425164,49.59163,0.425164,0.209537,0.29704
+Blackpool,T1.3,abstain,unbracketed or multiple enhancements,5.939716,3.721556,24.498718,,,,,,,
+Blackpool,T1.4,abstain,unbracketed or multiple enhancements,4.712549,-2.534721,27.762685,,,,,,,
+Blackpool,T1.5,abstain,insufficient sustained methane contrast,3.676102,-3.470622,22.266422,,,,,,,
+Blackpool,T1.6,bearing,,3.559432,-1.926287,33.812667,298.421291,13.111379,9.164831,50.489248,9.164831,7.518315,10.267428
+Blackpool,T1.7,abstain,weak or variable wind,-0.263672,-2.618087,54.298393,,,,,,,
+Blackpool,T2.1,abstain,unbracketed or multiple enhancements,3.440081,0.625278,44.405455,,,,,,,
+Blackpool,T2.2,abstain,insufficient sustained methane contrast,3.249589,1.0163,38.681897,,,,,,,
+Blackpool,T2.3,abstain,unbracketed or multiple enhancements,3.343825,-0.120929,43.69888,,,,,,,
+Blackpool,T2.4,bearing,,3.727524,0.605986,35.707802,260.766165,56.604098,0.286245,95.106856,0.286245,16.766842,0.785137
+Blackpool,T2.5,bearing,,3.375353,0.337441,39.376882,264.290986,20.720905,26.518584,92.383336,26.518584,5.65236,24.618807
+Blackpool,T2.6,abstain,insufficient sustained methane contrast,2.448845,3.943416,36.177572,,,,,,,
+Blackpool,T2.7,bearing,,3.670502,3.715323,31.814736,224.652306,53.233095,3.101466,62.650655,3.101466,11.904695,6.323628
+Blackpool,T2.8,bearing,,4.291102,4.185578,30.072323,225.713223,59.325195,0.915377,116.273048,0.915377,6.703835,19.867461
+Blackpool,T2.9,bearing,,5.232937,4.558506,25.454443,228.940289,54.322161,4.687248,89.620645,4.687248,13.99557,18.401271
+Blackpool,T2.10,bearing,,5.246383,1.948732,30.565436,249.622841,47.838539,4.899828,97.62707,4.899828,2.868077,6.189527
+Blackpool,T2.11,bearing,,4.431076,1.560679,35.917824,250.597114,52.831756,11.390944,96.22762,11.390944,2.826563,8.981364
+Blackpool,T2.12,bearing,,4.804003,1.705659,30.835636,250.452619,51.173057,10.208211,95.168263,10.208211,7.271339,18.895399
+Blackpool,T2.13,bearing,,4.913745,0.872321,30.255741,259.93335,86.612897,10.549497,72.740656,10.549497,8.414356,20.882718
+Blackpool,T2.14,bearing,,5.332425,2.419462,30.019155,245.594951,58.325913,2.745533,70.095522,2.745533,8.454175,11.763634
+Blackpool,T2.15,abstain,unbracketed or multiple enhancements,5.640427,4.236007,23.878686,,,,,,,

@@ -1,0 +1,128 @@
+[
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "mapped-60",
+    "fitting": 3,
+    "source": {
+      "x": 3.9853589838486223,
+      "y": 2.0546410161513777
+    }
+  },
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "upwind-diagonal-60",
+    "fitting": null,
+    "source": {
+      "x": 3.4636860279185586,
+      "y": 2.171076951545867
+    }
+  },
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "left-60",
+    "fitting": null,
+    "source": {
+      "x": 4.096698729810778,
+      "y": 2.2674871130596426
+    }
+  },
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "right-60",
+    "fitting": null,
+    "source": {
+      "x": 3.8166987298107777,
+      "y": 1.782512886940357
+    }
+  },
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "neighbour-60",
+    "fitting": null,
+    "source": {
+      "x": 3.925,
+      "y": 1.8700961894323342
+    }
+  },
+  {
+    "wind": 60,
+    "replicate": 71,
+    "speed": 0.025,
+    "name": "blank-60",
+    "fitting": null,
+    "source": null
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "mapped-225",
+    "fitting": 0,
+    "source": {
+      "x": 2,
+      "y": 1.9434314575050764
+    }
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "upwind-diagonal-225",
+    "fitting": null,
+    "source": {
+      "x": 2.473761543394987,
+      "y": 1.6959440840897844
+    }
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "left-225",
+    "fitting": null,
+    "source": {
+      "x": 1.837365440327094,
+      "y": 1.7666547622084394
+    }
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "right-225",
+    "fitting": null,
+    "source": {
+      "x": 2.2333452377915606,
+      "y": 2.162634559672906
+    }
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "neighbour-225",
+    "fitting": null,
+    "source": {
+      "x": 2.1060660171779824,
+      "y": 2.106066017177982
+    }
+  },
+  {
+    "wind": 225,
+    "replicate": 72,
+    "speed": 0.035,
+    "name": "blank-225",
+    "fitting": null,
+    "source": null
+  }
+]

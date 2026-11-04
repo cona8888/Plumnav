@@ -10,7 +10,7 @@ import {
   createActiveSniffEvent,
   type ActiveSniffEvent,
 } from './activeSniff'
-import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveSensorThreshold, validateSimulationConfig } from './config'
+import { DEFAULT_PHYSICS_STEP_SECONDS, effectiveGridTransportVersion, effectiveSensorThreshold, validateSimulationConfig } from './config'
 import { createEnvironment } from './environment'
 import {
   createControllerObservationModel,
@@ -71,6 +71,7 @@ export class SimulationEngine {
 
   private rng: SeededRandom
   private time = 0
+  private controlTicks = 0
   private running = false
   private completed = false
   private completionReason: string | null = null
@@ -164,6 +165,8 @@ export class SimulationEngine {
     validateSimulationConfig(config)
     this.config = {
       ...config,
+      ...(config.assetVerification ? { assetVerification: { ...config.assetVerification } } : {}),
+      ...(config.inspectionStations ? { inspectionStations: config.inspectionStations.map(p => ({ ...p })) } : {}),
       ...(config.physicalAtmosphere ? { physicalAtmosphere: structuredClone(config.physicalAtmosphere) } : {}),
       ...(config.localInletSampling ? { localInletSampling: structuredClone(config.localInletSampling) } : {}),
       checkpointSeconds: [...config.checkpointSeconds],
@@ -184,6 +187,7 @@ export class SimulationEngine {
       ? new PhysicalHalfspacePlume(this.scenario, config.seed, config)
       : config.physicsMode === 'grid'
       ? new GridPlume(this.scenario, config.seed, {
+          transportVersion: effectiveGridTransportVersion(config),
           resolution: config.gridResolution,
           stepSeconds: config.physicsStepSeconds ?? DEFAULT_PHYSICS_STEP_SECONDS,
         })
@@ -220,7 +224,20 @@ export class SimulationEngine {
         candidateLifecycle: local.candidateLifecycle ? { version: local.candidateLifecycle,
           maximumTurnRateRadiansPerSecond: local.maximumTurnRateRadiansPerSecond } : undefined } : undefined,
     )
-    this.controller = createController(config.algorithmId)
+    // Validate the same physical footprint used by every movement proposal
+    // before controller initialization. An impossible setup is not a mission
+    // timeout or a controller navigation failure. Legacy point-robot recipes
+    // retain their existing start semantics.
+    if (local && this.environment.isBlocked(this.scenario.robotStart)) {
+      const context = config.algorithmId === 'asset-inspection'
+        ? 'Asset inspection requires a reachable start on an open SI site'
+        : 'Physical robot start is blocked'
+      throw new RangeError(`${context}: the start must allow full robot footprint clearance from domain edges and obstacles`)
+    }
+    const verification = config.assetVerification
+    this.controller = createController(config.algorithmId, config.inspectionStations, effectiveSensorThreshold(config),
+      verification && { offsetNormalized: verification.offsetMetres / config.domainMeters,
+        minimumWindNormalizedPerSecond: verification.minimumWindMetresPerSecond / config.domainMeters })
     this.controller.reset(this.environment)
     this.rng = new SeededRandom(hashNumbers(config.seed, 9_173))
     this.position = { ...this.scenario.robotStart }
@@ -561,6 +578,8 @@ export class SimulationEngine {
       this.advanceClock()
       return this.getFrame()
     }
+    // The final command may be shorter than a sensor/control tick when the deadline is off-grid.
+    const commandSeconds = Math.min(this.config.fixedDt, this.config.durationSeconds - this.time)
     this.measurement = this.sense()
     if (this.measurement.valid) {
       const observation: Observation = { ...this.measurement, position: { ...this.position } }
@@ -621,7 +640,7 @@ export class SimulationEngine {
     if (this.measurement.valid && this.measurement.sampleMode === 'passive' && this.measurement.hit) {
       this.hitCount += 1
       this.plumeTime += this.config.localInletSampling
-        ? Math.min(this.config.localInletSampling.sampleIntervalSeconds, this.time) : this.config.fixedDt
+        ? Math.min(this.config.localInletSampling.sampleIntervalSeconds, this.time) : commandSeconds
       if (!this.wasHit) {
         this.contactEpisodes += 1
         if (Number.isFinite(this.lastHitTime) && this.time - this.lastHitTime > 1.5) this.reacquisitions += 1
@@ -633,7 +652,7 @@ export class SimulationEngine {
     const computeStart = now()
     this.decision = this.controller.step({
       time: this.time,
-      dt: this.config.fixedDt,
+      dt: commandSeconds,
       position: { ...this.position },
       heading: this.heading,
       measurement: this.measurement,
@@ -870,7 +889,7 @@ export class SimulationEngine {
       if (local && Math.hypot(requestedDirection.x, requestedDirection.y) > 0) {
         const desired = Math.atan2(requestedDirection.y, requestedDirection.x)
         const delta = Math.atan2(Math.sin(desired - this.heading), Math.cos(desired - this.heading))
-        const limit = local.maximumTurnRateRadiansPerSecond * this.config.fixedDt
+        const limit = local.maximumTurnRateRadiansPerSecond * commandSeconds
         this.heading += clamp(delta, -limit, limit)
         // Rotate in place until aligned; avoid translating away from a small inspection target.
         requestedDirection = Math.abs(delta) > limit + 1e-9 ? { x: 0, y: 0 }
@@ -881,7 +900,7 @@ export class SimulationEngine {
         this.config.robotSpeed *
         clamp(this.decision.speedScale ?? 1, 0, local ? 1 : 1.5) *
         mobilityScale
-      const displacement = scale(requestedDirection, speed * this.config.fixedDt)
+      const displacement = scale(requestedDirection, speed * commandSeconds)
       const proposed = add(this.position, displacement)
       if (this.movementIsBlocked(proposed)) {
         this.collisionAttempts += 1
@@ -914,7 +933,6 @@ export class SimulationEngine {
   }
 
   private advanceClock() {
-    const previousTime = this.time
     const activeEvent = this.activeSniffEvent ?? this.quadSniffEvent
     if (activeEvent) {
       const remainingCycle = Math.max(
@@ -943,9 +961,18 @@ export class SimulationEngine {
         }
       }
     }
-    this.time = Math.min(this.config.durationSeconds, this.time + this.config.fixedDt)
+    // Use a tick count rather than cumulative addition: decimal fixedDt can
+    // otherwise delay an aligned checkpoint (or the deadline) by a full tick.
+    this.controlTicks += 1
+    const nextTime = this.controlTicks * this.config.fixedDt
+    const deadline = this.config.durationSeconds
+    const roundoff = 8 * Number.EPSILON * Math.max(nextTime, deadline)
+    this.time = deadline - nextTime <= roundoff ? deadline : nextTime
     for (const checkpoint of this.config.checkpointSeconds) {
-      if (previousTime < checkpoint && this.time >= checkpoint && !this.checkpoints[checkpoint]) {
+      const atCheckpoint = checkpoint === deadline
+        ? this.time === deadline
+        : Math.round(checkpoint / this.config.fixedDt) === this.controlTicks
+      if (atCheckpoint && !this.checkpoints[checkpoint]) {
         this.checkpoints[checkpoint] = this.getMetrics(checkpoint)
       }
     }
@@ -1011,6 +1038,7 @@ export class SimulationEngine {
       ? null
       : this.surfaceDistanceTravelled / Math.max(1e-6, this.initialSurfaceSourceDistance)
     const atDeadline = elapsedSeconds >= this.config.durationSeconds - 1e-9
+    const screeningOnly = this.config.algorithmId === 'coverage' || this.config.algorithmId === 'asset-inspection'
     const terminalOutcome: MetricSnapshot['terminalOutcome'] = this.firstDeclarationRecorded
       ? source === null
         ? 'spurious-declaration'
@@ -1018,6 +1046,7 @@ export class SimulationEngine {
             this.declarationErrorNormalized <= this.config.successThreshold
           ? 'correct-declaration'
           : 'wrong-declaration'
+      : screeningOnly && (this.firstAbstentionRecorded || atDeadline) ? 'unresolved-survey'
       : this.firstAbstentionRecorded
         ? source === null
           ? 'correct-abstention'
@@ -1027,7 +1056,7 @@ export class SimulationEngine {
             ? 'correct-rejection-at-deadline'
             : 'deadline-nondeclaration-present'
           : 'pending'
-    const absentTrialResolved = source === null && (
+    const absentTrialResolved = terminalOutcome !== 'unresolved-survey' && source === null && (
       this.firstDeclarationRecorded || this.firstAbstentionRecorded || atDeadline
     )
     return {
@@ -1079,7 +1108,7 @@ export class SimulationEngine {
       correctRejection: absentTrialResolved
         ? !this.firstDeclarationRecorded
         : null,
-      correctAbstention: source === null && this.firstAbstentionRecorded,
+      correctAbstention: terminalOutcome === 'correct-abstention',
       collisionAttempts: this.collisionAttempts,
       activeProbeCount: this.activeProbeCount,
       quadSniffCycles: this.quadSniffCycles,

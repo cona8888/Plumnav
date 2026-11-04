@@ -1,5 +1,7 @@
 import type { AlgorithmId, AlgorithmMetadata } from '../types'
 
+export const isQuadSuctionPolicy = (algorithmId: AlgorithmId) => algorithmId.startsWith('quad-sniff')
+
 export const ALGORITHM_METADATA: Record<AlgorithmId, AlgorithmMetadata> = {
   'quad-sniff-confirmation': {
     id: 'quad-sniff-confirmation',
@@ -17,6 +19,17 @@ export const ALGORITHM_METADATA: Record<AlgorithmId, AlgorithmMetadata> = {
     citationLabel: 'Study development revision; no novelty claim',
     citationUrl: 'https://doi.org/10.1016/0924-4247(94)00829-9',
   },
+  'asset-inspection': {
+    id: 'asset-inspection', index: 'AI', name: 'Mapped Fitting Inspection', shortName: 'Fitting inspection',
+    family: 'Headless asset survey', color: '#115e59',
+    summary: 'Samples each mapped fitting twice and flags repeatable enhancements for reinspection.',
+    principle: 'Follow the public station list in order on two passes. Flag a fitting only when the same above-threshold station leads both passes by a prescribed noise margin.',
+    sensors: ['Local inlet array', 'Robot pose', 'Public fitting map'],
+    assumptions: ['Fixed public fitting map', 'Reachable stations on a flat open site'],
+    strengths: ['Repeat visits with physical dwell and an auditable reinspection ranking'],
+    limitations: ['An off-list plume can trigger a fitting nomination. Independent source verification is required.'],
+    citationLabel: 'Plumnav mapped fitting use case', citationUrl: 'https://github.com/cona8888/Plumnav',
+  },
   coverage: {
     id: 'coverage',
     index: '00',
@@ -30,7 +43,7 @@ export const ALGORITHM_METADATA: Record<AlgorithmId, AlgorithmMetadata> = {
     sensors: ['Gas concentration', 'Robot pose', 'Obstacle map'],
     assumptions: ['Bounded searchable domain', 'Repeatable lane spacing', 'Source remains active'],
     strengths: ['Easy to audit', 'Excellent benchmark', 'Does not require wind'],
-    limitations: ['Long path', 'Peak readings can be displaced downwind', 'Weak native stopping rule'],
+    limitations: ['Long path', 'Peak readings can be displaced downwind', 'Survey completion leaves source attribution unresolved'],
     citationLabel: 'Research baseline',
     citationUrl: 'https://doi.org/10.1145/3378184.3378220',
   },

@@ -1,0 +1,381 @@
+{
+  "doi": "10.5281/zenodo.6335359",
+  "results": [
+    {
+      "flight": "313_01",
+      "windReadings": 468,
+      "curtain": {
+        "origin": {
+          "latitude": 47.390212262,
+          "longitude": 8.603663175
+        },
+        "wind": {
+          "eastMetresPerSecond": 3.0369230216949115,
+          "northMetresPerSecond": -0.8469246337293787,
+          "angularSpreadDegrees": 16.950697135845537
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200313_113424_114455_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390525,
+        "longitude": 8.603439
+      },
+      "windowUtc": [
+        "11:36:05",
+        "11:44:02"
+      ],
+      "totalRows": 631,
+      "outsideWindow": 153,
+      "invalid": 0,
+      "validReadings": 478,
+      "peakUtc": "11:39:11",
+      "peakLatitude": 47.390354202,
+      "peakLongitude": 8.603873487000001,
+      "peakSignalPpm": 7.833764781426997,
+      "sourceErrorMetres": 37.82177946282327,
+      "closestTrackMetres": 30.616802352636398
+    },
+    {
+      "flight": "313_02",
+      "windReadings": 509,
+      "curtain": {
+        "origin": {
+          "latitude": 47.39061452600001,
+          "longitude": 8.604074738
+        },
+        "wind": {
+          "eastMetresPerSecond": 2.7428053172879614,
+          "northMetresPerSecond": -0.6338038873761837,
+          "angularSpreadDegrees": 14.391969712336556
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200313_115522_120814_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390525,
+        "longitude": 8.603439
+      },
+      "windowUtc": [
+        "11:58:20",
+        "12:07:00"
+      ],
+      "totalRows": 773,
+      "outsideWindow": 252,
+      "invalid": 0,
+      "validReadings": 521,
+      "peakUtc": "12:00:37",
+      "peakLatitude": 47.390501584,
+      "peakLongitude": 8.603958176,
+      "peakSignalPpm": 13.748820155865907,
+      "sourceErrorMetres": 39.16959727310974,
+      "closestTrackMetres": 34.02341060576101
+    },
+    {
+      "flight": "313_03",
+      "windReadings": 441,
+      "curtain": {
+        "origin": {
+          "latitude": 47.389984152,
+          "longitude": 8.603891116
+        },
+        "wind": {
+          "eastMetresPerSecond": 1.9288096342328422,
+          "northMetresPerSecond": 0.02780832691748093,
+          "angularSpreadDegrees": 33.46933009458612
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient crosswind traverse"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200313_133215_134142_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390525,
+        "longitude": 8.603439
+      },
+      "windowUtc": [
+        "13:33:14",
+        "13:40:44"
+      ],
+      "totalRows": 566,
+      "outsideWindow": 115,
+      "invalid": 0,
+      "validReadings": 451,
+      "peakUtc": "13:33:26",
+      "peakLatitude": 47.389987795,
+      "peakLongitude": 8.603879213999999,
+      "peakSignalPpm": 4.694715567431747,
+      "sourceErrorMetres": 68.31110623165104,
+      "closestTrackMetres": 66.0142500053627
+    },
+    {
+      "flight": "313_04",
+      "windReadings": 659,
+      "curtain": {
+        "origin": {
+          "latitude": 47.389991476000006,
+          "longitude": 8.603836553999999
+        },
+        "wind": {
+          "eastMetresPerSecond": 2.2021369405746314,
+          "northMetresPerSecond": -0.8687120590248335,
+          "angularSpreadDegrees": 26.29408324546069
+        },
+        "estimate": {
+          "status": "bearing",
+          "sourcePoint": null,
+          "crossing": {
+            "eastMetres": 12.549712786605522,
+            "northMetres": 10.53288635247455
+          },
+          "upwindBearingDegrees": 291.5285371735364,
+          "windSpreadDegrees": 26.29408324546069,
+          "crosswindWidthMetres": 23.094669331862924,
+          "contrastThresholdPpm": 0.05
+        }
+      },
+      "curtainScore": {
+        "signedAlongRayMetres": 57.419036078139484,
+        "crosswindOffsetMetres": 29.80064946482589,
+        "trackMidpointLineErrorMetres": 23.97934778670686,
+        "peakLineErrorMetres": 11.607460419759285,
+        "distanceToRayMetres": 29.80064946482589
+      },
+      "file": "EMP_160_20200313_135036_140341_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390525,
+        "longitude": 8.603439
+      },
+      "windowUtc": [
+        "13:51:32",
+        "14:02:45"
+      ],
+      "totalRows": 785,
+      "outsideWindow": 111,
+      "invalid": 0,
+      "validReadings": 674,
+      "peakUtc": "14:02:13",
+      "peakLatitude": 47.390210004,
+      "peakLongitude": 8.604198276,
+      "peakSignalPpm": 3.528169919328387,
+      "sourceErrorMetres": 67.0358743339301,
+      "closestTrackMetres": 60.267064369514266
+    },
+    {
+      "flight": "313_05",
+      "windReadings": 645,
+      "curtain": {
+        "origin": {
+          "latitude": 47.390071577,
+          "longitude": 8.603597736000001
+        },
+        "wind": {
+          "eastMetresPerSecond": 1.898810154146706,
+          "northMetresPerSecond": -0.5544242857049099,
+          "angularSpreadDegrees": 23.48386446781289
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient sustained methane contrast"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200313_141458_142806_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390525,
+        "longitude": 8.603439
+      },
+      "windowUtc": [
+        "14:16:07",
+        "14:27:06"
+      ],
+      "totalRows": 789,
+      "outsideWindow": 129,
+      "invalid": 0,
+      "validReadings": 660,
+      "peakUtc": "14:19:26",
+      "peakLatitude": 47.390240301999995,
+      "peakLongitude": 8.603707551,
+      "peakSignalPpm": 8.816467305463103,
+      "sourceErrorMetres": 37.56146543524409,
+      "closestTrackMetres": 29.38543101293465
+    },
+    {
+      "flight": "314_01",
+      "windReadings": 505,
+      "curtain": {
+        "origin": {
+          "latitude": 47.390590003999996,
+          "longitude": 8.60277954
+        },
+        "wind": {
+          "eastMetresPerSecond": -0.5801245638849593,
+          "northMetresPerSecond": 0.06432923149457802,
+          "angularSpreadDegrees": 32.16534287985586
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "unbracketed or multiple enhancements"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200314_123955_125010_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390697,
+        "longitude": 8.603264
+      },
+      "windowUtc": [
+        "12:40:41",
+        "12:49:17"
+      ],
+      "totalRows": 616,
+      "outsideWindow": 99,
+      "invalid": 0,
+      "validReadings": 517,
+      "peakUtc": "12:42:49",
+      "peakLatitude": 47.390853168,
+      "peakLongitude": 8.602901212999999,
+      "peakSignalPpm": 4.464305179613024,
+      "sourceErrorMetres": 32.363339006161944,
+      "closestTrackMetres": 29.74485175071036
+    },
+    {
+      "flight": "314_02",
+      "windReadings": 651,
+      "curtain": {
+        "origin": {
+          "latitude": 47.390722687,
+          "longitude": 8.602840254
+        },
+        "wind": {
+          "eastMetresPerSecond": -0.027113524979884455,
+          "northMetresPerSecond": 0.387979006656426,
+          "angularSpreadDegrees": 36.93053456537297
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient crosswind traverse"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200314_130034_131336_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390697,
+        "longitude": 8.603264
+      },
+      "windowUtc": [
+        "13:01:25",
+        "13:12:30"
+      ],
+      "totalRows": 783,
+      "outsideWindow": 117,
+      "invalid": 0,
+      "validReadings": 666,
+      "peakUtc": "13:06:31",
+      "peakLatitude": 47.391057292,
+      "peakLongitude": 8.603034223,
+      "peakSignalPpm": 4.623176439223227,
+      "sourceErrorMetres": 43.63729734619037,
+      "closestTrackMetres": 29.41061231232679
+    },
+    {
+      "flight": "314_03",
+      "windReadings": 459,
+      "curtain": {
+        "origin": {
+          "latitude": 47.390716816,
+          "longitude": 8.602743352000001
+        },
+        "wind": {
+          "eastMetresPerSecond": -0.2445115675899986,
+          "northMetresPerSecond": 0.4533606183214027,
+          "angularSpreadDegrees": 33.28839978786914
+        },
+        "estimate": {
+          "status": "abstain",
+          "sourcePoint": null,
+          "reason": "insufficient sustained methane contrast"
+        }
+      },
+      "curtainScore": null,
+      "file": "EMP_160_20200314_140532_141707_CH4_v2.csv",
+      "source": {
+        "latitude": 47.390697,
+        "longitude": 8.603264
+      },
+      "windowUtc": [
+        "14:06:00",
+        "14:13:49"
+      ],
+      "totalRows": 693,
+      "outsideWindow": 224,
+      "invalid": 0,
+      "validReadings": 469,
+      "peakUtc": "14:09:41",
+      "peakLatitude": 47.391121588999994,
+      "peakLongitude": 8.603103569,
+      "peakSignalPpm": 16.09268451891793,
+      "sourceErrorMetres": 48.73238872222849,
+      "closestTrackMetres": 27.157064205289675
+    }
+  ],
+  "excluded": [
+    {
+      "flight": "223_01",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "224_01",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "225_01",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "225_02",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "225_03",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "308_02",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "309_01",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "309_02",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "312_01",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    },
+    {
+      "flight": "312_03",
+      "reason": "no explicitly labelled source coordinate in methane file"
+    }
+  ],
+  "medianSourceErrorMetres": 41.403447309650055
+}

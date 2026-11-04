@@ -126,7 +126,7 @@ export class InfotaxisController implements AlgorithmController {
     const environment = this.requireEnvironment()
 
     const assimilatedNewMeasurement =
-      !this.terminated && input.time > this.lastAssimilatedTime + 1e-9
+      !this.terminated && input.measurement.valid && input.time > this.lastAssimilatedTime + 1e-9
     if (assimilatedNewMeasurement) {
       this.assimilateMeasurement(input)
     }
@@ -146,6 +146,7 @@ export class InfotaxisController implements AlgorithmController {
       this.evidenceHistory,
       statistics.estimate,
     )
+    const estimateRole = this.hitMeasurements > 0 ? 'encounter-supported' : 'model-only'
     const reportedEstimate = confirmation?.estimate ?? statistics.estimate
 
     if (!this.terminated && assimilatedNewMeasurement) {
@@ -166,7 +167,7 @@ export class InfotaxisController implements AlgorithmController {
     if (this.terminated) {
       return {
         direction: { x: 0, y: 0 },
-        estimate: reportedEstimate,
+        estimate: reportedEstimate, estimateRole,
         confidence: statistics.confidence,
         phase: 'POSTERIOR CONVERGED',
         nativeTerminated: true,
@@ -202,7 +203,7 @@ export class InfotaxisController implements AlgorithmController {
 
     return {
       direction,
-      estimate: reportedEstimate,
+      estimate: reportedEstimate, estimateRole,
       confidence: statistics.confidence,
       phase: input.measurement.hit ? 'UPDATE: HIT' : 'SEEK INFORMATION',
       debug: {

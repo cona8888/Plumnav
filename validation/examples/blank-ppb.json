@@ -1,0 +1,75 @@
+{
+  "signalUnit": "ppb CH4",
+  "policy": {
+    "flushSeconds": 2,
+    "spacingSeconds": 2,
+    "maximumGapSeconds": 1.1,
+    "minimumSamples": 4,
+    "minimumSpan": 3,
+    "maximumSpan": 30,
+    "maximumDrift": 20,
+    "margin": 10
+  },
+  "samples": [
+    {
+      "time": 0,
+      "value": 2140,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 1,
+      "value": 2089,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 2,
+      "value": 2060,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 3,
+      "value": 2054,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 4,
+      "value": 2058,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 5,
+      "value": 2056,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 6,
+      "value": 2062,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 7,
+      "value": 2064,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 8,
+      "value": 2060,
+      "inReference": true,
+      "valid": true
+    },
+    {
+      "time": 9,
+      "value": 2065,
+      "inReference": true,
+      "valid": true
+    }
+  ]
+}

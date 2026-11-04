@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { createDefaultConfig } from '../sim/config'
+import { SI_HALFSPACE_REFERENCE } from '../../scripts/lib/si-research-config'
+import { createDefaultConfig, DEFAULT_PHYSICS_STEP_SECONDS } from '../sim/config'
 import type { BatchResult, MetricSnapshot } from '../sim/types'
 import { aggregateResearchChartData, wilsonScoreInterval } from './ResearchCharts'
 
@@ -161,6 +162,66 @@ describe('research chart statistics', () => {
       0.02,
       0.08,
     ])
+  })
+
+  it('separates grid transport versions, resolutions and requested steps', () => {
+    const reference = result(1, 0.01, true)
+    reference.config = { ...reference.config, physicsMode: 'grid',
+      gridTransportVersion: 'conservative-upwind-v1', gridResolution: 48, physicsStepSeconds: 0.25 }
+    const data = aggregateResearchChartData([
+      reference,
+      { ...reference, metrics: metric(0.09, false),
+        config: { ...reference.config, gridTransportVersion: 'legacy-semi-lagrangian-v1' } },
+      { ...reference, metrics: metric(0.05, false),
+        config: { ...reference.config, gridResolution: 64 } },
+      { ...reference, metrics: metric(0.03, false),
+        config: { ...reference.config, physicsStepSeconds: 0.125 } },
+    ])
+    expect(data).toHaveLength(4)
+    expect(data.map(scenario => scenario.series[0]!.points[0]!.runs)).toEqual([1, 1, 1, 1])
+    expect(data.map(scenario => scenario.series[0]!.points[0]!.medianError).sort())
+      .toEqual([0.01, 0.03, 0.05, 0.09])
+    const legacy = data.find(scenario => scenario.gridTransportVersion === 'legacy-semi-lagrangian-v1')
+    expect(legacy?.series[0]?.points[0]?.successRate).toBe(0)
+  })
+
+  it('pools omitted historical version and timestep with their explicit effective values', () => {
+    const reference = result(1, 0.02, false)
+    reference.config = { ...reference.config, physicsMode: 'grid',
+      gridTransportVersion: undefined, physicsStepSeconds: undefined }
+    const data = aggregateResearchChartData([
+      reference,
+      { ...reference, seed: 2, metrics: metric(0.04, false),
+        config: { ...reference.config, gridTransportVersion: 'legacy-semi-lagrangian-v1',
+          physicsStepSeconds: DEFAULT_PHYSICS_STEP_SECONDS } },
+    ])
+    expect(data).toHaveLength(1)
+    expect(data[0]!.gridTransportVersion).toBe('legacy-semi-lagrangian-v1')
+    expect(data[0]!.physicsStepSeconds).toBe(DEFAULT_PHYSICS_STEP_SECONDS)
+    expect(data[0]!.series[0]!.points[0]!.runs).toBe(2)
+    expect(data[0]!.series[0]!.points[0]!.medianError).toBeCloseTo(0.03)
+  })
+
+  it('separates effective physics modes while ignoring inactive grid settings', () => {
+    const reference = result(1, 0.02, false)
+    reference.config = { ...reference.config, physicsMode: 'filament', gridTransportVersion: undefined }
+    const data = aggregateResearchChartData([
+      reference,
+      { ...reference, seed: 2, config: { ...reference.config,
+        gridTransportVersion: 'conservative-upwind-v1', gridResolution: 64, physicsStepSeconds: 0.125 } },
+      { ...reference, config: { ...reference.config, physicalAtmosphere: structuredClone(SI_HALFSPACE_REFERENCE) } },
+      { ...reference, seed: 2, config: { ...reference.config, physicsMode: 'grid',
+        physicalAtmosphere: structuredClone(SI_HALFSPACE_REFERENCE),
+        gridTransportVersion: 'conservative-upwind-v1', gridResolution: 96, physicsStepSeconds: 0.05 } },
+    ])
+    expect(data).toHaveLength(2)
+    expect(data.map(scenario => scenario.physicsMode).sort()).toEqual(['filament', 'halfspace-si-v1'])
+    for (const scenario of data) {
+      expect(scenario.gridTransportVersion).toBeNull()
+      expect(scenario.gridResolution).toBeNull()
+      expect(scenario.physicsStepSeconds).toBeNull()
+      expect(scenario.series[0]!.points[0]!.runs).toBe(2)
+    }
   })
 
   it('does not pool flat and sloped gas-response strata', () => {

@@ -1,0 +1,2024 @@
+{
+  "node": "v24.22.1",
+  "design": {
+    "domainMetres": 6,
+    "referenceWindMetresPerSecond": 0.02,
+    "robotLengthMetres": 0.7,
+    "robotWidthMetres": 0.31,
+    "opposingInletSpacingMetres": 0.1,
+    "inletHeightMetres": 0.05,
+    "robotSpeedMetresPerSecond": 0.1,
+    "sampleIntervalSeconds": 1,
+    "sensorTimeConstantSeconds": 0.9102392266268373,
+    "tubeLengthMetres": 1,
+    "tubeInnerDiameterMetres": 0.002,
+    "actualFlowLitresPerMinute": 0.25,
+    "averagingSeconds": 1,
+    "inspectionStepMetres": 0.1,
+    "dwellSeconds": 12,
+    "plumeFeatureMetres": 0.1
+  },
+  "bench": {
+    "dataSource": "manufactured independent pulse traces",
+    "fit": {
+      "riseSeconds": 1.7535900577543022,
+      "recoverySeconds": 3.497186635215138,
+      "setup": {
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "actualFlowLitresPerMinute": 0.25,
+        "averagingSeconds": 1
+      }
+    },
+    "baseline": {
+      "riseSeconds": 0.9102392266268373,
+      "recoverySeconds": 2
+    },
+    "trainingSamples": 100,
+    "holdoutSamples": 108,
+    "trainingRmsePpm": 0.001874534873705159,
+    "holdoutRmsePpm": 0.001972242127118368,
+    "baselineHoldoutRmsePpm": 0.05281488811660615
+  },
+  "fittingsMetres": [
+    {
+      "x": 2,
+      "y": 2
+    },
+    {
+      "x": 2,
+      "y": 4
+    },
+    {
+      "x": 4,
+      "y": 4
+    },
+    {
+      "x": 4,
+      "y": 2
+    }
+  ],
+  "arms": [
+    {
+      "wind": 35,
+      "replicate": 31,
+      "name": "near-35",
+      "fitting": 1,
+      "source": {
+        "x": 2.065532163543119,
+        "y": 4.045886114908083
+      }
+    },
+    {
+      "wind": 35,
+      "replicate": 31,
+      "name": "upwind-35",
+      "fitting": null,
+      "source": {
+        "x": 1.7050032608467118,
+        "y": 4.525905812754457
+      }
+    },
+    {
+      "wind": 35,
+      "replicate": 31,
+      "name": "lateral-35",
+      "fitting": null,
+      "source": {
+        "x": 2.2047880110722478,
+        "y": 4.143394109087762
+      }
+    },
+    {
+      "wind": 35,
+      "replicate": 31,
+      "name": "blank-35",
+      "fitting": null,
+      "source": null
+    },
+    {
+      "wind": 155,
+      "replicate": 32,
+      "name": "near-155",
+      "fitting": 2,
+      "source": {
+        "x": 3.927495377037068,
+        "y": 4.033809460939256
+      }
+    },
+    {
+      "wind": 155,
+      "replicate": 32,
+      "name": "upwind-155",
+      "fitting": null,
+      "source": {
+        "x": 3.6920505757333815,
+        "y": 3.481572423482452
+      }
+    },
+    {
+      "wind": 155,
+      "replicate": 32,
+      "name": "lateral-155",
+      "fitting": null,
+      "source": {
+        "x": 3.7734230532408377,
+        "y": 4.105654565435175
+      }
+    },
+    {
+      "wind": 155,
+      "replicate": 32,
+      "name": "blank-155",
+      "fitting": null,
+      "source": null
+    },
+    {
+      "wind": 290,
+      "replicate": 33,
+      "name": "near-290",
+      "fitting": 3,
+      "source": {
+        "x": 4.027361611466054,
+        "y": 1.9248245903371273
+      }
+    },
+    {
+      "wind": 290,
+      "replicate": 33,
+      "name": "upwind-290",
+      "fitting": null,
+      "source": {
+        "x": 4.584336781071085,
+        "y": 2.1488305287482463
+      }
+    },
+    {
+      "wind": 290,
+      "replicate": 33,
+      "name": "lateral-290",
+      "fitting": null,
+      "source": {
+        "x": 4.085505035831417,
+        "y": 1.7650768448035228
+      }
+    },
+    {
+      "wind": 290,
+      "replicate": 33,
+      "name": "blank-290",
+      "fitting": null,
+      "source": null
+    },
+    {
+      "name": "weak-wind",
+      "wind": 35,
+      "replicate": 40,
+      "fitting": 1,
+      "source": {
+        "x": 2,
+        "y": 4
+      },
+      "speed": 0.003
+    },
+    {
+      "name": "short-budget",
+      "wind": 35,
+      "replicate": 41,
+      "fitting": 1,
+      "source": {
+        "x": 2,
+        "y": 4
+      },
+      "duration": 295
+    }
+  ],
+  "configs": [
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81031,
+      "sourceSeed": 82031,
+      "controllerSeed": 83031,
+      "observationModelSeed": 84031,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.34425536059051987,
+        "y": 0.6743143524846805
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81031,
+      "sourceSeed": 82031,
+      "controllerSeed": 83031,
+      "observationModelSeed": 84031,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.2841672101411186,
+        "y": 0.7543176354590763
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81031,
+      "sourceSeed": 82031,
+      "controllerSeed": 83031,
+      "observationModelSeed": 84031,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.3674646685120413,
+        "y": 0.6905656848479603
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81031,
+      "sourceSeed": 82031,
+      "controllerSeed": 83031,
+      "observationModelSeed": 84031,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "absent",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81032,
+      "sourceSeed": 82032,
+      "controllerSeed": 83032,
+      "observationModelSeed": 84032,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 155,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.6545825628395113,
+        "y": 0.6723015768232093
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81032,
+      "sourceSeed": 82032,
+      "controllerSeed": 83032,
+      "observationModelSeed": 84032,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 155,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.6153417626222303,
+        "y": 0.5802620705804087
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81032,
+      "sourceSeed": 82032,
+      "controllerSeed": 83032,
+      "observationModelSeed": 84032,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 155,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.6289038422068063,
+        "y": 0.6842757609058624
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81032,
+      "sourceSeed": 82032,
+      "controllerSeed": 83032,
+      "observationModelSeed": 84032,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "absent",
+      "windDirectionDegrees": 155,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81033,
+      "sourceSeed": 82033,
+      "controllerSeed": 83033,
+      "observationModelSeed": 84033,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 290,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.6712269352443423,
+        "y": 0.32080409838952123
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81033,
+      "sourceSeed": 82033,
+      "controllerSeed": 83033,
+      "observationModelSeed": 84033,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 290,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.7640561301785141,
+        "y": 0.35813842145804103
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81033,
+      "sourceSeed": 82033,
+      "controllerSeed": 83033,
+      "observationModelSeed": 84033,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 290,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.6809175059719029,
+        "y": 0.2941794741339205
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81033,
+      "sourceSeed": 82033,
+      "controllerSeed": 83033,
+      "observationModelSeed": 84033,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "absent",
+      "windDirectionDegrees": 290,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81040,
+      "sourceSeed": 82040,
+      "controllerSeed": 83040,
+      "observationModelSeed": 84040,
+      "domainMeters": 6,
+      "durationSeconds": 450,
+      "checkpointSeconds": [
+        450
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.3333333333333333,
+        "y": 0.6666666666666666
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.003,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    },
+    {
+      "algorithmId": "asset-inspection",
+      "scenarioKind": "open",
+      "assetVerification": {
+        "version": "wind-bracket-v1",
+        "offsetMetres": 0.4,
+        "minimumWindMetresPerSecond": 0.005
+      },
+      "seed": 81041,
+      "sourceSeed": 82041,
+      "controllerSeed": 83041,
+      "observationModelSeed": 84041,
+      "domainMeters": 6,
+      "durationSeconds": 295,
+      "checkpointSeconds": [
+        295
+      ],
+      "fixedDt": 0.25,
+      "robotSpeed": 0.016666666666666666,
+      "sensorProfileId": "custom",
+      "sensorPpmPerNormalizedUnit": 1.525274544675014,
+      "sensorDetectionFloor": 0,
+      "sensorNoise": 0.001,
+      "sensorLag": 1.7535900577543022,
+      "windNoise": 0,
+      "sensorThresholdScale": 1,
+      "sensorSaturation": 1.5,
+      "sensorFalsePositiveRate": 0,
+      "sensorFalseNegativeRate": 0,
+      "quadChannelNoiseCorrelation": 0,
+      "quadChannelGainMismatch": 0,
+      "quadChannelCrossTalk": 0,
+      "quadChannelLagMismatch": 0,
+      "activeSniffEnabled": true,
+      "activeSniffStrength": 0.78,
+      "activeSniffReach": 0.008333333333333333,
+      "activeSniffCycleSeconds": 14.5,
+      "physicsMode": "filament",
+      "gridTransportVersion": "conservative-upwind-v1",
+      "gridResolution": 48,
+      "physicsStepSeconds": 0.25,
+      "targetStatus": "emitting",
+      "windDirectionDegrees": 35,
+      "windSpeedScale": 1,
+      "turbulenceScale": 0,
+      "gustStrength": 0,
+      "diffusivityScale": 1,
+      "emissionRateScale": 1,
+      "obstacleComplexityLevel": 3,
+      "terrainSlopeDegrees": 0,
+      "terrainUphillDirectionDegrees": 0,
+      "gasBuoyancy": "neutral",
+      "terrainGasDriftScale": 1,
+      "robotSlopeLimitDegrees": 25,
+      "successThreshold": 0.01,
+      "stopOnNativeDeclaration": true,
+      "inspectionStations": [
+        {
+          "x": 0.3333333333333333,
+          "y": 0.3333333333333333
+        },
+        {
+          "x": 0.3333333333333333,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.6666666666666666
+        },
+        {
+          "x": 0.6666666666666666,
+          "y": 0.3333333333333333
+        }
+      ],
+      "sourcePositionOverride": {
+        "x": 0.3333333333333333,
+        "y": 0.6666666666666666
+      },
+      "robotStartPositionOverride": {
+        "x": 0.16666666666666666,
+        "y": 0.5
+      },
+      "robotStartHeadingDegrees": 0,
+      "localInletSampling": {
+        "version": "local-inlet-v1",
+        "fieldInterpretation": "prescribed-horizontal-slice",
+        "opposingInletSpacingMetres": 0.1,
+        "inletHeightMetres": 0.05,
+        "robotLengthMetres": 0.7,
+        "robotWidthMetres": 0.31,
+        "referenceWindMetresPerSecond": 0.02,
+        "effectiveDiffusivityMetresSquaredPerSecond": 0.001,
+        "tubeLengthMetres": 1,
+        "tubeInnerDiameterMetres": 0.002,
+        "flowLitresPerMinutePerChannel": 0.25,
+        "riseTimeConstantSeconds": 1.7535900577543022,
+        "recoveryTimeConstantSeconds": 3.497186635215138,
+        "averagingSeconds": 1,
+        "sampleIntervalSeconds": 1,
+        "maximumTurnRateRadiansPerSecond": 0.7853981633974483,
+        "inspection": {
+          "version": "settled-spatial-confirmation-v1",
+          "offsetNormalized": 0.016666666666666666,
+          "zoneRadiusNormalized": 0.0033333333333333335,
+          "arrivalRadiusNormalized": 0.0016666666666666668,
+          "settlingSeconds": 12.230617106617226,
+          "dwellSeconds": 14.5,
+          "sampleSpacingSeconds": 1,
+          "maximumPairSeparationSeconds": 31,
+          "minimumSamplesPerWaypoint": 2
+        }
+      },
+      "physicalAtmosphere": {
+        "version": "halfspace-si-v1",
+        "diffusivityMetresSquaredPerSecond": 0.001,
+        "sourceWidthMetres": 0.15,
+        "releaseHeightMetres": 0.025,
+        "emissionRateKgPerSecond": 2e-9,
+        "sourceAgeAtMissionStartSeconds": 300,
+        "quadraturePanelSeconds": 2,
+        "measurement": {
+          "concentrationScaleKgPerCubicMetre": 0.000001,
+          "backgroundKgPerCubicMetre": 0,
+          "noiseKgPerCubicMetre": 1e-9,
+          "thresholdKgPerCubicMetre": 1.15e-7,
+          "saturationKgPerCubicMetre": 0.0000015,
+          "temperatureKelvin": 298.15,
+          "pressurePascal": 101325
+        }
+      }
+    }
+  ],
+  "verified": true,
+  "challenge": true,
+  "holdout": false,
+  "strictSourceToleranceMetres": 0.06
+}

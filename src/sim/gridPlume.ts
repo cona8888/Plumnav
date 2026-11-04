@@ -6,14 +6,18 @@ import {
   type PlumeModel,
   type PlumePuff,
 } from './plume'
-import type { Scenario, Vec2 } from './types'
+import type { GridMassBudget, GridTransportVersion, Scenario, Vec2 } from './types'
 import {
   terrainGasDrift,
   terrainNearSurfaceLossRate,
 } from './terrain'
 
+export type { GridMassBudget, GridTransportVersion } from './types'
+
 /** Controls the cost/accuracy trade-off of the numerical plume. */
 export type GridPlumeOptions = {
+  /** Omitted historical options retain the original, nonconservative solver. */
+  transportVersion?: GridTransportVersion
   /** Number of finite-volume cells along each side of the unit-square domain. */
   resolution?: number
   /** Requested fixed solver step. It is reduced automatically for diffusion stability. */
@@ -24,12 +28,26 @@ export type GridPlumeOptions = {
   sourceRate?: number
 }
 
-export type GridPlumeSnapshot = PlumeGridSnapshot
+export type GridPlumeSnapshot = PlumeGridSnapshot & {
+  transportVersion: GridTransportVersion
+  /** Null means that this historical solver has no conservative budget. */
+  massBudget: GridMassBudget | null
+}
+
+type GridField = Float32Array | Float64Array
+
+type CumulativeBudget = Omit<GridMassBudget,
+  'time' | 'initialMass' | 'initialClippingLossMass' | 'currentMass' | 'balanceResidual'>
+
+type GridState = {
+  field: GridField
+  budget: CumulativeBudget | null
+}
 
 type PreparedField = {
   time: number
-  lower: Float32Array
-  upper: Float32Array
+  lower: GridState
+  upper: GridState
   blend: number
 }
 
@@ -50,15 +68,19 @@ const OBSTRUCTED_DEFLECTION_ALLOWANCE = 1.9
 /**
  * Deterministic 2-D numerical advection-diffusion plume.
  *
- * Advection uses a semi-Lagrangian backtrace. Diffusion uses an explicit
- * five-point finite-volume stencil with no-flux solid and domain boundaries.
- * The source and first-order dilution terms are applied after transport.
- * Canonical fixed-time states make results independent of query order.
+ * The versioned conservative solver uses shared upwind face fluxes, zero
+ * solid-face flux, zero exterior inflow concentration and measured outflow.
+ * It solves conservative scalar transport in a prescribed velocity field;
+ * it does not solve incompressible airflow. The legacy version retains the
+ * historical semi-Lagrangian backtrace, including its nonconservation.
+ * Diffusion has no-flux solid/domain boundaries. Source and loss follow
+ * transport. Canonical states make fields and budgets query-order independent.
  */
 export class GridPlume implements PlumeModel {
+  readonly transportVersion: GridTransportVersion
   readonly resolution: number
   readonly stepSeconds: number
-  /** Conservative design estimate used to bound semi-Lagrangian backtrace length. */
+  /** Design speed estimate; the conservative version also checks actual face CFL. */
   readonly transportSpeedEnvelope: number
   /** Estimated cells crossed per substep at the transport-speed envelope. */
   readonly advectiveCourantEstimate: number
@@ -69,12 +91,16 @@ export class GridPlume implements PlumeModel {
   private readonly nearSurfaceLossRate: number
   private readonly blockedMask: Uint8Array
   /** Cell-centred source density; its area-weighted sum is the reference budget. */
-  private readonly sourceKernel: Float32Array
+  private readonly sourceKernel: GridField
   private readonly analyticalPlume: FilamentPlume
-  private readonly checkpoints = new Map<number, Float32Array>()
+  private readonly checkpoints = new Map<number, GridState>()
+  private readonly verticalFaces: Uint8Array
+  private readonly horizontalFaces: Uint8Array
+  private readonly initialMass: number
+  private readonly initialClippingLossMass: number
 
   private latestTick = 0
-  private latestField: Float32Array
+  private latestState: GridState
   private prepared: PreparedField | null = null
 
   constructor(
@@ -82,6 +108,12 @@ export class GridPlume implements PlumeModel {
     readonly seed: number,
     options: GridPlumeOptions = {},
   ) {
+    const transportVersion = options.transportVersion ?? 'legacy-semi-lagrangian-v1'
+    if (transportVersion !== 'legacy-semi-lagrangian-v1' &&
+        transportVersion !== 'conservative-upwind-v1') {
+      throw new RangeError('Unknown grid plume transportVersion')
+    }
+    this.transportVersion = transportVersion
     const resolution = options.resolution ?? DEFAULT_RESOLUTION
     const requestedStep = options.stepSeconds ?? DEFAULT_STEP_SECONDS
     const decaySeconds = options.decaySeconds ?? DEFAULT_DECAY_SECONDS
@@ -131,6 +163,10 @@ export class GridPlume implements PlumeModel {
       ? GRID_TARGET_ADVECTIVE_COURANT * this.cellSize / this.transportSpeedEnvelope
       : requestedStep
     this.stepSeconds = Math.min(requestedStep, diffusionLimit, advectionAccuracyLimit)
+    if (transportVersion === 'conservative-upwind-v1' &&
+        (!Number.isFinite(this.stepSeconds) || this.stepSeconds <= 0)) {
+      throw new RangeError('Grid effective stepSeconds must be finite and positive')
+    }
     this.advectiveCourantEstimate =
       this.transportSpeedEnvelope * this.stepSeconds / this.cellSize
     this.decaySeconds = decaySeconds
@@ -138,8 +174,33 @@ export class GridPlume implements PlumeModel {
     this.blockedMask = this.createBlockedMask()
     this.sourceKernel = this.createSourceKernel()
     this.analyticalPlume = new FilamentPlume(scenario, seed)
-    this.latestField = this.createInitialField()
-    this.checkpoints.set(0, this.latestField.slice())
+    const faces = this.createFluidFaces()
+    this.verticalFaces = faces.vertical
+    this.horizontalFaces = faces.horizontal
+    const initialField = this.createInitialField()
+    this.initialMass = this.fieldMass(initialField)
+    this.initialClippingLossMass = Array.from(this.sourceKernel).reduce(
+      (total, density) => total + Math.max(0,
+        density * 0.35 * (this.sourceRate / DEFAULT_SOURCE_RATE) - 1),
+      0,
+    ) * this.cellSize ** 2
+    if (transportVersion === 'conservative-upwind-v1' &&
+        !Number.isFinite(this.initialClippingLossMass)) {
+      throw new RangeError('Grid initial clipping budget must be finite')
+    }
+    this.latestState = {
+      field: initialField,
+      budget: transportVersion === 'conservative-upwind-v1' ? {
+        injectedMass: 0,
+        decayLossMass: 0,
+        boundaryOutflowMass: 0,
+        upperClippingLossMass: 0,
+        lowerClippingGainMass: 0,
+        maximumAdvectiveCourant: 0,
+        advectionSubsteps: 0,
+      } : null,
+    }
+    this.checkpoints.set(0, this.copyState(this.latestState))
   }
 
   /** The configured, deterministic wind field shared with the fast plume. */
@@ -172,9 +233,9 @@ export class GridPlume implements PlumeModel {
     }
     if (!this.inDomain(point) || this.isBlockedPoint(point)) return 0
     const field = this.prepareField(time)
-    const lower = this.sample(field.lower, point)
+    const lower = this.sample(field.lower.field, point)
     if (field.blend <= 1e-12) return clamp(lower, 0, 1)
-    const upper = this.sample(field.upper, point)
+    const upper = this.sample(field.upper.field, point)
     return clamp(lower + (upper - lower) * field.blend, 0, 1)
   }
 
@@ -186,8 +247,8 @@ export class GridPlume implements PlumeModel {
     const field = this.prepareField(time)
     return points.map((point) => {
       if (!this.inDomain(point) || this.isBlockedPoint(point)) return 0
-      const lower = this.sample(field.lower, point)
-      const upper = field.blend <= 1e-12 ? lower : this.sample(field.upper, point)
+      const lower = this.sample(field.lower.field, point)
+      const upper = field.blend <= 1e-12 ? lower : this.sample(field.upper.field, point)
       return clamp(lower + (upper - lower) * field.blend, 0, 1)
     })
   }
@@ -198,13 +259,13 @@ export class GridPlume implements PlumeModel {
       throw new RangeError('Grid plume query time must be finite and non-negative')
     }
     const field = this.prepareField(time)
-    const values = new Array<number>(field.lower.length)
+    const values = new Array<number>(field.lower.field.length)
     for (let index = 0; index < values.length; index += 1) {
       values[index] = this.blockedMask[index]
         ? 0
         : clamp(
-            field.lower[index]! +
-              (field.upper[index]! - field.lower[index]!) * field.blend,
+            field.lower.field[index]! +
+              (field.upper.field[index]! - field.lower.field[index]!) * field.blend,
             0,
             1,
           )
@@ -216,7 +277,15 @@ export class GridPlume implements PlumeModel {
       stepSeconds: this.stepSeconds,
       values,
       blocked: Array.from(this.blockedMask, Boolean),
+      transportVersion: this.transportVersion,
+      massBudget: this.preparedBudget(field,
+        values.reduce((total, value) => total + value, 0) * this.cellSize ** 2),
     }
+  }
+
+  /** Explicit source/sink accounting, unavailable for the legacy transport. */
+  massBudgetAt(time: number): GridMassBudget | null {
+    return this.gridAt(time).massBudget
   }
 
   totalMassAt(time: number) {
@@ -232,65 +301,122 @@ export class GridPlume implements PlumeModel {
     const lowerTick = Math.floor(exactTick + 1e-10)
     const blend = clamp(exactTick - lowerTick, 0, 1)
     const upperTick = blend <= 1e-10 ? lowerTick : lowerTick + 1
+    if (this.transportVersion === 'conservative-upwind-v1' &&
+        (!Number.isSafeInteger(lowerTick) || !Number.isSafeInteger(upperTick))) {
+      throw new RangeError('Grid query ticks must be finite safe integers')
+    }
     const lower = this.stateAtTick(lowerTick)
     const upper = upperTick === lowerTick ? lower : this.stateAtTick(upperTick)
     this.prepared = { time, lower, upper, blend }
     return this.prepared
   }
 
-  private stateAtTick(targetTick: number) {
-    if (targetTick === this.latestTick) return this.latestField
+  private createField(length = this.resolution * this.resolution): GridField {
+    return this.transportVersion === 'conservative-upwind-v1'
+      ? new Float64Array(length)
+      : new Float32Array(length)
+  }
+
+  private fieldMass(field: GridField) {
+    let total = 0
+    for (const value of field) total += value
+    return total * this.cellSize ** 2
+  }
+
+  private copyState(state: GridState): GridState {
+    return {
+      field: state.field.slice(),
+      budget: state.budget === null ? null : { ...state.budget },
+    }
+  }
+
+  private preparedBudget(field: PreparedField, currentMass: number): GridMassBudget | null {
+    const lower = field.lower.budget
+    const upper = field.upper.budget
+    if (lower === null || upper === null) return null
+    const interpolate = (key: keyof CumulativeBudget) =>
+      lower[key] + (upper[key] - lower[key]) * field.blend
+    const injectedMass = interpolate('injectedMass')
+    const decayLossMass = interpolate('decayLossMass')
+    const boundaryOutflowMass = interpolate('boundaryOutflowMass')
+    const upperClippingLossMass = interpolate('upperClippingLossMass')
+    const lowerClippingGainMass = interpolate('lowerClippingGainMass')
+    return {
+      time: field.time,
+      initialMass: this.initialMass,
+      initialClippingLossMass: this.initialClippingLossMass,
+      currentMass,
+      injectedMass,
+      decayLossMass,
+      boundaryOutflowMass,
+      upperClippingLossMass,
+      lowerClippingGainMass,
+      balanceResidual: currentMass - (this.initialMass + injectedMass -
+        decayLossMass - boundaryOutflowMass - upperClippingLossMass + lowerClippingGainMass),
+      maximumAdvectiveCourant: upper.maximumAdvectiveCourant,
+      advectionSubsteps: upper.advectionSubsteps,
+    }
+  }
+
+  private stateAtTick(targetTick: number): GridState {
+    if (targetTick === this.latestTick) return this.latestState
     if (targetTick > this.latestTick) {
-      this.latestField = this.evolve(
-        this.latestField,
+      this.latestState = this.evolve(
+        this.latestState,
         this.latestTick,
         targetTick,
         true,
       )
       this.latestTick = targetTick
-      return this.latestField
+      return this.latestState
     }
 
     let checkpointTick = 0
-    let checkpoint = this.checkpoints.get(0) as Float32Array
-    for (const [tick, field] of this.checkpoints) {
+    let checkpoint = this.checkpoints.get(0)!
+    for (const [tick, state] of this.checkpoints) {
       if (tick <= targetTick && tick >= checkpointTick) {
         checkpointTick = tick
-        checkpoint = field
+        checkpoint = state
       }
     }
     return this.evolve(checkpoint, checkpointTick, targetTick, false)
   }
 
   private evolve(
-    initial: Float32Array,
+    initial: GridState,
     fromTick: number,
     targetTick: number,
     retainCheckpoints: boolean,
-  ) {
+  ): GridState {
     if (fromTick === targetTick) return initial
-    let current = initial.slice()
-    let advected = new Float32Array(current.length)
-    let next = new Float32Array(current.length)
+    let current: GridField = initial.field.slice()
+    const advected = this.createField(current.length)
+    let next = this.createField(current.length)
+    const budget = initial.budget === null ? null : { ...initial.budget }
 
     for (let tick = fromTick; tick < targetTick; tick += 1) {
-      this.advect(current, advected, tick * this.stepSeconds)
+      if (budget === null) {
+        this.advect(current, advected, tick * this.stepSeconds)
+      } else {
+        this.advectConservative(current, advected, tick * this.stepSeconds, budget)
+      }
       this.diffuseEmitAndDecay(
         advected,
         next,
         (tick + 0.5) * this.stepSeconds,
+        budget,
       )
       const reusable = current
       current = next
       next = reusable
       if (retainCheckpoints && (tick + 1) % CHECKPOINT_STRIDE === 0) {
-        this.checkpoints.set(tick + 1, current.slice())
+        this.checkpoints.set(tick + 1, this.copyState({ field: current, budget }))
       }
     }
-    return current
+    return { field: current, budget }
   }
 
-  private advect(input: Float32Array, output: Float32Array, time: number) {
+  private advect(input: GridField, output: GridField, time: number) {
     const n = this.resolution
     const dt = this.stepSeconds
     output.fill(0)
@@ -314,10 +440,117 @@ export class GridPlume implements PlumeModel {
     }
   }
 
-  private diffuseEmitAndDecay(
-    input: Float32Array,
-    output: Float32Array,
+  /**
+   * Donor-cell finite-volume transport. Each interior face is applied once
+   * with opposite signs to its two cells. A solid face has exactly zero flux;
+   * exterior inflow has C=0, and exterior outflow enters the loss budget.
+   * Velocities are frozen at the canonical midpoint during CFL subcycling.
+   */
+  private advectConservative(
+    input: GridField,
+    output: GridField,
     time: number,
+    budget: CumulativeBudget,
+  ) {
+    const n = this.resolution
+    const dx = this.cellSize
+    const dt = this.stepSeconds
+    const midpoint = time + dt * 0.5
+    const vertical = new Float64Array(n * (n + 1))
+    const horizontal = new Float64Array(n * (n + 1))
+    const outgoing = new Float64Array(n * n)
+
+    for (let y = 0; y < n; y += 1) {
+      for (let x = 0; x <= n; x += 1) {
+        const face = y * (n + 1) + x
+        if (!this.verticalFaces[face]) continue
+        const velocity = this.transportAt({ x: x * dx, y: (y + 0.5) * dx }, midpoint).x
+        if (!Number.isFinite(velocity)) throw new RangeError('Grid face velocity must be finite')
+        vertical[face] = velocity
+        if (velocity > 0 && x > 0) outgoing[y * n + x - 1]! += velocity
+        if (velocity < 0 && x < n) outgoing[y * n + x]! -= velocity
+      }
+    }
+    for (let y = 0; y <= n; y += 1) {
+      for (let x = 0; x < n; x += 1) {
+        const face = y * n + x
+        if (!this.horizontalFaces[face]) continue
+        const velocity = this.transportAt({ x: (x + 0.5) * dx, y: y * dx }, midpoint).y
+        if (!Number.isFinite(velocity)) throw new RangeError('Grid face velocity must be finite')
+        horizontal[face] = velocity
+        if (velocity > 0 && y > 0) outgoing[(y - 1) * n + x]! += velocity
+        if (velocity < 0 && y < n) outgoing[y * n + x]! -= velocity
+      }
+    }
+
+    // For multidimensional positivity the SUM of outgoing face speeds matters.
+    // Measuring it also covers obstacle-field or user-field speeds above the
+    // constructor's design estimate. A design envelope alone is not a proof.
+    const maximumOutgoing = outgoing.reduce((maximum, value) => Math.max(maximum, value), 0)
+    const canonicalCourant = maximumOutgoing * dt / dx
+    if (!Number.isFinite(canonicalCourant)) {
+      throw new RangeError('Grid advective Courant number must be finite')
+    }
+    const substeps = Math.max(1, Math.ceil(canonicalCourant / GRID_TARGET_ADVECTIVE_COURANT))
+    if (!Number.isSafeInteger(substeps)) {
+      throw new RangeError('Grid advection substeps must be a finite safe integer')
+    }
+    const substepSeconds = dt / substeps
+    const scale = substepSeconds / dx
+    const area = dx * dx
+    budget.maximumAdvectiveCourant = Math.max(
+      budget.maximumAdvectiveCourant, canonicalCourant / substeps,
+    )
+    budget.advectionSubsteps += substeps
+    let current = input
+    let next = output
+    const temporary = substeps > 1 ? new Float64Array(input.length) : null
+
+    for (let step = 0; step < substeps; step += 1) {
+      next.set(current)
+      let outflow = 0
+      for (let y = 0; y < n; y += 1) {
+        for (let x = 0; x <= n; x += 1) {
+          const velocity = vertical[y * (n + 1) + x]!
+          if (velocity === 0) continue
+          const left = x > 0 ? y * n + x - 1 : -1
+          const right = x < n ? y * n + x : -1
+          const donor = velocity > 0 ? left : right
+          if (donor < 0) continue // Exterior inflow contains zero scalar.
+          const transferred = velocity * scale * current[donor]!
+          if (left >= 0) next[left]! -= transferred
+          if (right >= 0) next[right]! += transferred
+          if (left < 0 || right < 0) outflow += Math.abs(transferred) * area
+        }
+      }
+      for (let y = 0; y <= n; y += 1) {
+        for (let x = 0; x < n; x += 1) {
+          const velocity = horizontal[y * n + x]!
+          if (velocity === 0) continue
+          const up = y > 0 ? (y - 1) * n + x : -1
+          const down = y < n ? y * n + x : -1
+          const donor = velocity > 0 ? up : down
+          if (donor < 0) continue
+          const transferred = velocity * scale * current[donor]!
+          if (up >= 0) next[up]! -= transferred
+          if (down >= 0) next[down]! += transferred
+          if (up < 0 || down < 0) outflow += Math.abs(transferred) * area
+        }
+      }
+      budget.boundaryOutflowMass += outflow
+      if (step + 1 < substeps) {
+        current = next
+        next = next === output ? temporary! : output
+      }
+    }
+    if (next !== output) output.set(next)
+  }
+
+  private diffuseEmitAndDecay(
+    input: GridField,
+    output: GridField,
+    time: number,
+    budget: CumulativeBudget | null,
   ) {
     const n = this.resolution
     const alpha =
@@ -332,6 +565,9 @@ export class GridPlume implements PlumeModel {
         (0.42 * Math.sin(time * 0.91 + this.seed * 0.017) +
           0.24 * Math.sin(time * 0.233 + this.seed * 0.071))
     const injected = this.sourceRate * this.stepSeconds * Math.max(0.15, sourceWave)
+    if (budget !== null && !Number.isFinite(injected)) {
+      throw new RangeError('Grid source forcing must be finite')
+    }
 
     output.fill(0)
     for (let y = 0; y < n; y += 1) {
@@ -339,23 +575,42 @@ export class GridPlume implements PlumeModel {
         const index = y * n + x
         if (this.blockedMask[index]) continue
         const center = input[index]!
-        const left = this.fluidNeighbor(input, x - 1, y, center)
-        const right = this.fluidNeighbor(input, x + 1, y, center)
-        const up = this.fluidNeighbor(input, x, y - 1, center)
-        const down = this.fluidNeighbor(input, x, y + 1, center)
-        let value = (center + alpha * (left + right + up + down - 4 * center)) * loss
+        const left = budget !== null && !this.verticalFaces[y * (n + 1) + x]
+          ? center : this.fluidNeighbor(input, x - 1, y, center)
+        const right = budget !== null && !this.verticalFaces[y * (n + 1) + x + 1]
+          ? center : this.fluidNeighbor(input, x + 1, y, center)
+        const up = budget !== null && !this.horizontalFaces[y * n + x]
+          ? center : this.fluidNeighbor(input, x, y - 1, center)
+        const down = budget !== null && !this.horizontalFaces[(y + 1) * n + x]
+          ? center : this.fluidNeighbor(input, x, y + 1, center)
+        const diffused = center + alpha * (left + right + up + down - 4 * center)
+        let value = diffused * loss
 
         // The kernel is a cell-centred density, normalized over the available
         // fluid cells. Consequently sum(value * cell area) increases by the
         // fixed reference source budget (up to the final concentration clamp),
         // regardless of resolution or whether the source is near a boundary.
-        value += injected * this.sourceKernel[index]!
+        const added = injected * this.sourceKernel[index]!
+        value += added
+        if (budget !== null && !Number.isFinite(value)) {
+          throw new RangeError('Grid concentration update must be finite')
+        }
         output[index] = clamp(value, 0, 1)
+        if (budget !== null) {
+          const area = this.cellSize ** 2
+          budget.injectedMass += added * area
+          budget.decayLossMass += diffused * (1 - loss) * area
+          budget.upperClippingLossMass += Math.max(0, value - 1) * area
+          budget.lowerClippingGainMass += Math.max(0, -value) * area
+        }
       }
+    }
+    if (budget !== null && !Object.values(budget).every(Number.isFinite)) {
+      throw new RangeError('Grid cumulative mass budget must remain finite')
     }
   }
 
-  private sample(field: Float32Array, point: Vec2) {
+  private sample(field: GridField, point: Vec2) {
     const n = this.resolution
     const gridX = point.x * n - 0.5
     const gridY = point.y * n - 0.5
@@ -375,6 +630,10 @@ export class GridPlume implements PlumeModel {
       if (sample.x < 0 || sample.x >= n || sample.y < 0 || sample.y >= n) continue
       const index = sample.y * n + sample.x
       if (this.blockedMask[index]) continue
+      // A thin solid may separate two fluid cell centres. Public interpolation
+      // must respect that separation just as conservative transport does.
+      if (this.transportVersion === 'conservative-upwind-v1' &&
+          this.segmentHitsObstacle(point, this.cellCenter(sample.x, sample.y))) continue
       value += field[index]! * sample.weight
       totalWeight += sample.weight
     }
@@ -382,7 +641,7 @@ export class GridPlume implements PlumeModel {
   }
 
   private fluidNeighbor(
-    field: Float32Array,
+    field: GridField,
     x: number,
     y: number,
     fallback: number,
@@ -392,6 +651,33 @@ export class GridPlume implements PlumeModel {
     }
     const index = y * this.resolution + x
     return this.blockedMask[index] ? fallback : field[index]!
+  }
+
+  /** Symmetric face masks also close thin solids crossed between cell centres. */
+  private createFluidFaces() {
+    const n = this.resolution
+    const vertical = new Uint8Array(n * (n + 1))
+    const horizontal = new Uint8Array(n * (n + 1))
+    if (this.transportVersion === 'legacy-semi-lagrangian-v1') return { vertical, horizontal }
+    for (let y = 0; y < n; y += 1) {
+      for (let x = 0; x <= n; x += 1) {
+        if ((x > 0 && this.blockedMask[y * n + x - 1]) ||
+            (x < n && this.blockedMask[y * n + x])) continue
+        const a = x > 0 ? this.cellCenter(x - 1, y) : { x: 0, y: (y + 0.5) * this.cellSize }
+        const b = x < n ? this.cellCenter(x, y) : { x: 1, y: (y + 0.5) * this.cellSize }
+        if (!this.segmentHitsObstacle(a, b)) vertical[y * (n + 1) + x] = 1
+      }
+    }
+    for (let y = 0; y <= n; y += 1) {
+      for (let x = 0; x < n; x += 1) {
+        if ((y > 0 && this.blockedMask[(y - 1) * n + x]) ||
+            (y < n && this.blockedMask[y * n + x])) continue
+        const a = y > 0 ? this.cellCenter(x, y - 1) : { x: (x + 0.5) * this.cellSize, y: 0 }
+        const b = y < n ? this.cellCenter(x, y) : { x: (x + 0.5) * this.cellSize, y: 1 }
+        if (!this.segmentHitsObstacle(a, b)) horizontal[y * n + x] = 1
+      }
+    }
+    return { vertical, horizontal }
   }
 
   private createBlockedMask() {
@@ -406,25 +692,25 @@ export class GridPlume implements PlumeModel {
   }
 
   private createInitialField() {
-    const field = new Float32Array(this.resolution * this.resolution)
+    const field = this.createField()
     for (let y = 0; y < this.resolution; y += 1) {
       for (let x = 0; x < this.resolution; x += 1) {
         const index = y * this.resolution + x
         if (this.blockedMask[index]) continue
-        field[index] = clamp(
-          this.sourceKernel[index]! *
-            0.35 *
-            (this.sourceRate / DEFAULT_SOURCE_RATE),
-          0,
-          1,
-        )
+        const value = this.sourceKernel[index]! *
+          0.35 *
+          (this.sourceRate / DEFAULT_SOURCE_RATE)
+        if (this.transportVersion === 'conservative-upwind-v1' && !Number.isFinite(value)) {
+          throw new RangeError('Grid initial concentration must be finite')
+        }
+        field[index] = clamp(value, 0, 1)
       }
     }
     return field
   }
 
   private createSourceKernel() {
-    const kernel = new Float32Array(this.resolution * this.resolution)
+    const kernel = this.createField()
     const source = this.scenario.source
     if (source === null) return kernel
     const sigma = Math.max(this.cellSize * 0.72, 0.012)

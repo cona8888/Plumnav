@@ -1,0 +1,72 @@
+[
+  {
+    "panel": "fitting-standard",
+    "file": "missions.csv",
+    "bytes": 4031,
+    "sha256": "ef764b183c9ddfe868d50aa2bfff29bdbeb818023d24704055b1ea8ef7fe241c",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-standard",
+    "file": "decisions.csv",
+    "bytes": 4284,
+    "sha256": "b61ca45539f18ee96ebb621bd0667cf180c0df8054e686d18447888f82186064",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-standard",
+    "file": "visits.csv",
+    "bytes": 4686,
+    "sha256": "fe9f4277113219c44757770c7e7baf50046a791896115ca56ba7f442f9ab25b7",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-standard",
+    "file": "verification-visits.csv",
+    "bytes": 2612,
+    "sha256": "d33d062988b858da577743ad6f4832be53371026ea466b05ca59e3a30e3376bf",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-standard",
+    "file": "readings.csv",
+    "bytes": 1288076,
+    "sha256": "9861adb08f7222ab15a25fbef1dde36850c2bbf3a40f063873fb5aaf2ab985e4",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-challenge",
+    "file": "missions.csv",
+    "bytes": 1823,
+    "sha256": "b88f2d927d244cfb242f1b03727f7df432c01b2f400c1c23ad72740328ec6454",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-challenge",
+    "file": "decisions.csv",
+    "bytes": 1972,
+    "sha256": "51fdc40b59b55ef69f628a2edfc698dbb5947aa05b1111f6b1f70299b823617f",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-challenge",
+    "file": "visits.csv",
+    "bytes": 5772,
+    "sha256": "d0dc9fa0dce1a3b531e7a95190c07be87fa67fa7c82f86a8f209fa946f5c4397",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-challenge",
+    "file": "verification-visits.csv",
+    "bytes": 2419,
+    "sha256": "55828268005ccfa6bcbd5e08db7bd24875034671b8272a17d8a7795b95ae106c",
+    "byte_identical_to_audit": true
+  },
+  {
+    "panel": "fitting-challenge",
+    "file": "readings.csv",
+    "bytes": 426265,
+    "sha256": "4c194ef281c414976d3a1a04f23c506b91e046d72eac2c57ef9cfc42481f5029",
+    "byte_identical_to_audit": true
+  }
+]

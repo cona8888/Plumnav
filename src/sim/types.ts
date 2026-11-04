@@ -85,6 +85,7 @@ export type LocalScanPolicy = {
 }
 
 export type AlgorithmId =
+  | 'asset-inspection'
   | 'coverage'
   | 'surge-cast'
   | 'zigzag-spiral'
@@ -108,6 +109,29 @@ export type ScenarioKind = 'open' | 'obstructed'
 
 export type PhysicsMode = 'filament' | 'grid'
 
+export type GridTransportVersion =
+  | 'legacy-semi-lagrangian-v1'
+  | 'conservative-upwind-v1'
+
+/** Area-integrated normalized scalar budget; these are not SI gas masses. */
+export type GridMassBudget = {
+  time: number
+  initialMass: number
+  /** Initial concentration removed by the display-scale ceiling, before t=0. */
+  initialClippingLossMass: number
+  currentMass: number
+  injectedMass: number
+  decayLossMass: number
+  boundaryOutflowMass: number
+  upperClippingLossMass: number
+  lowerClippingGainMass: number
+  /** Current - (initial + source - decay - outflow - upper clip + lower clip). */
+  balanceResidual: number
+  /** Diagnostics cover the upper bracketing state for interpolated query times. */
+  maximumAdvectiveCourant: number
+  advectionSubsteps: number
+}
+
 export type GasBuoyancy = 'neutral' | 'dense' | 'light'
 
 /** Ground-truth target condition. This field is never exposed to controllers. */
@@ -122,6 +146,7 @@ export type TerminalOutcome =
   | 'missed-source-abstention'
   | 'correct-rejection-at-deadline'
   | 'deadline-nondeclaration-present'
+  | 'unresolved-survey'
 
 export type Obstacle = {
   id: string
@@ -171,6 +196,14 @@ export type SimulationConfig = {
   /** Omit to retain the legacy sensing and confirmation implementation. */
   localInletSampling?: LocalInletSamplingConfig
   algorithmId: AlgorithmId
+  /** Public mapped fitting centres, in ordered survey sequence and normalized coordinates. */
+  inspectionStations?: Vec2[]
+  /** Optional wind-directed comparison after two agreed mapped-fitting visits. */
+  assetVerification?: {
+    version: 'wind-bracket-v1'
+    offsetMetres: number
+    minimumWindMetresPerSecond: number
+  }
   scenarioKind: ScenarioKind
   /** Private world/layout seed; never exposed to an algorithm controller. */
   seed: number
@@ -228,6 +261,8 @@ export type SimulationConfig = {
   activeSniffReach: number
   activeSniffCycleSeconds: number
   physicsMode: PhysicsMode
+  /** Missing in historical configurations: replay the original nonconservative grid. */
+  gridTransportVersion?: GridTransportVersion
   gridResolution: number
   /** Compass direction the mean wind travels toward; 0° north, clockwise. */
   windDirectionDegrees: number
@@ -452,11 +487,13 @@ export type AlgorithmDebug = {
 export type AlgorithmDecision = {
   direction: Vec2
   speedScale?: number
+  /** Provenance of a displayed location. Source declarations use a separate terminal flag. */
+  estimateRole?: 'sampled-peak' | 'model-only' | 'encounter-supported'
   estimate: Vec2 | null
   confidence: number
   phase: string
   nativeTerminated?: boolean
-  /** Explicit no-source decision; distinct from merely reaching the deadline. */
+  /** Controller stopped without declaring a source. Rejection of a leak requires separate evidence. */
   nativeAbstained?: boolean
   terminationReason?: string
   activeSniff?: ActiveSniffCommand
@@ -693,12 +730,18 @@ export type BatchResult = {
   metrics: MetricSnapshot
   /** Effective capped grid solver timestep; null for the filament model. */
   effectivePhysicsStepSeconds?: number | null
+  /** Budget at this row's checkpoint, not the mission's later final state. */
+  gridMassBudget?: GridMassBudget | null
 }
 
 export type BatchSummary = {
   algorithmId: AlgorithmId
   scenarioKind: ScenarioKind
   targetStatus: TargetStatus
+  physicsMode: PhysicsMode | PhysicalAtmosphereConfig['version']
+  gridTransportVersion: GridTransportVersion | null
+  gridResolution: number | null
+  physicsStepSeconds: number | null
   /** 0 for open flow or the clear process-flow control; 1-5 for geometry. */
   obstacleComplexityLevel: number
   terrainSlopeDegrees: number

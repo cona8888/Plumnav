@@ -1,0 +1,524 @@
+
+ RUN  v3.2.7 /workspace/scratch/8442b2e50dcd/plumnav_update/repo
+
+ ❯ src/sim/checkpointContract.test.ts (18 tests | 12 failed) 34ms
+   × checkpoint time contract > rejects a zero checkpoint instead of inventing or omitting a snapshot 8ms
+     → expected [Function] to throw an error
+   ✓ checkpoint time contract > rejects a negative checkpoint instead of inventing or omitting a snapshot 0ms
+   × checkpoint time contract > rejects a duplicate checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a equivalent floating-point tick checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a after the deadline checkpoint instead of inventing or omitting a snapshot 1ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a first partial tick checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a half a tick checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a three quarters of a tick checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   × checkpoint time contract > rejects a later partial tick checkpoint instead of inventing or omitting a snapshot 0ms
+     → expected [Function] to throw an error
+   ✓ checkpoint time contract > rejects nonfinite checkpoint NaN 1ms
+   ✓ checkpoint time contract > rejects nonfinite checkpoint Infinity 0ms
+   ✓ checkpoint time contract > rejects nonfinite checkpoint -Infinity 0ms
+   ✓ checkpoint time contract > preserves valid requested ordering and an explicitly empty schedule 5ms
+   ✓ checkpoint time contract > records 0.6 s on tick 3 at dt=0.2, and the exact partial final interval 1ms
+   × checkpoint time contract > records 0.9 s on tick 3 at dt=0.3, and the exact partial final interval 1ms
+     → expected undefined to be defined
+   × checkpoint time contract > records 10 s on tick 100 at dt=0.1, and the exact partial final interval 3ms
+     → expected undefined to be defined
+   × checkpoint time contract > finishes a decimal-grid final checkpoint without an extra measurement or control command 3ms
+     → expected 4 to be 3 // Object.is equality
+   × checkpoint time contract > returns each accepted batch checkpoint including an off-grid final deadline 8ms
+     → promise resolved "{ results: [ { …(9) } ], …(1) }" instead of rejecting
+ ❯ src/sim/physicalStart.test.ts (73 tests | 35 failed) 153ms
+   × common physical robot start clearance > quad-sniff-confirmation rejects a footprint crossing any domain edge at construction 13ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > asset-inspection rejects a footprint crossing any domain edge at construction 5ms
+     → expected [Function] to throw error matching /start.*(clearance|footprint)/i but got 'Asset inspection requires a reachable…'
+   × common physical robot start clearance > coverage rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > surge-cast rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > zigzag-spiral rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > infotaxis rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > smc-kl rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > pmfs rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-wind rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-range rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-corridor rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-bracket rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-refine rejects a footprint crossing any domain edge at construction 3ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-adaptive rejects a footprint crossing any domain edge at construction 0ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-staged rejects a footprint crossing any domain edge at construction 2ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-legacy rejects a footprint crossing any domain edge at construction 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-passive rejects a footprint crossing any domain edge at construction 0ms
+     → expected [Function] to throw an error
+   ✓ common physical robot start clearance > quad-sniff-confirmation accepts a clear SI start and can execute a control interval 10ms
+   ✓ common physical robot start clearance > asset-inspection accepts a clear SI start and can execute a control interval 2ms
+   ✓ common physical robot start clearance > coverage accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > surge-cast accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > zigzag-spiral accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > infotaxis accepts a clear SI start and can execute a control interval 13ms
+   ✓ common physical robot start clearance > smc-kl accepts a clear SI start and can execute a control interval 9ms
+   ✓ common physical robot start clearance > pmfs accepts a clear SI start and can execute a control interval 6ms
+   ✓ common physical robot start clearance > quad-sniff accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > quad-sniff-wind accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > quad-sniff-range accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > quad-sniff-corridor accepts a clear SI start and can execute a control interval 0ms
+   ✓ common physical robot start clearance > quad-sniff-bracket accepts a clear SI start and can execute a control interval 0ms
+   ✓ common physical robot start clearance > quad-sniff-refine accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > quad-sniff-adaptive accepts a clear SI start and can execute a control interval 0ms
+   ✓ common physical robot start clearance > quad-sniff-staged accepts a clear SI start and can execute a control interval 0ms
+   ✓ common physical robot start clearance > quad-sniff-legacy accepts a clear SI start and can execute a control interval 1ms
+   ✓ common physical robot start clearance > quad-passive accepts a clear SI start and can execute a control interval 1ms
+   × common physical robot start clearance > quad-sniff-confirmation rejects an obstacle-adjacent physical footprint whose centre is in free space 2ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > coverage rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > surge-cast rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > zigzag-spiral rejects an obstacle-adjacent physical footprint whose centre is in free space 0ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > infotaxis rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > smc-kl rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > pmfs rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-wind rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-range rejects an obstacle-adjacent physical footprint whose centre is in free space 0ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-corridor rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-bracket rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-refine rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-adaptive rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-staged rejects an obstacle-adjacent physical footprint whose centre is in free space 1ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-sniff-legacy rejects an obstacle-adjacent physical footprint whose centre is in free space 0ms
+     → expected [Function] to throw an error
+   × common physical robot start clearance > quad-passive rejects an obstacle-adjacent physical footprint whose centre is in free space 0ms
+     → expected [Function] to throw an error
+   ✓ common physical robot start clearance > preserves the asset inspection reachable-start diagnostic 1ms
+   ✓ common physical robot start clearance > keeps the unsupported physical pulse-jet controller explicitly rejected 1ms
+   ✓ common physical robot start clearance > quad-sniff-confirmation preserves legacy obstacle missions and accepted legacy edge starts 2ms
+   ✓ common physical robot start clearance > coverage preserves legacy obstacle missions and accepted legacy edge starts 1ms
+   ✓ common physical robot start clearance > surge-cast preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > zigzag-spiral preserves legacy obstacle missions and accepted legacy edge starts 1ms
+   ✓ common physical robot start clearance > infotaxis preserves legacy obstacle missions and accepted legacy edge starts 23ms
+   ✓ common physical robot start clearance > smc-kl preserves legacy obstacle missions and accepted legacy edge starts 16ms
+   ✓ common physical robot start clearance > pmfs preserves legacy obstacle missions and accepted legacy edge starts 3ms
+   ✓ common physical robot start clearance > pulse-sniff preserves legacy obstacle missions and accepted legacy edge starts 2ms
+   ✓ common physical robot start clearance > quad-sniff preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-wind preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-range preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-corridor preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-bracket preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-refine preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-adaptive preserves legacy obstacle missions and accepted legacy edge starts 1ms
+   ✓ common physical robot start clearance > quad-sniff-staged preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-sniff-legacy preserves legacy obstacle missions and accepted legacy edge starts 0ms
+   ✓ common physical robot start clearance > quad-passive preserves legacy obstacle missions and accepted legacy edge starts 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 47 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a zero checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a duplicate checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a equivalent floating-point tick checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a after the deadline checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a first partial tick checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a half a tick checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a three quarters of a tick checkpoint instead of inventing or omitting a snapshot
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > rejects a later partial tick checkpoint instead of inventing or omitting a snapshot
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ src/sim/checkpointContract.test.ts:31:8
+     29|   ])('rejects a %s checkpoint instead of inventing or omitting a snaps…
+     30|     expect(() => validateSimulationConfig({ ...config(), checkpointSec…
+     31|       .toThrow(/checkpointSeconds/)
+       |        ^
+     32|   })
+     33| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/47]⎯
+
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > records 0.9 s on tick 3 at dt=0.3, and the exact partial final interval
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > records 10 s on tick 100 at dt=0.1, and the exact partial final interval
+AssertionError: expected undefined to be defined
+ ❯ src/sim/checkpointContract.test.ts:62:50
+     60|     const atCheckpoint = engine.getFrame()
+     61|     expect(atCheckpoint.time).toBeCloseTo(checkpoint, 12)
+     62|     expect(atCheckpoint.checkpoints[checkpoint]).toBeDefined()
+       |                                                  ^
+     63|     expect(atCheckpoint.checkpoints[checkpoint]!.elapsedSeconds).toBe(…
+     64|     expect(atCheckpoint.checkpoints[checkpoint]!.passiveSamples).toBe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/47]⎯
+
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > finishes a decimal-grid final checkpoint without an extra measurement or control command
+AssertionError: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ src/sim/checkpointContract.test.ts:82:42
+     80|     const final = engine.runToCompletion()
+     81|     expect(final.time).toBe(0.9)
+     82|     expect(final.metrics.passiveSamples).toBe(3)
+       |                                          ^
+     83|     expect(final.checkpoints[0.9]!.passiveSamples).toBe(3)
+     84|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/47]⎯
+
+ FAIL  src/sim/checkpointContract.test.ts > checkpoint time contract > returns each accepted batch checkpoint including an off-grid final deadline
+AssertionError: promise resolved "{ results: [ { …(9) } ], …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "results": [
++     {
++       "algorithmId": "coverage",
++       "checkpointSeconds": 1.05,
++       "config": {
++         "activeSniffCycleSeconds": 0.75,
++         "activeSniffEnabled": true,
++         "activeSniffReach": 0.065,
++         "activeSniffStrength": 0.78,
++         "algorithmId": "coverage",
++         "checkpointSeconds": [
++           0,
++           1.05,
++           2,
++         ],
++         "controllerSeed": 1048573,
++         "diffusivityScale": 1,
++         "domainMeters": 100,
++         "durationSeconds": 1.05,
++         "emissionRateScale": 1,
++         "fixedDt": 0.2,
++         "gasBuoyancy": "neutral",
++         "gridResolution": 48,
++         "gustStrength": 0.12,
++         "observationModelSeed": 3145739,
++         "obstacleComplexityLevel": 3,
++         "physicsMode": "filament",
++         "physicsStepSeconds": 0.25,
++         "quadChannelCrossTalk": 0,
++         "quadChannelGainMismatch": 0,
++         "quadChannelLagMismatch": 0,
++         "quadChannelNoiseCorrelation": 0,
++         "robotSlopeLimitDegrees": 25,
++         "robotSpeed": 0.05,
++         "robotStartPositionOverride": {
++           "x": 0.2,
++           "y": 0.5,
++         },
++         "scenarioKind": "open",
++         "seed": 42,
++         "sensorDetectionFloor": 0,
++         "sensorFalseNegativeRate": 0,
++         "sensorFalsePositiveRate": 0,
++         "sensorLag": 0.05,
++         "sensorNoise": 0,
++         "sensorPpmPerNormalizedUnit": 1000,
++         "sensorProfileId": "normalized-reference",
++         "sensorSaturation": 1.5,
++         "sensorThresholdScale": 1,
++         "sourcePositionOverride": undefined,
++         "sourceSeed": 2097169,
++         "stopOnNativeDeclaration": false,
++         "successThreshold": 0.01,
++         "targetStatus": "absent",
++         "terrainGasDriftScale": 1,
++         "terrainSlopeDegrees": 0,
++         "terrainUphillDirectionDegrees": 0,
++         "turbulenceScale": 1,
++         "windDirectionDegrees": 265,
++         "windNoise": 0,
++         "windSpeedScale": 1,
++       },
++       "effectivePhysicsStepSeconds": null,
++       "metrics": {
++         "abstentionTimeSeconds": null,
++         "activeProbeCount": 0,
++         "activeReturnHits": 0,
++         "activeReturnSamples": 0,
++         "activeSamplingSeconds": 0,
++         "airPulseEnergy": 0,
++         "collisionAttempts": 0,
++         "contactEpisodes": 0,
++         "correctAbstention": false,
++         "correctRejection": null,
++         "declarationErrorNormalized": null,
++         "declarationTimeSeconds": null,
++         "elapsedSeconds": 1.05,
++         "elevationGainMeters": 0,
++         "elevationLossMeters": 0,
++         "errorMeters": null,
++         "estimate": {
++           "x": 0.2,
++           "y": 0.5,
++         },
++         "falseDeclarations": 0,
++         "hitCount": 0,
++         "meanComputeMs": 0.005363333333320952,
++         "meanQuadContrast": 0,
++         "meanQuadEffectiveSamples": 0,
++         "meanQuadIntegrationSamples": 0,
++         "meanQuadSupport": 0,
++         "meanTerrainMobilityScale": 1,
++         "nativeAbstention": false,
++         "nativeDeclaration": false,
++         "normalizedError": null,
++         "normalizedPathOverhead": null,
++         "p95ComputeMs": 0.009995000000003529,
++         "passiveSamples": 6,
++         "pathLengthMeters": 5.250000000000015,
++         "pathLengthNormalized": 0.05250000000000015,
++         "plumeTimeSeconds": 0,
++         "quadCandidateBestFormation": null,
++         "quadCandidateFormationEvaluations": 0,
++         "quadCandidateGatePasses": {
++           "provisional-ray": 0,
++           "ray-count": 0,
++           "ray-quality": 0,
++           "ray-residual": 0,
++           "surface-support": 0,
++         },
++         "quadCandidateMaxGradientRayPoolCount": 0,
++         "quadCandidateMaxProvisionalRayCount": 0,
++         "quadCandidateMaxQuality": 0,
++         "quadCandidateMaxSurfaceSupport": 0,
++         "quadCandidateMinResidual": null,
++         "quadCandidateProvisionalRayEvaluations": 0,
++         "quadChannelReturns": 0,
++         "quadDeclarationBestEvidence": null,
++         "quadDeclarationCandidateEvaluations": 0,
++         "quadDeclarationEvaluations": 0,
++         "quadDeclarationGatePasses": {
++           "aggregate-score": 0,
++           "candidate": 0,
++           "candidate-distance": 0,
++           "passive-contrast": 0,
++           "passive-core-count": 0,
++           "passive-core-hits": 0,
++           "passive-core-mean": 0,
++           "passive-ring-count": 0,
++           "recent-passive-hit": 0,
++           "stability-count": 0,
++           "stability-radius": 0,
++           "stability-span": 0,
++           "surface-count": 0,
++           "surface-score": 0,
++         },
++         "quadDeclarationMaxGatesPassed": 0,
++         "quadDeclarationMaxScore": 0,
++         "quadDirectionAbstentions": 0,
++         "quadPassiveChannelReturns": 0,
++         "quadPassiveCycles": 0,
++         "quadPassiveSamplingSeconds": 0,
++         "quadSaturatedChannels": 0,
++         "quadSniffCycles": 0,
++         "quadSuctionEnergy": 0,
++         "quadValidDirections": 0,
++         "reacquisitions": 0,
++         "samples": 6,
++         "spuriousDeclaration": false,
++         "success": null,
++         "surfaceErrorMeters": null,
++         "surfaceErrorNormalized": null,
++         "surfacePathLengthMeters": 5.250000000000015,
++         "surfacePathLengthNormalized": 0.05250000000000015,
++         "surfacePathOverhead": null,
++         "targetStatus": "absent",
++         "terminalOutcome": "unresolved-survey",
++       },
++       "observationModelSeed": 3145739,
++       "observationModelVersion": "controller-observation-v1",
++       "scenarioKind": "open",
++       "seed": 42,
++     },
++   ],
++   "summaries": [
++     {
++       "algorithmId": "coverage",
++       "checkpointSeconds": 1.05,
++       "correctAbstentionRate": 0,
++       "correctDeclarationRate": 0,
++       "correctRejectionRate": null,
++       "declarationRate": 0,
++       "falseDeclarationRate": 0,
++       "gasBuoyancy": "neutral",
++       "medianActiveProbes": 0,
++       "medianComputeMs": 0.005363333333320952,
++       "medianElevationGainMeters": 0,
++       "medianNormalizedError": null,
++       "medianPathOverhead": null,
++       "medianPlumeContacts": 0,
++       "medianPulseEnergy": 0,
++       "medianQuadContrast": 0,
++       "medianQuadEffectiveSamples": 0,
++       "medianQuadIntegrationSamples": 0,
++       "medianQuadSniffCycles": 0,
++       "medianQuadSuctionEnergy": 0,
++       "medianQuadSupport": 0,
++       "medianQuadValidDirectionRate": 0,
++       "medianSurfacePathOverhead": null,
++       "medianTerrainMobilityScale": 1,
++       "medianTimeSeconds": 1.05,
++       "obstacleComplexityLevel": 0,
++       "p90NormalizedError": null,
++       "robotSlopeLimitDegrees": 25,
++       "runs": 1,
++       "scenarioKind": "open",
++       "spuriousDeclarationRate": 0,
++       "successRate": null,
++       "targetStatus": "absent",
++       "terrainGasDriftScale": 1,
++       "terrainSlopeDegrees": 0,
++       "terrainUphillDirectionDegrees": 0,
++     },
++   ],
+  }
+
+ ❯ src/sim/checkpointContract.test.ts:94:96
+     92|       expect(result.metrics.pathLengthMeters).toBeLessThanOrEqual(c.ro…
+     93|     }
+     94|     await expect(runBatch({ ...c, checkpointSeconds: [0, 1.05, 2] }, […
+       |                                                                                                ^
+     95|       .rejects.toThrow(/checkpointSeconds/)
+     96|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/47]⎯
+
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-confirmation rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > coverage rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > surge-cast rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > zigzag-spiral rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > infotaxis rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > smc-kl rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > pmfs rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-wind rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-range rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-corridor rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-bracket rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-refine rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-adaptive rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-staged rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-legacy rejects a footprint crossing any domain edge at construction
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-passive rejects a footprint crossing any domain edge at construction
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ src/sim/physicalStart.test.ts:32:80
+     30|     const c = withSIResearchDesign(base(algorithmId), design)
+     31|     for (const robotStartPositionOverride of edgeStarts) {
+     32|       expect(() => new SimulationEngine({ ...c, robotStartPositionOver…
+       |                                                                                ^
+     33|     }
+     34|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/47]⎯
+
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > asset-inspection rejects a footprint crossing any domain edge at construction
+AssertionError: expected [Function] to throw error matching /start.*(clearance|footprint)/i but got 'Asset inspection requires a reachable…'
+
+- Expected: 
+/start.*(clearance|footprint)/i
+
++ Received: 
+"Asset inspection requires a reachable start on an open SI site"
+
+ ❯ src/sim/physicalStart.test.ts:32:80
+     30|     const c = withSIResearchDesign(base(algorithmId), design)
+     31|     for (const robotStartPositionOverride of edgeStarts) {
+     32|       expect(() => new SimulationEngine({ ...c, robotStartPositionOver…
+       |                                                                                ^
+     33|     }
+     34|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/47]⎯
+
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-confirmation rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > coverage rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > surge-cast rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > zigzag-spiral rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > infotaxis rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > smc-kl rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > pmfs rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-wind rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-range rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-corridor rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-bracket rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-refine rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-adaptive rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-staged rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-sniff-legacy rejects an obstacle-adjacent physical footprint whose centre is in free space
+ FAIL  src/sim/physicalStart.test.ts > common physical robot start clearance > quad-passive rejects an obstacle-adjacent physical footprint whose centre is in free space
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ src/sim/physicalStart.test.ts:54:85
+     52|     const start = { x: obstacle.x - radius / 2, y: obstacle.y + obstac…
+     53|     expect(map.obstacles.every(o => start.x < o.x || start.x > o.x + o…
+     54|     expect(() => new SimulationEngine({ ...c, robotStartPositionOverri…
+       |                                                                                     ^
+     55|     const valid = new SimulationEngine(c)
+     56|     expect(valid.environment.isBlocked(valid.scenario.robotStart)).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/47]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  47 failed | 44 passed (91)
+   Start at  09:49:36
+   Duration  824ms (transform 461ms, setup 0ms, collect 915ms, tests 187ms, environment 0ms, prepare 144ms)
+

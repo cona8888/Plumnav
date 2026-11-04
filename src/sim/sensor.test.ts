@@ -52,6 +52,7 @@ describe('configurable sensor model', () => {
       new SimulationEngine({
         ...createDefaultConfig('coverage', 'open'),
         durationSeconds: 3,
+        checkpointSeconds: [3],
         sensorNoise: 2,
         sensorSaturation: 0.35,
         stopOnNativeDeclaration: false,

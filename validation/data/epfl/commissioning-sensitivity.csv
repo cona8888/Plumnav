@@ -1,0 +1,11 @@
+commissioning_flight,status,rejection_reason,spaced_blank_readings,threshold_mV,intended_search_flights,scored_flights,gas_positive_flights,no_hit_flights,infotaxis_declarations,peak_declarations,gas_positive_infotaxis_median_error_m,same_flights_peak_median_error_m
+1,ready,,8,212.39999389648438,9,9,8,1,0,0,0.42076469734993555,0.6090764776360451
+2,rejected,insufficient-blank,2,,9,0,,,,,,
+3,rejected,insufficient-blank,2,,9,0,,,,,,
+4,ready,,8,188.89999389648438,9,9,9,0,0,0,3.5950987429616745,0.6669379052308728
+5,ready,,8,205.10000610351562,9,9,9,0,0,0,0.47737566300502715,0.6669379052308728
+6,ready,,8,201,9,9,9,0,0,0,0.5370496310753652,0.6669379052308728
+7,rejected,insufficient-blank,7,,9,0,,,,,,
+8,rejected,conflicting-time,8,,9,0,,,,,,
+9,ready,,8,200.1999969482422,9,9,9,0,0,0,0.591317774783616,0.6669379052308728
+10,rejected,insufficient-blank,4,,9,0,,,,,,

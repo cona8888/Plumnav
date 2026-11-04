@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-04",
+  "base_commit": "3507527250400d25081f3793191084c9c3356a56",
+  "package_version": "0.22.0",
+  "node": "v24.22.1",
+  "pnpm": "11.25.0",
+  "declared_package_manager": "pnpm@11.9.0",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "dependencies": {
+    "typescript": "5.9.3",
+    "vite": "8.1.5",
+    "vitest": "3.2.7",
+    "vite-node": "3.2.4",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "verification_note": "Runtimes are local verification durations, not comparative algorithm benchmarks. Pnpm auto-install ran on preliminary commands; final package-level commands are sequential. No dependency or measurement/reference changes."
+}

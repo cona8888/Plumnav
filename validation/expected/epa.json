@@ -1,0 +1,216 @@
+{
+  "doi": "10.23719/1390071",
+  "sha256": "d408f8d7b9b0630132720ad069095230f442a6d24a8be159a8558bdb4b9e1b4d",
+  "results": [
+    {
+      "pass": 1,
+      "readings": 182,
+      "peakRow": 63,
+      "peakPpm": 23.42,
+      "minimumDecimatedPeakPpm": 2.22,
+      "maximumShiftMetres": 30.082348404356384,
+      "phases": [
+        {
+          "phase": 0,
+          "peakRow": 63,
+          "peakPpm": 23.42,
+          "shiftMetres": 0
+        },
+        {
+          "phase": 1,
+          "peakRow": 64,
+          "peakPpm": 12.86,
+          "shiftMetres": 0.7644438549202016
+        },
+        {
+          "phase": 2,
+          "peakRow": 65,
+          "peakPpm": 3.88,
+          "shiftMetres": 0.9552146942750552
+        },
+        {
+          "phase": 3,
+          "peakRow": 56,
+          "peakPpm": 2.69,
+          "shiftMetres": 6.215347481819642
+        },
+        {
+          "phase": 4,
+          "peakRow": 27,
+          "peakPpm": 2.49,
+          "shiftMetres": 30.082348404356384
+        },
+        {
+          "phase": 5,
+          "peakRow": 58,
+          "peakPpm": 2.48,
+          "shiftMetres": 4.3153168929113646
+        },
+        {
+          "phase": 6,
+          "peakRow": 59,
+          "peakPpm": 2.22,
+          "shiftMetres": 3.411469927088638
+        },
+        {
+          "phase": 7,
+          "peakRow": 60,
+          "peakPpm": 4.82,
+          "shiftMetres": 2.5594275011495977
+        },
+        {
+          "phase": 8,
+          "peakRow": 61,
+          "peakPpm": 12.96,
+          "shiftMetres": 1.6790796852703473
+        },
+        {
+          "phase": 9,
+          "peakRow": 62,
+          "peakPpm": 20.34,
+          "shiftMetres": 0.8357373484872427
+        }
+      ]
+    },
+    {
+      "pass": 2,
+      "readings": 214,
+      "peakRow": 135,
+      "peakPpm": 37.11,
+      "minimumDecimatedPeakPpm": 1.88,
+      "maximumShiftMetres": 2.533978838380006,
+      "phases": [
+        {
+          "phase": 0,
+          "peakRow": 133,
+          "peakPpm": 13.64,
+          "shiftMetres": 1.147784813342317
+        },
+        {
+          "phase": 1,
+          "peakRow": 134,
+          "peakPpm": 26.43,
+          "shiftMetres": 0.6357183785179981
+        },
+        {
+          "phase": 2,
+          "peakRow": 135,
+          "peakPpm": 37.11,
+          "shiftMetres": 0
+        },
+        {
+          "phase": 3,
+          "peakRow": 136,
+          "peakPpm": 19.74,
+          "shiftMetres": 0.5958323518237262
+        },
+        {
+          "phase": 4,
+          "peakRow": 137,
+          "peakPpm": 11.26,
+          "shiftMetres": 1.2257071874526502
+        },
+        {
+          "phase": 5,
+          "peakRow": 138,
+          "peakPpm": 4.33,
+          "shiftMetres": 1.8593985905299708
+        },
+        {
+          "phase": 6,
+          "peakRow": 139,
+          "peakPpm": 1.92,
+          "shiftMetres": 2.510910315934361
+        },
+        {
+          "phase": 7,
+          "peakRow": 130,
+          "peakPpm": 1.88,
+          "shiftMetres": 2.533978838380006
+        },
+        {
+          "phase": 8,
+          "peakRow": 131,
+          "peakPpm": 8.93,
+          "shiftMetres": 1.9555891903757843
+        },
+        {
+          "phase": 9,
+          "peakRow": 132,
+          "peakPpm": 15.62,
+          "shiftMetres": 1.309700619303375
+        }
+      ]
+    },
+    {
+      "pass": 3,
+      "readings": 201,
+      "peakRow": 114,
+      "peakPpm": 113.17,
+      "minimumDecimatedPeakPpm": 3.68,
+      "maximumShiftMetres": 5.4053394302741244,
+      "phases": [
+        {
+          "phase": 0,
+          "peakRow": 113,
+          "peakPpm": 59.49,
+          "shiftMetres": 0.4168825911736936
+        },
+        {
+          "phase": 1,
+          "peakRow": 114,
+          "peakPpm": 113.17,
+          "shiftMetres": 0
+        },
+        {
+          "phase": 2,
+          "peakRow": 115,
+          "peakPpm": 105.75,
+          "shiftMetres": 0.3887271795421334
+        },
+        {
+          "phase": 3,
+          "peakRow": 116,
+          "peakPpm": 32.2,
+          "shiftMetres": 0.8251988914552462
+        },
+        {
+          "phase": 4,
+          "peakRow": 117,
+          "peakPpm": 7.61,
+          "shiftMetres": 1.2676795002172792
+        },
+        {
+          "phase": 5,
+          "peakRow": 128,
+          "peakPpm": 3.68,
+          "shiftMetres": 5.4053394302741244
+        },
+        {
+          "phase": 6,
+          "peakRow": 99,
+          "peakPpm": 5.61,
+          "shiftMetres": 5.171827189076353
+        },
+        {
+          "phase": 7,
+          "peakRow": 100,
+          "peakPpm": 14.19,
+          "shiftMetres": 4.71258219546392
+        },
+        {
+          "phase": 8,
+          "peakRow": 101,
+          "peakPpm": 30.41,
+          "shiftMetres": 4.2521224994357825
+        },
+        {
+          "phase": 9,
+          "peakRow": 102,
+          "peakPpm": 48.78,
+          "shiftMetres": 4.145591139517194
+        }
+      ]
+    }
+  ]
+}
