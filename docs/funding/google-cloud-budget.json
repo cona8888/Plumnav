@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "project": "Robotic Gas Source Localisation and Survey Planning Using Geospatial Data",
+  "repository": "https://github.com/cona8888/Plumnav",
+  "prepared_date": "2026-11-24",
+  "rates_checked_date": "2026-11-24",
+  "estimate_kind": "manual_gross_list_price_forecast",
+  "currency": "USD",
+  "region": "us-central1",
+  "region_label": "Iowa",
+  "duration_months": 12,
+  "project_start_date": null,
+  "application_submission_status": "not_confirmed",
+  "credit_award_status": "not_confirmed",
+  "cloud_deployment_status": "not_confirmed",
+  "credit_request_usd": 4924,
+  "budget_ceiling_usd": 5000,
+  "tax_included": false,
+  "free_tier_deductions_applied": false,
+  "calculator": {
+    "status": "unavailable_during_preparation",
+    "observed_error": "Site Unavailable",
+    "shared_link_and_start_page_attempted": true,
+    "updated_estimate_saved": false,
+    "saved_estimate_url": null,
+    "verified_in_live_calculator": false,
+    "next_action": "Enter these quantities in the live calculator, check region and free-tier assumptions, and save the estimate share link before completing the application field."
+  },
+  "workload": {
+    "compute": {
+      "machine_type": "e2-standard-8",
+      "worker_count": 4,
+      "vcpus_per_worker": 8,
+      "memory_gib_per_worker": 32,
+      "hours_per_worker_per_month": 340,
+      "vm_hours_per_month": 1360,
+      "vm_hours_per_year": 16320,
+      "vcpu_hours_per_year": 130560,
+      "billing": "on-demand",
+      "operating_system": "Linux without paid OS licence",
+      "gpu_count": 0,
+      "gpu_requirement_assessed": false,
+      "usage_basis": "proposed allocation; runtime requirements have not been measured for this extension"
+    },
+    "boot_disks": {
+      "count": 4,
+      "gib_each": 50,
+      "type": "pd-standard",
+      "retention_assumption": "full month"
+    },
+    "cloud_storage": {
+      "average_gib": 500,
+      "storage_class": "Standard",
+      "namespace": "flat",
+      "class_a_operations_per_month": 100000,
+      "class_b_operations_per_month": 1000000
+    },
+    "internet_transfer_gib_per_month": 100,
+    "cloud_run": {
+      "billing": "request-based",
+      "requests_per_month": 100000,
+      "seconds_per_request": 2,
+      "vcpus": 1,
+      "memory_gib": 0.5,
+      "concurrency": 1,
+      "minimum_instances": 0
+    },
+    "artifact_registry_gib": 5,
+    "ordinary_logs_gib_per_month": 5,
+    "log_retention": "standard",
+    "container_build_location": "existing computing resources; no Cloud Build allowance"
+  },
+  "line_items": [
+    {
+      "id": "compute_e2_standard_8",
+      "service": "Compute Engine",
+      "monthly_quantity": 1360.0,
+      "billing_unit": "VM-hour",
+      "unit_rate_usd": 0.26804568,
+      "monthly_cost_usd": 364.5421248,
+      "annual_cost_usd": 4374.5054976,
+      "source_url": "https://cloud.google.com/products/compute/pricing/general-purpose",
+      "note": "4 workers x 340 hours/month; 8 vCPUs and 32 GiB RAM per worker"
+    },
+    {
+      "id": "standard_persistent_disk",
+      "service": "Standard Persistent Disk",
+      "monthly_quantity": 200.0,
+      "billing_unit": "GiB-month",
+      "unit_rate_usd": 0.04,
+      "monthly_cost_usd": 8.0,
+      "annual_cost_usd": 96.0,
+      "source_url": "https://cloud.google.com/compute/disks-image-pricing",
+      "note": "4 x 50 GiB boot disks retained for the full month"
+    },
+    {
+      "id": "standard_cloud_storage",
+      "service": "Cloud Storage Standard",
+      "monthly_quantity": 500.0,
+      "billing_unit": "GiB-month",
+      "unit_rate_usd": 0.02,
+      "monthly_cost_usd": 10.0,
+      "annual_cost_usd": 120.0,
+      "source_url": "https://cloud.google.com/storage/pricing",
+      "note": "Average occupied storage, including retained versions if any"
+    },
+    {
+      "id": "storage_class_a",
+      "service": "Cloud Storage Class A operations",
+      "monthly_quantity": 100.0,
+      "billing_unit": "1000 operations",
+      "unit_rate_usd": 0.005,
+      "monthly_cost_usd": 0.5,
+      "annual_cost_usd": 6.0,
+      "source_url": "https://cloud.google.com/storage/pricing",
+      "note": "100000 operations/month; single-region flat namespace"
+    },
+    {
+      "id": "storage_class_b",
+      "service": "Cloud Storage Class B operations",
+      "monthly_quantity": 1000.0,
+      "billing_unit": "1000 operations",
+      "unit_rate_usd": 0.0004,
+      "monthly_cost_usd": 0.4,
+      "annual_cost_usd": 4.8,
+      "source_url": "https://cloud.google.com/storage/pricing",
+      "note": "1000000 operations/month; single-region flat namespace"
+    },
+    {
+      "id": "internet_transfer",
+      "service": "Internet data transfer",
+      "monthly_quantity": 100.0,
+      "billing_unit": "GiB",
+      "unit_rate_usd": 0.12,
+      "monthly_cost_usd": 12.0,
+      "annual_cost_usd": 144.0,
+      "source_url": "https://cloud.google.com/storage/pricing",
+      "note": "Aggregate research downloads and small interface traffic to destinations such as the UK"
+    },
+    {
+      "id": "ephemeral_external_ipv4",
+      "service": "Ephemeral external IPv4",
+      "monthly_quantity": 1360.0,
+      "billing_unit": "address-hour",
+      "unit_rate_usd": 0.005,
+      "monthly_cost_usd": 6.8,
+      "annual_cost_usd": 81.6,
+      "source_url": "https://cloud.google.com/vpc/pricing",
+      "note": "One ephemeral address per running worker, released when stopped/deleted"
+    },
+    {
+      "id": "cloud_run_cpu",
+      "service": "Cloud Run active CPU",
+      "monthly_quantity": 200000.0,
+      "billing_unit": "vCPU-second",
+      "unit_rate_usd": 2.4e-05,
+      "monthly_cost_usd": 4.8,
+      "annual_cost_usd": 57.6,
+      "source_url": "https://cloud.google.com/run/pricing",
+      "note": "100000 requests x 2 seconds x 1 vCPU; request-based billing"
+    },
+    {
+      "id": "cloud_run_memory",
+      "service": "Cloud Run active memory",
+      "monthly_quantity": 100000.0,
+      "billing_unit": "GiB-second",
+      "unit_rate_usd": 2.5e-06,
+      "monthly_cost_usd": 0.25,
+      "annual_cost_usd": 3.0,
+      "source_url": "https://cloud.google.com/run/pricing",
+      "note": "100000 requests x 2 seconds x 0.5 GiB"
+    },
+    {
+      "id": "cloud_run_requests",
+      "service": "Cloud Run requests",
+      "monthly_quantity": 0.1,
+      "billing_unit": "1000000 requests",
+      "unit_rate_usd": 0.4,
+      "monthly_cost_usd": 0.04,
+      "annual_cost_usd": 0.48,
+      "source_url": "https://cloud.google.com/run/pricing",
+      "note": "100000 requests/month"
+    },
+    {
+      "id": "artifact_registry",
+      "service": "Artifact Registry storage",
+      "monthly_quantity": 5.0,
+      "billing_unit": "GiB-month",
+      "unit_rate_usd": 0.1,
+      "monthly_cost_usd": 0.5,
+      "annual_cost_usd": 6.0,
+      "source_url": "https://cloud.google.com/artifact-registry/pricing",
+      "note": "Monthly equivalent, approximately USD0.10/GiB-month; before the free allowance"
+    },
+    {
+      "id": "cloud_logging",
+      "service": "Cloud Logging",
+      "monthly_quantity": 5.0,
+      "billing_unit": "GiB ingested",
+      "unit_rate_usd": 0.5,
+      "monthly_cost_usd": 2.5,
+      "annual_cost_usd": 30.0,
+      "source_url": "https://cloud.google.com/products/observability/pricing",
+      "note": "Ordinary logs with standard retention; gross amount before the 50 GiB/project/month free allowance"
+    },
+    {
+      "id": "batch_scheduler",
+      "service": "Batch scheduler fee",
+      "monthly_quantity": 1.0,
+      "billing_unit": "monthly service fee",
+      "unit_rate_usd": 0.0,
+      "monthly_cost_usd": 0.0,
+      "annual_cost_usd": 0.0,
+      "source_url": "https://cloud.google.com/batch/pricing",
+      "note": "No separate fee; underlying resource usage is included in other line items"
+    }
+  ],
+  "totals": {
+    "monthly_usd_unrounded": 410.3321248,
+    "annual_usd_unrounded": 4923.9854976,
+    "monthly_usd_rounded": 410.33,
+    "annual_usd_rounded": 4923.99,
+    "headroom_against_calculated_annual_usd": 76.0145024,
+    "headroom_against_rounded_credit_request_usd": 76
+  },
+  "calculation": {
+    "line_monthly": "monthly_quantity * unit_rate_usd",
+    "line_annual": "line_monthly * duration_months",
+    "total_monthly": "sum(line_monthly)",
+    "total_annual": "total_monthly * duration_months",
+    "rounding": "Annual totals use unrounded arithmetic; display monetary amounts to two decimal places.",
+    "monthly_rate_note": "Monthly storage and disk rates are the rounded monthly equivalents used in the manual proposal. These inputs do not constitute a live calculator quote."
+  },
+  "assumptions_and_limits": [
+    "All services and registry images are colocated in us-central1. London requires a regional recalculation.",
+    "No committed-use or Spot discounts assumed; no free-tier savings subtracted.",
+    "Five GiB of ordinary logs would normally be covered by the per-project free allowance; the table retains a conservative gross amount.",
+    "Internet transfer allowance covers relevant research downloads and modest interface traffic in aggregate.",
+    "No Cloud NAT, load balancer, Kubernetes cluster, cross-region pipeline, extended log retention, optional artifact scanning or paid OS licences are budgeted.",
+    "Numerical outputs are kept in Cloud Storage rather than logging full fields.",
+    "Taxes and actual workload/configuration changes can change charges.",
+    "The proposed allocation is not an actual bill, cloud deployment or hard spending cap.",
+    "Local numerical, observation-model and calibration gates must pass before broad cloud execution."
+  ],
+  "maps": {
+    "research_credits_cover_maps_platform": false,
+    "maps_platform_cost_included_usd": 0,
+    "intended_role": "visualisation of sites and proposed routes",
+    "geometry_input_requirement": "Independently licensed geospatial data or owned survey data suitable for modelling; do not assume permission to extract simulation geometry from Google Map Tiles.",
+    "credit_limitation_source_url": "https://support.google.com/google-cloud-higher-ed/answer/10723679?hl=en",
+    "content_policy_source_url": "https://developers.google.com/maps/documentation/tile/policies"
+  },
+  "official_sources": {
+    "compute": "https://cloud.google.com/products/compute/pricing/general-purpose",
+    "disks": "https://cloud.google.com/compute/disks-image-pricing",
+    "storage": "https://cloud.google.com/storage/pricing",
+    "network": "https://cloud.google.com/vpc/pricing",
+    "cloud_run": "https://cloud.google.com/run/pricing",
+    "artifact_registry": "https://cloud.google.com/artifact-registry/pricing",
+    "logging": "https://cloud.google.com/products/observability/pricing",
+    "batch": "https://cloud.google.com/batch/pricing",
+    "research_credits": "https://support.google.com/google-cloud-higher-ed/answer/10723679?hl=en",
+    "map_tiles_policies": "https://developers.google.com/maps/documentation/tile/policies",
+    "application": "https://edu.google.com/programs/credits/research/"
+  }
+}

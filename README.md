@@ -2,6 +2,30 @@
 
 PlumeNav Lab is an offline, two-dimensional gas-source-localization demonstrator and seeded research workbench. It presents one algorithm at a time in the live simulator, then compares selected algorithms at fixed checkpoints on paired plume realizations.
 
+## Survey planning research track — 24 November 2026
+
+The new [project hub and roadmap](docs/survey-planning/README.md) develops the
+proposal to predict robotic survey detectability from site geometry, weather,
+sensor characteristics and uncertain emissions, then recommend survey routes
+and conditions before deployment.
+
+- [Research plan and SP1–SP4 milestones](docs/survey-planning/research-plan.md)
+- [Validation and experimental plan](docs/survey-planning/validation-plan.md)
+- [Google Cloud application and budget](docs/funding/google-cloud-research-credits.md)
+  — 228-word proposal; manual annual estimate **US$4,923.99**; proposed credit
+  request **US$4,924**; saved calculator link still outstanding.
+- [Collaboration and contribution guide](CONTRIBUTING.md)
+- [Prepared wiki pages](wiki/Home.md)
+
+This track is planned work. The existing numerical, calibration and independent
+validation requirements remain in force. Later commissioning and measured-data
+work is recorded in [open PR #1](https://github.com/cona8888/Plumnav/pull/1), which
+was not merged by this documentation update. The historical `research/` links
+below refer to material deliberately excluded from the original source import;
+see [repository scope](REPOSITORY_SCOPE.md).
+
+## Historical research record
+
 Current research status (13 September 2026): M71 v7 completed and passed the
 independent archive audit (280 cells, 67,200 runs). Quad-Sniff-Refine produced
 zero correct declarations in 6,960 emitting missions. The
